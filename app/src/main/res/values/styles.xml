@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Style dùng để bo tròn Image -->
+    <style name="roundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20%</item> <!-- 50% sẽ tạo ra hình tròn hoàn hảo nếu ảnh là hình vuông -->
+    </style>
+</resources>
