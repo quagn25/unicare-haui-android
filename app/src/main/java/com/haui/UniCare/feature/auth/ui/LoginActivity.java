@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             check(username, password);
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
         });
     }
 
