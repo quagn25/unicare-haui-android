@@ -24,6 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Lựa chọn kiểu tài khoản"
+            android:textSize="16dp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
 
@@ -102,6 +104,7 @@
                 android:layout_height="match_parent"
                 android:drawableStart="@drawable/outline_person_24"
                 android:drawablePadding="10dp"
+                android:textColor="@color/black"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -110,9 +113,11 @@
             android:id="@+id/textInputLayout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             app:boxStrokeColor="#7CC0C1"
             app:hintTextColor="#7CC0C1"
+            app:endIconMode="password_toggle"
+            app:endIconTint="#7CC0C1"
             android:hint="Mật khẩu">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -121,6 +126,7 @@
                 android:layout_height="match_parent"
                 android:drawablePadding="10dp"
                 android:drawableStart="@drawable/outline_lock_open_24"
+                android:textColor="@color/black"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -130,7 +136,9 @@
             android:layout_height="wrap_content"
             app:boxStrokeColor="#7CC0C1"
             app:hintTextColor="#7CC0C1"
-            android:layout_marginTop="30dp"
+            app:endIconMode="password_toggle"
+            app:endIconTint="#7CC0C1"
+            android:layout_marginTop="20dp"
             android:hint="Xác nhận mật khẩu">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -139,17 +147,22 @@
                 android:layout_height="match_parent"
                 android:drawablePadding="10dp"
                 android:drawableStart="@drawable/outline_lock_open_24"
+                android:textColor="@color/black"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="match_parent"
+            android:layout_width="161dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            app:backgroundTint="#81C9CA"
-            android:text="Đăng ký" />
+            android:text="Đăng ký"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:lineHeight="18dp"
+            app:backgroundTint="#295FD0" />
 
         <TableRow
             android:layout_width="match_parent"
@@ -162,6 +175,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
+                android:textColor="@color/black"
                 android:text="Bạn đã có tài khoản?" />
 
             <TextView

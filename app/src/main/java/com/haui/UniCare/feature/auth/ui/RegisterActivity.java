@@ -53,9 +53,14 @@ public class RegisterActivity extends AppCompatActivity {
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             String confirmpassword = etConfirmPassword.getText().toString().trim();
-            if(check(username,password,confirmpassword)){
-                startActivity(new Intent(RegisterActivity.this,CreateFileActivity.class));
-                Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+            String role = layoutDoctor.isActivated() ? "DOCTOR" : "PATIENT";
+
+            if(check(username, password, confirmpassword)){
+                Intent intent = new Intent(RegisterActivity.this, CreateFileActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("password", password);
+                intent.putExtra("role", role);
+                startActivity(intent);
             }
         });
     }

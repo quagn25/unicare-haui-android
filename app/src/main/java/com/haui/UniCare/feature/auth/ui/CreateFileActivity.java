@@ -14,39 +14,51 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.haui.UniCare.MainActivity;
 import com.haui.UniCare.R;
+import com.haui.UniCare.core.network.ApiService;
+import com.haui.UniCare.core.network.RetrofitClient;
+import com.haui.UniCare.data.model.RegisterRequest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class CreateFileActivity extends AppCompatActivity {
-    TextInputLayout tilName,tilDate , tilEmail,tilGender;
-    TextInputEditText edtName,edtDate,edtEmail;
-    Button btnNext;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class CreateFileActivity extends AppCompatActivity {
+    TextInputLayout tilName, tilDate, tilEmail, tilGender;
+    TextInputEditText edtName, edtDate, edtEmail;
+    Button btnNext;
     RadioButton radioMale, radioFemale;
+
+    private String username, password, role;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_createfile);
+
         mapping();
         setupErrorClearer();
+
+        // Lấy dữ liệu từ Intent
+        username = getIntent().getStringExtra("username");
+        password = getIntent().getStringExtra("password");
+        role = getIntent().getStringExtra("role");
+
         edtDate.setOnClickListener(v -> {
             showDatePickerDialog();
         });
+
         btnNext.setOnClickListener(v -> {
             if (validateData()) {
-                // Thêm dữ liệu vào ArrayList và cập nhật RecyclerView
-                String name = edtName.getText().toString().trim();
-                String date = edtDate.getText().toString().trim();
-                String email = edtEmail.getText().toString().trim();
-                startActivity(new Intent(this, MainActivity.class));
-                Toast.makeText(this, "Nhập thông tin thành công!", Toast.LENGTH_SHORT).show();
+                performRegister();
             }
         });
-
     }
-    private void mapping(){
+
+    private void mapping() {
         tilName = findViewById(R.id.textInputLayout4);
         tilDate = findViewById(R.id.textInputLayout5);
         tilEmail = findViewById(R.id.textInputLayout6);
@@ -58,6 +70,39 @@ public class CreateFileActivity extends AppCompatActivity {
         radioFemale = findViewById(R.id.radioFemale);
         tilGender = findViewById(R.id.textInputLayout7);
     }
+
+    private void performRegister() {
+        String name = edtName.getText().toString().trim();
+        String dob = edtDate.getText().toString().trim();
+        String email = edtEmail.getText().toString().trim();
+        String gender = radioMale.isChecked() ? "MALE" : "FEMALE";
+
+        // Tạo object request
+        RegisterRequest request = new RegisterRequest(username, password, role, name, dob, gender, email);
+
+        // Gọi API - Đã đổi thành getInstance() cho đúng với RetrofitClient.java
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        apiService.register(request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(CreateFileActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CreateFileActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(CreateFileActivity.this, "Lỗi đăng ký: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(CreateFileActivity.this, "Lỗi kết nối server: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void showDatePickerDialog() {
         // Khởi tạo DatePicker chuẩn Material 3
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
@@ -75,6 +120,7 @@ public class CreateFileActivity extends AppCompatActivity {
 
         datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
     }
+
     private boolean validateData() {
         boolean isValid = true;
 
@@ -130,8 +176,9 @@ public class CreateFileActivity extends AppCompatActivity {
 
         return isValid;
     }
+
     private void setupErrorClearer() {
-        // Xử lý cho Username
+        // Xử lý cho Email
         edtEmail.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -148,7 +195,7 @@ public class CreateFileActivity extends AppCompatActivity {
             public void afterTextChanged(android.text.Editable s) {}
         });
 
-        // Xử lý cho Password
+        // Xử lý cho Name
         edtName.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
