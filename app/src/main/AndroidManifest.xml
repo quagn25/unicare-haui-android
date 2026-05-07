@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".feature.auth.ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,9 +24,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".feature.auth.ui.LoginActivity" />
+        <activity android:name=".MainActivity"/>
         <activity android:name=".feature.auth.ui.RegisterActivity" />
         <activity android:name=".feature.auth.ui.ForgotPasswordActivity" />
+        <activity android:name=".feature.auth.ui.CreateFileActivity" />
+
 
     </application>
 

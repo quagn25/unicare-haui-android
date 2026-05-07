@@ -10,111 +10,63 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.haui.UniCare.feature.auth.ui.ForgotPasswordActivity;
+import com.haui.UniCare.feature.auth.ui.HomeFragment;
+import com.haui.UniCare.feature.auth.ui.NotificationFragment;
+import com.haui.UniCare.feature.auth.ui.PersonFragment;
 import com.haui.UniCare.feature.auth.ui.RegisterActivity;
+import com.haui.UniCare.feature.auth.ui.ScheduleFragment;
 
 public class MainActivity extends AppCompatActivity {
-    TextView tvForgotPass, tvRegister;
-    TextInputLayout tilUsername, tilPassword;
-    TextInputEditText etUsername, etPassword;
-    Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        
-        // SỬA LỖI: Đổi activity_main thành login_activity để khớp với các ID bên dưới
-        setContentView(R.layout.login_activity);
-        
+
+        setContentView(R.layout.activity_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        mapping();
-        setupErrorClearer();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        tvRegister.setOnClickListener(v -> {
-            Intent register = new Intent(MainActivity.this, RegisterActivity.class);
-            startActivity(register);
-        });
-
-        tvForgotPass.setOnClickListener(v -> {
-            Intent forgotpass = new Intent(MainActivity.this, ForgotPasswordActivity.class);
-            startActivity(forgotpass);
-        });
-
-        btnLogin.setOnClickListener(v -> {
-            String username = etUsername.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
-            check(username, password);
-        });
-    }
-
-    private void mapping() {
-        tvRegister = findViewById(R.id.textView3);
-        tvForgotPass = findViewById(R.id.textView2);
-        tilUsername = findViewById(R.id.textInputLayout4);
-        tilPassword = findViewById(R.id.textInputLayout5);
-        etUsername = findViewById(R.id.textInputEditText);
-        etPassword = findViewById(R.id.textInputEditText1);
-        btnLogin = findViewById(R.id.button);
-    }
-
-    private void setupErrorClearer() {
-        // Xử lý cho Username
-        etUsername.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    tilUsername.setError(null);
-                    tilUsername.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-        // Xử lý cho Password
-        etPassword.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    tilPassword.setError(null);
-                    tilPassword.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-    }
-
-    private void check(String username, String password) {
-        if (username.isEmpty()) {
-            tilUsername.setErrorEnabled(true);
-            tilUsername.setError("Vui lòng nhập tên tài khoản");
-        } else {
-            tilUsername.setError(null);
+        // Hiển thị Fragment mặc định khi mới vào app
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
         }
 
-        if (password.isEmpty()) {
-            tilPassword.setErrorEnabled(true);
-            tilPassword.setError("Vui lòng nhập mật khẩu");
-        } else {
-            tilPassword.setError(null);
-        }
+        // Lắng nghe sự kiện click trên BottomBar
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                selectedFragment = new HomeFragment();
+            } else if (id == R.id.nav_schedule) {
+                selectedFragment = new ScheduleFragment();
+            } else if (id == R.id.nav_notifications) {
+                selectedFragment = new NotificationFragment();
+            }else if(id == R.id.nav_profile){
+                selectedFragment = new PersonFragment();
+            }
+
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .commit();
+            }
+            return true;
+        });
     }
 }
