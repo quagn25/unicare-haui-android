@@ -301,7 +301,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialsymbolsoutlined/male/outline_male_24.xml" />
+                                      <entry key="url" value="file:$PROJECT_DIR$/../Library/Android/sdk/icons/material/materialsymbolsoutlined/search/outline_search_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -311,7 +311,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="outline_male_24" />
+                            <entry key="outputName" value="outline_search_24" />
                           </map>
                         </option>
                       </PersistentState>
