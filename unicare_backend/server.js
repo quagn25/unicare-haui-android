@@ -1,4 +1,4 @@
-require('dotenv').config(); // Tải biến môi trường từ file .env
+require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -78,10 +78,19 @@ app.post("/register", (req, res) => {
     });
 });
 
-// API ĐĂNG NHẬP
+// API ĐĂNG NHẬP (Đã sửa để lấy Full Name)
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    db.query("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, result) => {
+
+    // Sử dụng LEFT JOIN để lấy full_name từ bảng patients
+    const query = `
+        SELECT u.*, p.full_name
+        FROM users u
+        LEFT JOIN patients p ON u.id = p.user_id
+        WHERE u.username = ? AND u.password = ?
+    `;
+
+    db.query(query, [username, password], (err, result) => {
         if (err) return res.status(500).json({ status: "error", message: err.message });
         if (result.length > 0) {
             res.json({ status: "success", user: result[0] });

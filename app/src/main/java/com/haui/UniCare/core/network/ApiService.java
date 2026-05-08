@@ -1,6 +1,6 @@
 package com.haui.UniCare.core.network;
 
-import com.haui.UniCare.data.model.User;
+import com.haui.UniCare.data.model.table.User;
 import com.haui.UniCare.data.model.LoginRequest;
 import com.haui.UniCare.data.model.LoginResponse;
 import com.haui.UniCare.data.model.RegisterRequest;
