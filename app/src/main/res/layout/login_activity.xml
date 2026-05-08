@@ -8,15 +8,18 @@
     android:background="@drawable/background"
     tools:context=".MainActivity">
 
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/style_bgr"
         android:orientation="vertical"
-        android:padding="25dp"
+        android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shapeableImageView">
 
@@ -25,18 +28,19 @@
             android:id="@+id/textInputLayout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="Tên tài khoản"
             app:boxStrokeColor="#7CC0C1"
-            app:hintTextColor="#7CC0C1"
-            android:hint="Tên tài khoản">
+            app:hintTextColor="#7CC0C1">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawablePadding="10dp"
                 android:drawableStart="@drawable/outline_person_24"
-                android:inputType="text"/>
+                android:drawablePadding="10dp"
+                android:inputType="text"
+                android:textColor="#000000" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,18 +48,20 @@
             android:id="@+id/textInputLayout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Mật khẩu"
             app:boxStrokeColor="#7CC0C1"
-            app:hintTextColor="#7CC0C1"
-            android:layout_marginTop="30dp"
-            android:hint="Mật khẩu">
+            app:endIconMode="password_toggle"
+            app:hintTextColor="#7CC0C1">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEditText1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawablePadding="10dp"
                 android:drawableStart="@drawable/outline_lock_open_24"
-                android:inputType="textPassword"/>
+                android:drawablePadding="10dp"
+                android:inputType="textPassword"
+                android:textColor="#000000" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,9 +70,10 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:gravity="right"
-            android:text="Quên mật khẩu?" />
+            android:text="Quên mật khẩu?"
+            android:textColor="@color/black" />
 
 
         <TextView
@@ -75,25 +82,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="right"
-            android:text="Bạn chưa có tài khoản?" />
+            android:text="Bạn chưa có tài khoản?"
+            android:textColor="@color/black" />
 
 
         <Button
             android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="153dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            app:backgroundTint="#81C9CA"
-            android:text="Đăng nhập" />
+            android:lineHeight="20dp"
+            android:text="Đăng nhập"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            app:backgroundTint="#295FD0" />
 
 
     </LinearLayout>
 
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/shapeableImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/logo_app"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"

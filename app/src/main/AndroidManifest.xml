@@ -24,9 +24,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".feature.auth.ui.LoginActivity" />
+        <activity android:name=".feature.auth.ui.LoginActivity"/>
         <activity android:name=".feature.auth.ui.RegisterActivity" />
         <activity android:name=".feature.auth.ui.ForgotPasswordActivity" />
+        <activity android:name=".feature.auth.ui.CreateFileActivity" />
+
 
     </application>
 

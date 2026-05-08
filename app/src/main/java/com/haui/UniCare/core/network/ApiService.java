@@ -3,6 +3,7 @@ package com.haui.UniCare.core.network;
 import com.haui.UniCare.data.model.User;
 import com.haui.UniCare.data.model.LoginRequest;
 import com.haui.UniCare.data.model.LoginResponse;
+import com.haui.UniCare.data.model.RegisterRequest;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface ApiService {
     // =====================
     @POST("login")
     Call<LoginResponse> login(@Body LoginRequest request);
+
+    @POST("register")
+    Call<Void> register(@Body RegisterRequest request);
 }

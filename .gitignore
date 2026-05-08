@@ -1,1 +1,13 @@
+# Android Studio / IntelliJ
+.idea/
+.gradle/
+build/
+*.iml
 local.properties
+
+# Backend secrets
+.env
+node_modules/
+
+# Database files
+*.sql
