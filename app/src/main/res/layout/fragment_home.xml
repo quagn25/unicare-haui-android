@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".feature.auth.ui.HomeFragment">
-
+    tools:context=".feature.patients.home.ui.HomeFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -16,24 +15,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:padding="10dp">
 
+            <!-- Hiển thị tên người dùng tùy biến -->
+            <TextView
+                android:id="@+id/tvGreeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xin chào,"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"/>
 
+            <TextView
+                android:id="@+id/tvUserNameHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Người dùng"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="400dp"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:padding="15dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/circleconner"
                 android:drawableStart="@drawable/outline_search_24"
-                android:hint="Tên bác sĩ,chuyên khoa, ...."
+                android:hint="Tên bác sĩ, chuyên khoa, ...."
                 android:drawablePadding="10dp" />
 
             <!-- Banner Slider -->
             <RelativeLayout
-                android:layout_width="400dp"
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp">
@@ -54,12 +73,13 @@
                     android:orientation="horizontal" />
             </RelativeLayout>
 
+            <!-- Các nút chức năng (Đặt lịch, Hồ sơ...) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:background="@drawable/circleconner"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:padding="10dp"
-                android:layout_width="400dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
@@ -87,7 +107,6 @@
                         android:text="Đặt khám bác sĩ" />
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/linearLayout2"
                     android:layout_width="wrap_content"
@@ -110,9 +129,8 @@
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đặt lịch tiêm chủng" />
+                        android:text="Đặt lịch tiêm" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/linearLayout3"
@@ -141,19 +159,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="10dp"
-                android:textStyle="bold"
-                android:text="Bác sĩ" />
-
-
-
-
-
-            <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -168,9 +173,8 @@
                 android:background="@drawable/circleconner"
                 android:layout_gravity="center"
                 android:padding="10dp"
-                android:layout_width="400dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

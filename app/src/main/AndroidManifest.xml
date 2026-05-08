@@ -15,6 +15,7 @@
         android:theme="@style/Theme.UniCare"
         android:usesCleartextTraffic="true">
 
+        <!-- MainActivity làm màn hình khởi động để xử lý logic check Login/DevMode -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -24,11 +25,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".feature.auth.ui.LoginActivity"/>
+        <activity
+            android:name=".feature.auth.ui.LoginActivity"
+            android:exported="true" />
+
         <activity android:name=".feature.auth.ui.RegisterActivity" />
         <activity android:name=".feature.auth.ui.ForgotPasswordActivity" />
         <activity android:name=".feature.auth.ui.CreateFileActivity" />
-
 
     </application>
 
