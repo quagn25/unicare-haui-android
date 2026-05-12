@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/primary_blue"
+        android:paddingTop="40dp"
+        android:paddingBottom="12dp"
+        android:paddingHorizontal="8dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp" android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/white"/>
+
+        <TextView
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Bộ lọc"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp" android:textStyle="bold"/>
+
+        <View android:layout_width="40dp" android:layout_height="40dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Địa điểm -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Địa điểm" android:textSize="15sp" android:textStyle="bold"
+                android:textColor="@color/text_primary" android:layout_marginBottom="8dp"/>
+
+            <RadioGroup android:id="@+id/rgLocation"
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+
+                <RadioButton android:id="@+id/rbNearest" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Gần nhất"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue"/>
+
+                <RadioButton android:id="@+id/rbAll" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Tất cả"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue" android:checked="true"/>
+
+                <RadioButton android:id="@+id/rbArea" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Khu vực"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue"/>
+            </RadioGroup>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/divider" android:layout_marginVertical="12dp"/>
+
+            <!-- Chuyên khoa -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Chuyên khoa"
+                    android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Tất cả ›" android:textSize="13sp" android:textColor="@color/primary_blue"/>
+            </LinearLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgSpecialty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:chipSpacingHorizontal="6dp"/>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/divider" android:layout_marginVertical="12dp"/>
+
+            <!-- Nơi khám -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Nơi khám" android:textSize="15sp" android:textStyle="bold"
+                android:textColor="@color/text_primary" android:layout_marginBottom="8dp"/>
+
+            <RadioGroup android:id="@+id/rgPlace"
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+
+                <RadioButton android:id="@+id/rbDoctor" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Bác sĩ"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue" android:checked="true"/>
+
+                <RadioButton android:id="@+id/rbHospital" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Bệnh viện"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue"/>
+
+                <RadioButton android:id="@+id/rbClinic" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Phòng khám"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue"/>
+
+                <RadioButton android:id="@+id/rbVaccine" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Trung tâm tiêm chủng"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue"/>
+
+                <RadioButton android:id="@+id/rbAllPlace" android:layout_width="match_parent"
+                    android:layout_height="48dp" android:text="Tất cả"
+                    android:textSize="15sp" android:textColor="@color/text_primary"
+                    android:buttonTint="@color/primary_blue"/>
+            </RadioGroup>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Buttons dưới -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="@color/white"
+        android:elevation="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClear"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+            android:text="↺  Xoá bộ lọc"
+            android:textColor="@color/text_secondary"
+            app:strokeColor="@color/divider" app:cornerRadius="24dp"
+            android:layout_marginEnd="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApply"
+            android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="2"
+            android:text="Áp dụng"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary_blue" app:cornerRadius="24dp"/>
+    </LinearLayout>
+
+</LinearLayout>

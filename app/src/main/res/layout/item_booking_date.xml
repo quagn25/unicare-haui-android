@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    item_booking_date.xml
+    Item ngày trong lịch đặt khám (GridLayoutManager 6 cột)
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardDate"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="6dp">
+
+        <!-- Nhãn ngày (T2, T3...) -->
+        <TextView
+            android:id="@+id/tvDayLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T2"
+            android:textSize="11sp"
+            android:textColor="@color/text_secondary"/>
+
+        <!-- Số ngày -->
+        <TextView
+            android:id="@+id/tvDayNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginTop="2dp"/>
+
+        <!-- Số slot còn -->
+        <TextView
+            android:id="@+id/tvSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9 slot"
+            android:textSize="9sp"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_slot_badge"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="1dp"
+            android:layout_marginTop="3dp"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

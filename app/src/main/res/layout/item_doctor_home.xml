@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackgroundBorderless">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgDoctorAvatar"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_doctor_placeholder"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/primary_blue"/>
+
+    <TextView
+        android:id="@+id/tvDoctorName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Bác sĩ Tuấn"
+        android:textSize="12sp"
+        android:textColor="@color/text_primary"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="2"/>
+
+</LinearLayout>
