@@ -18,26 +18,54 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
-                android:id="@+id/tvGreeting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xin chào,"
-                android:textSize="18sp"
-                android:textColor="@android:color/black"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"/>
 
-            <TextView
-                android:id="@+id/tvUserNameHome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Người dùng"
-                android:textColor="@android:color/black"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:background="@drawable/circleconner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="15dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/macdinh"
+                    app:shapeAppearanceOverlay="@style/circleImage"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xin chào,"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvUserNameHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textSize="20dp"
+                        android:text="TextView" />
+                </LinearLayout>
+
+
+            </TableRow>
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSearchHome"
@@ -45,6 +73,7 @@
                 android:layout_height="50dp"
                 android:padding="15dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/circleconner"
                 android:drawableStart="@drawable/outline_search_24"
                 android:hint="Tên bác sĩ, chuyên khoa, ...."

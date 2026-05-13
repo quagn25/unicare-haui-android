@@ -4,21 +4,12 @@ public class ResetPasswordRequest {
     private String username;
     private String email;
     private String otp;
-    private String newPassword;
+    private String password;
 
-    public ResetPasswordRequest(String username, String email, String otp, String newPassword) {
-        this.username = username;
+    public ResetPasswordRequest(String username, String email, String otp, String password) {
         this.email = email;
         this.otp = otp;
-        this.newPassword = newPassword;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -37,11 +28,11 @@ public class ResetPasswordRequest {
         this.otp = otp;
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

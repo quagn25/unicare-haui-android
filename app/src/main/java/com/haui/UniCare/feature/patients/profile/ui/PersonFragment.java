@@ -1,4 +1,4 @@
-package com.haui.UniCare.feature.patients.home.ui;
+package com.haui.UniCare.feature.patients.profile.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.haui.UniCare.R;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
+import com.haui.UniCare.feature.patients.profile.viewmodel.ChangePass;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +24,7 @@ import com.haui.UniCare.feature.auth.ui.LoginActivity;
  */
 public class PersonFragment extends Fragment {
     Button btnSignOut;
+    TextView tvShareApp,tvChangePass,tvUserNameHome;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,7 +79,10 @@ public class PersonFragment extends Fragment {
 
         // 1. Ánh xạ View (Logic xử lý ở đây)
         btnSignOut = view.findViewById(R.id.button2);
-
+        tvShareApp = view.findViewById(R.id.textView9);
+        tvChangePass = view.findViewById(R.id.textView10);
+        tvUserNameHome = view.findViewById(R.id.textView);
+        displayUserInfo();
         // 2. Bắt sự kiện Click
         btnSignOut.setOnClickListener(v -> {
             // 1. Xóa trạng thái đăng nhập trong SharedPreferences
@@ -93,5 +99,26 @@ public class PersonFragment extends Fragment {
             // 3. Đóng Activity hiện tại
             requireActivity().finish();
         });
+        tvShareApp.setOnClickListener(v -> {
+            String packageName = requireContext().getPackageName();
+            String deepLink = "unicare://app";
+            String shareMessage = "Truy cập UniCare ngay tại: " + deepLink  + packageName;
+            
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(intent, "Chia sẻ qua:"));
+        });
+        tvChangePass.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePass.class);
+            startActivity(intent);
+        });
+    }
+    private void displayUserInfo() {
+        if (getContext() != null) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+            String fullName = sharedPref.getString("fullName", "Người dùng");
+            tvUserNameHome.setText(fullName);
+        }
     }
 }

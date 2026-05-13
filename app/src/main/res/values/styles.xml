@@ -16,4 +16,8 @@
     <style name="RoundedShapeAppearance" parent="roundedImage" />
     <style name="CircleImageView" parent="CircleShapeAppearance" />
     <style name="CircleImage" parent="CircleShapeAppearance" />
+    <style name="circleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
