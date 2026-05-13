@@ -25,6 +25,16 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         tvLogin.setOnClickListener(v -> {
             finish();
         });
+
+        btnSendOtp.setOnClickListener(v ->{
+            String email = etUsername.getText().toString().trim();
+            if (email.isEmpty()){
+                tilOtp.setErrorEnabled(true);
+                tilOtp.setError("Vui lòng nhập email");
+            }else{
+                tilOtp.setErrorEnabled(false);
+            }
+        });
         btnChangePassword.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
             String email = etEmail.getText().toString().trim();
