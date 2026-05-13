@@ -11,4 +11,11 @@
     </style>
 
     <style name="Theme.UniCare" parent="Base.Theme.UniCare" />
+    <style name="App.CustomIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#B9D3E2</item> <!-- Màu nền của viên thuốc -->
+        <item name="android:height">40dp</item>
+        <item name="android:width">60dp</item>
+        <!-- Nếu muốn tắt hẳn indicator, hãy đặt color là @android:color/transparent -->
+    </style>
+
 </resources>

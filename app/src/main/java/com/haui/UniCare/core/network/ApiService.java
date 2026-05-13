@@ -5,6 +5,9 @@ import com.haui.UniCare.data.model.table.Doctor;
 import com.haui.UniCare.data.model.LoginRequest;
 import com.haui.UniCare.data.model.LoginResponse;
 import com.haui.UniCare.data.model.RegisterRequest;
+import com.haui.UniCare.data.model.SendOtpRequest;
+import com.haui.UniCare.data.model.ResetPasswordRequest;
+import com.haui.UniCare.data.model.GenericResponse;
 
 import java.util.List;
 
@@ -26,4 +29,10 @@ public interface ApiService {
 
     @POST("register")
     Call<Void> register(@Body RegisterRequest request);
+
+    @POST("forgot-password/send-otp")
+    Call<GenericResponse> sendOtp(@Body SendOtpRequest request);
+
+    @POST("forgot-password/reset")
+    Call<GenericResponse> resetPassword(@Body ResetPasswordRequest request);
 }
