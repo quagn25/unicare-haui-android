@@ -17,7 +17,7 @@
 
         <!-- MainActivity làm màn hình khởi động để xử lý logic check Login/DevMode -->
         <activity
-            android:name=".MainActivity"
+            android:name=".feature.auth.ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".feature.auth.ui.LoginActivity"
+            android:name=".MainActivity"
             android:exported="true" />
 
         <activity android:name=".feature.auth.ui.RegisterActivity" />
