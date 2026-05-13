@@ -1,4 +1,4 @@
-package com.haui.UniCare.feature.patients.home.ui;
+package com.haui.UniCare.feature.patients.home.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

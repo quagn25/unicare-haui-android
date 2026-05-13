@@ -18,7 +18,6 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <!-- Hiển thị tên người dùng tùy biến -->
             <TextView
                 android:id="@+id/tvGreeting"
                 android:layout_width="wrap_content"
@@ -33,14 +32,15 @@
                 android:id="@+id/tvUserNameHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Người dùng"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:text="Người dùng"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearchHome"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:padding="15dp"
@@ -48,7 +48,9 @@
                 android:background="@drawable/circleconner"
                 android:drawableStart="@drawable/outline_search_24"
                 android:hint="Tên bác sĩ, chuyên khoa, ...."
-                android:drawablePadding="10dp" />
+                android:drawablePadding="10dp"
+                android:focusable="false"
+                android:clickable="true" />
 
             <!-- Banner Slider -->
             <RelativeLayout
@@ -60,8 +62,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPagerBanner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
-                </androidx.viewpager2.widget.ViewPager2>
+                    android:layout_height="match_parent" />
 
                 <LinearLayout
                     android:id="@+id/layoutIndicator"
@@ -73,7 +74,7 @@
                     android:orientation="horizontal" />
             </RelativeLayout>
 
-            <!-- Các nút chức năng (Đặt lịch, Hồ sơ...) -->
+            <!-- Các nút chức năng -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:background="@drawable/circleconner"
                 android:layout_gravity="center"
@@ -82,89 +83,101 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!-- Đặt khám bác sĩ -->
                 <LinearLayout
                     android:id="@+id/linearLayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/shapeableImageView"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/doctorbook"
                         app:shapeAppearanceOverlay="@style/roundedImage" />
 
                     <TextView
-                        android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đặt khám bác sĩ" />
+                        android:text="Đặt khám"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
+                <!-- Đặt lịch tiêm -->
                 <LinearLayout
                     android:id="@+id/linearLayout2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
                     app:layout_constraintStart_toEndOf="@+id/linearLayout"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/shapeableImageView2"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/vaccine"
                         app:shapeAppearanceOverlay="@style/roundedImage" />
 
                     <TextView
-                        android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đặt lịch tiêm" />
+                        android:text="Lịch tiêm"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
+                <!-- Hồ sơ sức khỏe -->
                 <LinearLayout
                     android:id="@+id/linearLayout3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/linearLayout2"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/shapeableImageView3"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/filehealth"
                         app:shapeAppearanceOverlay="@style/roundedImage" />
 
                     <TextView
-                        android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hồ sơ sức khoẻ" />
+                        android:text="Hồ sơ"
+                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="10dp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 android:text="Khám theo chuyên khoa" />
 
             <androidx.recyclerview.widget.RecyclerView

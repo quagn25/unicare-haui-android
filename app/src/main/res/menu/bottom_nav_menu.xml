@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@android:drawable/ic_menu_directions"
+        android:icon="@drawable/outline_home_24"
         android:title="Trang chủ" />
     <item
         android:id="@+id/nav_schedule"
-        android:icon="@android:drawable/ic_menu_today"
+        android:icon="@drawable/outline_date_range_24"
         android:title="Lịch khám" />
     <item
         android:id="@+id/nav_notifications"
-        android:icon="@android:drawable/ic_popup_reminder"
+        android:icon="@drawable/outline_notifications_24"
         android:title="Thông báo" />
     <item
         android:id="@+id/nav_profile"
-        android:icon="@android:drawable/ic_menu_mylocation"
+        android:icon="@drawable/outline_person_24"
         android:title="Tài khoản" />
 </menu>
