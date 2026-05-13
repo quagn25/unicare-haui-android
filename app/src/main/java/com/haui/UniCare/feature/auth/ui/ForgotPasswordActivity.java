@@ -11,6 +11,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.haui.UniCare.R;
 import com.haui.UniCare.core.base.BaseActivity;
+import com.haui.UniCare.core.common_ui.LoadingDialog;
+import com.haui.UniCare.core.network.ApiService;
+import com.haui.UniCare.core.network.RetrofitClient;
+import com.haui.UniCare.data.model.GenericResponse;
+import com.haui.UniCare.data.model.ResetPasswordRequest;
+import com.haui.UniCare.data.model.SendOtpRequest;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgotPasswordActivity extends BaseActivity {
     TextInputLayout tilUsername,tilEmail,tilOtp,tilPassword,tilConfirmPassword;

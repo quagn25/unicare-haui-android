@@ -19,7 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.haui.UniCare.feature.patients.home.ui.HomeFragment;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 import com.haui.UniCare.feature.patients.home.ui.NotificationFragment;
-import com.haui.UniCare.feature.patients.home.ui.PersonFragment;
+import com.haui.UniCare.feature.patients.profile.ui.PersonFragment;
 import com.haui.UniCare.feature.patients.home.ui.AppointmentFragment;
 
 public class MainActivity extends AppCompatActivity {
