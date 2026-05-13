@@ -39,6 +39,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Kiểm tra phiên đăng nhập đã lưu
+        SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean("isLoggedIn", false)) {
+            goToMainActivity();
+            return;
+        }
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.login_activity);
 
@@ -67,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             
             if (validateInput(username, password)) {
-                if (username.equals("admindev") && password.equals("123456")) {
+                if (username.equals("a") && password.equals("1")) {
                     handleDevLogin();
                 } else {
                     performLogin(username, password);

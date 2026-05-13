@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // 1. KIỂM TRA PHIÊN ĐĂNG NHẬP (Lưu trong UniCarePrefs)
         SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
         boolean isLoggedIn = sharedPref.getBoolean("isLoggedIn", false);
@@ -47,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 3. THIẾT LẬP GIAO DIỆN CHÍNH
         EdgeToEdge.enable(this);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            getWindow().setNavigationBarDividerColor(android.graphics.Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_main);
 
         // Xử lý nút Back (Hỏi trước khi thoát/đăng xuất)
@@ -59,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            // Bỏ systemBars.bottom để BottomNav tràn xuống dưới
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
