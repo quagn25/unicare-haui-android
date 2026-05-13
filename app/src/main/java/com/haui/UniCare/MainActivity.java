@@ -20,7 +20,7 @@ import com.haui.UniCare.feature.patients.home.ui.HomeFragment;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 import com.haui.UniCare.feature.patients.home.ui.NotificationFragment;
 import com.haui.UniCare.feature.patients.home.ui.PersonFragment;
-import com.haui.UniCare.feature.patients.home.ui.ScheduleFragment;
+import com.haui.UniCare.feature.patients.home.ui.AppointmentFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,25 +33,19 @@ public class MainActivity extends AppCompatActivity {
         String username = sharedPref.getString("username", "");
 
         if (!isLoggedIn) {
-            // Nếu chưa đăng nhập, chuyển hướng ngay lập tức về Login
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        // 2. NHẬN DIỆN TÀI KHOẢN ADMIN ĐỂ DEV GIAO DIỆN
-        if ("admindev".equals(username)) {
-            Toast.makeText(this, "Chế độ Quản trị viên: Đang chỉnh sửa giao diện", Toast.LENGTH_LONG).show();
-        }
-
-        // 3. THIẾT LẬP GIAO DIỆN CHÍNH
+        // 2. THIẾT LẬP GIAO DIỆN CHÍNH
         EdgeToEdge.enable(this);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             getWindow().setNavigationBarDividerColor(android.graphics.Color.TRANSPARENT);
         }
         setContentView(R.layout.activity_main);
 
-        // Xử lý nút Back (Hỏi trước khi thoát/đăng xuất)
+        // Xử lý nút Back
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -84,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_schedule) {
-                selectedFragment = new ScheduleFragment();
+                selectedFragment = new AppointmentFragment();
             } else if (id == R.id.nav_notifications) {
                 selectedFragment = new NotificationFragment();
             } else if (id == R.id.nav_profile) {
@@ -105,11 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Bạn muốn đóng ứng dụng hay đăng xuất khỏi hệ thống?")
                 .setPositiveButton("Thoát App", (dialog, which) -> finish())
                 .setNeutralButton("Đăng xuất", (dialog, which) -> {
-                    // Xóa phiên đăng nhập
                     SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
                     sharedPref.edit().clear().apply();
-                    
-                    // Quay về màn hình Login
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

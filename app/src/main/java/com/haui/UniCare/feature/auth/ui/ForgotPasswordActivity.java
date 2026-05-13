@@ -7,23 +7,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.haui.UniCare.R;
-import com.haui.UniCare.core.common_ui.LoadingDialog;
-import com.haui.UniCare.core.network.ApiService;
-import com.haui.UniCare.core.network.RetrofitClient;
-import com.haui.UniCare.data.model.GenericResponse;
-import com.haui.UniCare.data.model.ResetPasswordRequest;
-import com.haui.UniCare.data.model.SendOtpRequest;
+import com.haui.UniCare.core.base.BaseActivity;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class ForgotPasswordActivity extends AppCompatActivity {
+public class ForgotPasswordActivity extends BaseActivity {
     TextInputLayout tilUsername,tilEmail,tilOtp,tilPassword,tilConfirmPassword;
     TextInputEditText etUsername,etEmail,etOtp,etPassword,etConfirmPassword;
     TextView tvLogin;
@@ -258,7 +247,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             tilUsername.setError(null);
         }
 
-        // Kiểm tra Email (Sử dụng Patterns có sẵn của Android)
         if (email.isEmpty()) {
             tilEmail.setError("Vui lòng nhập email");
             rs = false;
@@ -268,7 +256,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         } else {
             tilEmail.setErrorEnabled(false);
         }
-
 
         if (otp.isEmpty()) {
             rs = false;
@@ -286,7 +273,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             tilOtp.setError(null);
             tilOtp.setErrorEnabled(false);
         }
-
 
         if (password.isEmpty()) {
             rs = false;
@@ -323,8 +309,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         } else {
             tilConfirmPassword.setError(null);
         }
-
-
         return rs;
     }
 }
