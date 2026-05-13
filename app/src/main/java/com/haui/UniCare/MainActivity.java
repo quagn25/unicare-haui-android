@@ -16,11 +16,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.haui.UniCare.feature.patients.home.ui.AppointmentFragment;
 import com.haui.UniCare.feature.patients.home.ui.HomeFragment;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 import com.haui.UniCare.feature.patients.home.ui.NotificationFragment;
 import com.haui.UniCare.feature.patients.home.ui.PersonFragment;
-import com.haui.UniCare.feature.patients.home.ui.ScheduleFragment;
+import com.haui.UniCare.feature.patients.home.ui.AppointmentFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_schedule) {
-                selectedFragment = new ScheduleFragment();
+                selectedFragment = new AppointmentFragment();
             } else if (id == R.id.nav_notifications) {
                 selectedFragment = new NotificationFragment();
             } else if (id == R.id.nav_profile) {
