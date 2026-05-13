@@ -8,12 +8,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.haui.UniCare.R;
-import com.haui.UniCare.core.common_ui.LoadingDialog;
+import com.haui.UniCare.core.base.BaseActivity;
 import com.haui.UniCare.core.network.ApiService;
 import com.haui.UniCare.core.network.RetrofitClient;
 import com.haui.UniCare.data.model.table.Doctor;
@@ -26,13 +25,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DoctorListActivity extends AppCompatActivity {
+public class DoctorListActivity extends BaseActivity {
 
     private RecyclerView rcvDoctors;
     private DoctorAdapter doctorAdapter;
     private EditText etSearchDoctor;
     private ImageButton btnBack;
-    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +51,6 @@ public class DoctorListActivity extends AppCompatActivity {
         rcvDoctors = findViewById(R.id.rcv_doctors);
         etSearchDoctor = findViewById(R.id.etSearchDoctor);
         btnBack = findViewById(R.id.btnBack);
-        loadingDialog = new LoadingDialog(this);
     }
 
     private void setupRecyclerView() {
@@ -66,13 +63,13 @@ public class DoctorListActivity extends AppCompatActivity {
     }
 
     private void fetchDoctorsFromServer() {
-        loadingDialog.showLoading();
+        showLoadingDialog();
 
         ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
         apiService.getDoctors().enqueue(new Callback<List<Doctor>>() {
             @Override
             public void onResponse(Call<List<Doctor>> call, Response<List<Doctor>> response) {
-                loadingDialog.hideLoading();
+                hideLoadingDialog();
                 if (response.isSuccessful() && response.body() != null) {
                     List<Doctor> doctors = response.body();
                     doctorAdapter.updateList(doctors);
@@ -83,7 +80,7 @@ public class DoctorListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Doctor>> call, Throwable t) {
-                loadingDialog.hideLoading();
+                hideLoadingDialog();
                 Log.e("DoctorList", "Error: " + t.getMessage());
                 Toast.makeText(DoctorListActivity.this, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
             }

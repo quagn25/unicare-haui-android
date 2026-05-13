@@ -5,16 +5,16 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.haui.UniCare.R;
+import com.haui.UniCare.core.base.BaseActivity;
 import com.haui.UniCare.data.model.table.Doctor;
 import com.haui.UniCare.feature.patients.appointment.viewmodel.BookAppointmentActivity;
 
 import java.text.DecimalFormat;
 
-public class DoctorDetailActivity extends AppCompatActivity {
+public class DoctorDetailActivity extends BaseActivity {
 
     private ImageView imgDoctorDetail;
     private TextView tvDegreeDetail, tvNameDetail, tvSpecialtyDetail, tvExpDetail, tvFeeDetail, tvBioDetail, tvAddressDetail;

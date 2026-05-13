@@ -52,7 +52,8 @@ public class LoginActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            // Loại bỏ padding top để nội dung tràn lên status bar
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
             return insets;
         });
 
@@ -138,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     
-                    // KIỂM TRA DỮ LIỆU Ở ĐÂY
                     if (loginResponse.user != null) {
                         Log.d("LOGIN_DEBUG", "ID: " + loginResponse.user.id);
                         Log.d("LOGIN_DEBUG", "Username: " + loginResponse.user.username);

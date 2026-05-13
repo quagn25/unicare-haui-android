@@ -2,19 +2,15 @@ package com.haui.UniCare.feature.auth.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.haui.UniCare.R;
-import androidx.appcompat.app.AppCompatActivity;
+import com.haui.UniCare.core.base.BaseActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
     TextView tvLogin;
     TextInputLayout tilUsername,tilPassword,tilConfirmPassword;
     TextInputEditText etUsername,etPassword,etConfirmPassword;
@@ -28,8 +24,6 @@ public class RegisterActivity extends AppCompatActivity {
         tvLogin.setOnClickListener(v -> {
             finish();
         });
-
-
 
         btnRegister.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
@@ -56,29 +50,23 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.button3);
     }
     private void setupErrorClearer() {
-        // Xử lý cho Username
         etUsername.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Khi người dùng gõ bất kỳ ký tự nào, xóa lỗi ngay lập tức
                 if (s.length() > 0) {
                     tilUsername.setError(null);
-                    tilUsername.setErrorEnabled(false); // Tắt hoàn toàn dòng thông báo lỗi
+                    tilUsername.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(android.text.Editable s) {}
         });
 
-        // Xử lý cho Password
         etPassword.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -86,7 +74,6 @@ public class RegisterActivity extends AppCompatActivity {
                     tilPassword.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(android.text.Editable s) {}
         });
@@ -94,7 +81,6 @@ public class RegisterActivity extends AppCompatActivity {
         etConfirmPassword.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -102,7 +88,6 @@ public class RegisterActivity extends AppCompatActivity {
                     tilConfirmPassword.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(android.text.Editable s) {}
         });
@@ -168,8 +153,6 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             tilConfirmPassword.setError(null);
         }
-
-
         return rs;
     }
 }
