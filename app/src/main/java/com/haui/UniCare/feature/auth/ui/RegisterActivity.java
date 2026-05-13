@@ -16,8 +16,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class RegisterActivity extends AppCompatActivity {
     TextView tvLogin;
-    FrameLayout layoutDoctor,layoutPatient;
-    ImageView imgDoctor,imgPatient,tickDoctor,tickPatient;
     TextInputLayout tilUsername,tilPassword,tilConfirmPassword;
     TextInputEditText etUsername,etPassword,etConfirmPassword;
     Button btnRegister;
@@ -31,47 +29,23 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         });
 
-        layoutDoctor.setOnClickListener(v -> {
-            // Bật Doctor
-            layoutDoctor.setActivated(true);
-            tickDoctor.setVisibility(View.VISIBLE);
-            // Tắt Patient
-            layoutPatient.setActivated(false);
-            tickPatient.setVisibility(View.GONE);
-        });
 
-        layoutPatient.setOnClickListener(v -> {
-            // Bật Patient
-            layoutPatient.setActivated(true);
-            tickPatient.setVisibility(View.VISIBLE);
-            // Tắt Doctor
-            layoutDoctor.setActivated(false);
-            tickDoctor.setVisibility(View.GONE);
-        });
 
         btnRegister.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             String confirmpassword = etConfirmPassword.getText().toString().trim();
-            String role = layoutDoctor.isActivated() ? "DOCTOR" : "PATIENT";
 
             if(check(username, password, confirmpassword)){
                 Intent intent = new Intent(RegisterActivity.this, CreateFileActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("password", password);
-                intent.putExtra("role", role);
                 startActivity(intent);
             }
         });
     }
     private void mapping(){
         tvLogin = findViewById(R.id.textView7);
-        layoutDoctor = findViewById(R.id.layoutDoctor);
-        layoutPatient = findViewById(R.id.layoutPatient);
-        imgDoctor = findViewById(R.id.imgDoctor);
-        imgPatient = findViewById(R.id.imgPatient);
-        tickDoctor = findViewById(R.id.tickDoctor);
-        tickPatient = findViewById(R.id.tickPatient);
 
         tilUsername = findViewById(R.id.textInputLayout4);
         tilPassword = findViewById(R.id.textInputLayout5);
@@ -195,10 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
             tilConfirmPassword.setError(null);
         }
 
-        if(!layoutDoctor.isActivated() && !layoutPatient.isActivated()){
-            rs = false;
-            Toast.makeText(this, "Vui lòng chọn kiểu tài khoản", Toast.LENGTH_SHORT).show();
-        }
+
         return rs;
     }
 }

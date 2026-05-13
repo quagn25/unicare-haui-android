@@ -23,70 +23,13 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lựa chọn kiểu tài khoản"
+            android:text="Dăng ký tài khoản"
             android:textSize="16dp"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="10dp">
-
-            <!-- Lựa chọn 1: Doctor -->
-            <FrameLayout
-                android:id="@+id/layoutDoctor"
-                android:layout_width="140dp"
-                android:layout_height="150dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/custom_image_button_bgr"
-                android:padding="8dp">
-
-                <ImageView
-                    android:id="@+id/imgDoctor"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/doctor" />
-
-                <ImageView
-                    android:id="@+id/tickDoctor"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="top|end"
-                    android:src="@drawable/outline_check_circle_24"
-                    android:visibility="gone" /> <!-- Mặc định ẩn -->
-            </FrameLayout>
-
-            <!-- Lựa chọn 2: Patient -->
-            <FrameLayout
-                android:id="@+id/layoutPatient"
-                android:layout_width="140dp"
-                android:layout_height="150dp"
-                android:background="@drawable/custom_image_button_bgr"
-                android:padding="8dp">
-
-                <ImageView
-                    android:id="@+id/imgPatient"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/patient" />
-
-                <ImageView
-                    android:id="@+id/tickPatient"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="top|end"
-                    android:src="@drawable/outline_check_circle_24"
-                    android:visibility="gone" /> <!-- Mặc định ẩn -->
-            </FrameLayout>
-        </LinearLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
