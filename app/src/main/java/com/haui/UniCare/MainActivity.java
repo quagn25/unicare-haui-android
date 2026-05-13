@@ -20,7 +20,7 @@ import com.haui.UniCare.feature.patients.home.ui.HomeFragment;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 import com.haui.UniCare.feature.patients.home.ui.NotificationFragment;
 import com.haui.UniCare.feature.patients.home.ui.PersonFragment;
-import com.haui.UniCare.feature.patients.home.ui.ScheduleFragment;
+import com.haui.UniCare.feature.patients.home.ui.AppointmentFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,28 +28,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. KIỂM TRA PHIÊN ĐĂNG NHẬP (Lưu trong UniCarePrefs)
+        // 1. KIỂM TRA PHIÊN ĐĂNG NHẬP
         SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
         boolean isLoggedIn = sharedPref.getBoolean("isLoggedIn", false);
         String username = sharedPref.getString("username", "");
 
         if (!isLoggedIn) {
-            // Nếu chưa đăng nhập, chuyển hướng ngay lập tức về Login
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        // 2. NHẬN DIỆN TÀI KHOẢN ADMIN ĐỂ DEV GIAO DIỆN
-        if ("admindev".equals(username)) {
-            Toast.makeText(this, "Chế độ Quản trị viên: Đang chỉnh sửa giao diện", Toast.LENGTH_LONG).show();
-        }
-
-        // 3. THIẾT LẬP GIAO DIỆN CHÍNH
+        // 2. THIẾT LẬP GIAO DIỆN CHÍNH
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Xử lý nút Back (Hỏi trước khi thoát/đăng xuất)
+        // Xử lý nút Back
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -59,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            // Loại bỏ padding top để nội dung tràn lên status bar
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
             return insets;
         });
 
@@ -81,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_schedule) {
-                selectedFragment = new ScheduleFragment();
+                selectedFragment = new AppointmentFragment();
             } else if (id == R.id.nav_notifications) {
                 selectedFragment = new NotificationFragment();
             } else if (id == R.id.nav_profile) {
@@ -102,11 +97,8 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Bạn muốn đóng ứng dụng hay đăng xuất khỏi hệ thống?")
                 .setPositiveButton("Thoát App", (dialog, which) -> finish())
                 .setNeutralButton("Đăng xuất", (dialog, which) -> {
-                    // Xóa phiên đăng nhập
                     SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
                     sharedPref.edit().clear().apply();
-                    
-                    // Quay về màn hình Login
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

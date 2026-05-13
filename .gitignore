@@ -5,12 +5,12 @@ build/
 *.iml
 local.properties
 
-# Backend
-unicare_backend/
 
 # Backend secrets
 .env
 node_modules/
+package.json
+package-lock.json
 
 # Database files
 *.sql
