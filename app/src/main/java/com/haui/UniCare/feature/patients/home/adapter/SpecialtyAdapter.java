@@ -1,4 +1,4 @@
-package com.haui.UniCare.feature.patients.home.ui;
+package com.haui.UniCare.feature.patients.home.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.haui.UniCare.R;
+import com.haui.UniCare.feature.patients.home.ui.specialty;
 
 import java.util.ArrayList;
 

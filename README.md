@@ -236,7 +236,7 @@ else if (DOCTOR)
 
 ###
 ````
-com.example.unicare
+com.haui.unicare
 │
 ├── core
 │   ├── base

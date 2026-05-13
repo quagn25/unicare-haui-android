@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Style dùng để bo tròn Image -->
-    <style name="roundedImage">
+    <!-- Style bo tròn ảnh nhẹ (20%) - Layout đang dùng tên này -->
+    <style name="roundedImage" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">20%</item> <!-- 50% sẽ tạo ra hình tròn hoàn hảo nếu ảnh là hình vuông -->
+        <item name="cornerSize">20%</item>
     </style>
+
+    <!-- Style tạo hình tròn hoàn hảo (50%) cho ShapeableImageView -->
+    <style name="CircleShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Các Alias để tương thích với nhiều tên gọi khác nhau trong code -->
+    <style name="RoundedShapeAppearance" parent="roundedImage" />
+    <style name="CircleImageView" parent="CircleShapeAppearance" />
+    <style name="CircleImage" parent="CircleShapeAppearance" />
 </resources>

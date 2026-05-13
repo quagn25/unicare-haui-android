@@ -32,6 +32,10 @@
         <activity android:name=".feature.auth.ui.RegisterActivity" />
         <activity android:name=".feature.auth.ui.ForgotPasswordActivity" />
         <activity android:name=".feature.auth.ui.CreateFileActivity" />
+        <activity android:name=".feature.patients.doctor.ui.DoctorListActivity" />
+        <activity android:name=".feature.patients.doctor.ui.DoctorDetailActivity" />
+        <activity android:name=".feature.patients.appointment.viewmodel.BookAppointmentActivity" />
+        <activity android:name=".feature.patients.appointment.ui.ConfirmAppointmentActivity" />
 
     </application>
 

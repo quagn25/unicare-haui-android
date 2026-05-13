@@ -1,6 +1,7 @@
 package com.haui.UniCare.feature.patients.home.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.haui.UniCare.R;
+import com.haui.UniCare.feature.patients.doctor.ui.DoctorListActivity;
+import com.haui.UniCare.feature.patients.home.adapter.BannerAdapter;
+import com.haui.UniCare.feature.patients.home.adapter.SpecialtyAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,8 @@ public class HomeFragment extends Fragment {
     private ArrayList<specialty> list;
     
     private TextView tvUserNameHome;
+    private LinearLayout btnBookDoctor;
+    private EditText etSearchHome;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -55,8 +62,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Ánh xạ TextView hiển thị tên
+        // Ánh xạ View
         tvUserNameHome = view.findViewById(R.id.tvUserNameHome);
+        btnBookDoctor = view.findViewById(R.id.linearLayout); 
+        etSearchHome = view.findViewById(R.id.etSearchHome);
         
         // Lấy tên người dùng từ SharedPreferences và hiển thị
         displayUserInfo();
@@ -64,7 +73,15 @@ public class HomeFragment extends Fragment {
         viewPager2 = view.findViewById(R.id.viewPagerBanner);
         layoutIndicator = view.findViewById(R.id.layoutIndicator);
 
-        // Dữ liệu mẫu (sử dụng ảnh có sẵn trong project)
+        // Xử lý sự kiện khi bấm vào ô tìm kiếm
+        if (etSearchHome != null) {
+            etSearchHome.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), DoctorListActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // Dữ liệu mẫu cho Banner
         bannerList = new ArrayList<>();
         bannerList.add(R.drawable.banner1);
         bannerList.add(R.drawable.banner2);
@@ -82,7 +99,6 @@ public class HomeFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 setCurrentIndicator(position);
-                // Reset lại timer khi người dùng vuốt tay
                 sliderHandler.removeCallbacks(sliderRunnable);
                 sliderHandler.postDelayed(sliderRunnable, 2000);
             }
@@ -99,8 +115,15 @@ public class HomeFragment extends Fragment {
         list.add(new specialty("Da liễu",R.drawable.dalieu));
         list.add(new specialty("Nhãn khoa",R.drawable.nhankhoa));
         list.add(new specialty("Xét nghiệm",R.drawable.xetnghiem));
+        
         recyclerView.setAdapter(specialtyadapter); 
         recyclerView.setNestedScrollingEnabled(false);
+
+        // Xử lý sự kiện click chuyển sang Danh sách bác sĩ
+        btnBookDoctor.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DoctorListActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void displayUserInfo() {
@@ -166,5 +189,4 @@ public class HomeFragment extends Fragment {
         super.onResume();
         sliderHandler.postDelayed(sliderRunnable, 2500);
     }
-
 }
