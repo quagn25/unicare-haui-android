@@ -203,12 +203,6 @@ public class DoctorDetailActivity extends AppCompatActivity {
     private void setupButtons() {
         ((ImageButton) findViewById(R.id.btnBack)).setOnClickListener(v -> finish());
 
-        ((MaterialButton) findViewById(R.id.btnChat)).setOnClickListener(v ->
-                Toast.makeText(this, "Chat với bác sĩ " + doctor.getName(), Toast.LENGTH_SHORT).show());
-
-        ((MaterialButton) findViewById(R.id.btnVideoCall)).setOnClickListener(v ->
-                Toast.makeText(this, "Gọi video không khả dụng", Toast.LENGTH_SHORT).show());
-
         ((MaterialButton) findViewById(R.id.btnBooking)).setOnClickListener(v -> {
             BookingDateAdapter.DateItem date = dateAdapter.getSelectedDate();
             if (date == null || date.getDayNum() == 0) {

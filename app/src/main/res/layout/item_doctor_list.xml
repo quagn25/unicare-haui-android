@@ -16,12 +16,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Hàng 1: Avatar + Thông tin -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- Avatar -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imgDoctorAvatar"
                 android:layout_width="72dp"
@@ -32,6 +32,7 @@
                 app:strokeWidth="2dp"
                 app:strokeColor="@color/primary_blue_light"/>
 
+            <!-- Thông tin -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -39,7 +40,6 @@
                 android:orientation="vertical"
                 android:layout_marginStart="12dp">
 
-                <!-- Học vị -->
                 <TextView
                     android:id="@+id/tvDoctorTitle"
                     android:layout_width="wrap_content"
@@ -47,7 +47,6 @@
                     android:textSize="12sp"
                     android:textColor="@color/text_secondary"/>
 
-                <!-- Tên -->
                 <TextView
                     android:id="@+id/tvDoctorName"
                     android:layout_width="wrap_content"
@@ -57,7 +56,6 @@
                     android:textColor="@color/text_primary"
                     android:layout_marginTop="2dp"/>
 
-                <!-- Kinh nghiệm -->
                 <TextView
                     android:id="@+id/tvDoctorExperience"
                     android:layout_width="wrap_content"
@@ -66,7 +64,6 @@
                     android:textColor="@color/text_secondary"
                     android:layout_marginTop="2dp"/>
 
-                <!-- Chip chuyên khoa - KHÔNG dùng drawableStart -->
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupSpecialties"
                     android:layout_width="wrap_content"
@@ -74,11 +71,9 @@
                     android:layout_marginTop="4dp"
                     app:chipSpacingHorizontal="4dp"
                     app:chipSpacingVertical="0dp"/>
-
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -93,7 +88,7 @@
             android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="16dp"
+                android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:text="📍"
                 android:textSize="12sp"/>

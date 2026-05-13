@@ -450,51 +450,26 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Buttons -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:padding="12dp"
         android:background="@color/white"
         android:elevation="8dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnChat"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="2"
-            android:text="💬 Chat với bác sĩ"
-            android:textSize="12sp"
-            android:textColor="@color/primary_blue"
-            app:strokeColor="@color/primary_blue"
-            app:cornerRadius="8dp"
-            android:layout_marginEnd="6dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnVideoCall"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Gọi video"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary"
-            app:strokeColor="@color/divider"
-            app:cornerRadius="8dp"
-            android:layout_marginEnd="6dp"/>
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBooking"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1.5"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
             android:text="Đặt khám"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:textColor="@color/white"
             app:backgroundTint="@color/primary_blue"
-            app:cornerRadius="8dp"/>
+            app:cornerRadius="10dp"/>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
