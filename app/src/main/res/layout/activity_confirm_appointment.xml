@@ -149,7 +149,36 @@
                     </LinearLayout>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Số điện thoại" android:textColor="#666" android:layout_marginTop="12dp"/>
-                    <TextView android:id="@+id/tv_patient_phone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0386 260 806" android:textStyle="bold" android:textSize="16sp" android:textColor="#000"/>
+                    <TextView android:id="@+id/tv_patient_phone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0386 260 806" android:textStyle="bold" android:textSize="16sp" android:textColor="#000" android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Triệu chứng / Lý do khám" android:textColor="#666" />
+                    <EditText
+                        android:id="@+id/et_appointment_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nhập triệu chứng hoặc lưu ý cho bác sĩ..."
+                        android:textSize="14sp"
+                        android:background="@android:color/transparent"
+                        android:paddingVertical="8dp"
+                        android:minHeight="40dp"
+                        android:gravity="top"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Phí tư vấn" android:textSize="15sp" android:textColor="#000" />
+                    <TextView android:id="@+id/tv_confirm_fee" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 VNĐ" android:textStyle="bold" android:textSize="16sp" android:textColor="#E84040"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

@@ -19,6 +19,15 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
 
     private ArrayList<specialty> list;
     private Context context;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(specialty specialty);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public SpecialtyAdapter(ArrayList<specialty> list, Context context) {
         this.list = list;
@@ -31,7 +40,6 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
 
         public SpecialtyViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Bạn hãy kiểm tra lại ID trong layout activity_specialty.xml
             imageView = itemView.findViewById(R.id.shapeableImageView);
             textView = itemView.findViewById(R.id.textView4);
         }
@@ -40,7 +48,6 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
     @NonNull
     @Override
     public SpecialtyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Lưu ý: Thông thường item nên có layout riêng (ví dụ: R.layout.item_specialty)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_specialty, parent, false);
         return new SpecialtyViewHolder(view);
     }
@@ -50,6 +57,12 @@ public class SpecialtyAdapter extends RecyclerView.Adapter<SpecialtyAdapter.Spec
         specialty item = list.get(position);
         holder.imageView.setImageResource(item.getImage());
         holder.textView.setText(item.getName());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(item);
+            }
+        });
     }
 
     @Override

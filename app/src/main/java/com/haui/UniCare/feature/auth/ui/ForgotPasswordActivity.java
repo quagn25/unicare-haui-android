@@ -1,60 +1,166 @@
 package com.haui.UniCare.feature.auth.ui;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.haui.UniCare.MainActivity;
 import com.haui.UniCare.R;
 import com.haui.UniCare.core.base.BaseActivity;
+import com.haui.UniCare.core.common_ui.LoadingDialog;
+import com.haui.UniCare.core.network.ApiService;
+import com.haui.UniCare.core.network.RetrofitClient;
+import com.haui.UniCare.core.utils.AppConstants;
+import com.haui.UniCare.data.model.GenericResponse;
+import com.haui.UniCare.data.model.ResetPasswordRequest;
+import com.haui.UniCare.data.model.SendOtpRequest;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgotPasswordActivity extends BaseActivity {
-    TextInputLayout tilUsername,tilEmail,tilOtp,tilPassword,tilConfirmPassword;
-    TextInputEditText etUsername,etEmail,etOtp,etPassword,etConfirmPassword;
-    TextView tvLogin;
-    Button btnSendOtp,btnChangePassword;
-    LoadingDialog loadingDialog;
-    ApiService apiService;
+    
+    // Layouts for steps
+    private LinearLayout layoutStep1, layoutStep2, layoutStep3;
+    
+    // Step 1 components
+    private TextInputLayout tilEmail;
+    private TextInputEditText etEmail;
+    private Button btnSendOtp;
+    
+    // Step 2 components
+    private TextInputLayout tilOtp;
+    private TextInputEditText etOtp;
+    private Button btnVerifyOtp;
+    
+    // Step 3 components
+    private TextInputLayout tilPassword, tilConfirmPassword;
+    private TextInputEditText etPassword, etConfirmPassword;
+    private Button btnChangePassword;
+    
+    private TextView tvBackToLogin;
+    private LoadingDialog loadingDialog;
+    private ApiService apiService;
+    
+    private String currentEmail = "";
+    private String currentUsername = ""; // Will be received from server during sendOtp
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
-        
+
         loadingDialog = new LoadingDialog(this);
         apiService = RetrofitClient.getInstance().create(ApiService.class);
-        
+
         mapping();
-        setupErrorClearer();
-        tvLogin.setOnClickListener(v -> {
-            finish();
-        });
+        setupListeners();
+        showStep(1);
+    }
+
+    private void mapping() {
+        layoutStep1 = findViewById(R.id.layout_step1);
+        layoutStep2 = findViewById(R.id.layout_step2);
+        layoutStep3 = findViewById(R.id.layout_step3);
+
+        tilEmail = findViewById(R.id.til_email);
+        etEmail = findViewById(R.id.et_email);
+        btnSendOtp = findViewById(R.id.btn_send_otp);
+
+        tilOtp = findViewById(R.id.til_otp);
+        etOtp = findViewById(R.id.et_otp);
+        btnVerifyOtp = findViewById(R.id.btn_verify_otp);
+
+        tilPassword = findViewById(R.id.til_password);
+        etPassword = findViewById(R.id.et_password);
+        tilConfirmPassword = findViewById(R.id.til_confirm_password);
+        etConfirmPassword = findViewById(R.id.et_confirm_password);
+        btnChangePassword = findViewById(R.id.btn_change_password);
+
+        tvBackToLogin = findViewById(R.id.tv_back_to_login);
+    }
+
+    private void setupListeners() {
+        tvBackToLogin.setOnClickListener(v -> finish());
+
+        // Step 1: Send OTP
         btnSendOtp.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
-            if (email.isEmpty()) {
-                tilEmail.setError("Vui lòng nhập email");
-                tilEmail.setErrorEnabled(true);
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                tilEmail.setError("Email sai định dạng");
-                tilEmail.setErrorEnabled(true);
-            } else {
+            if (validateStep1(email)) {
                 sendOtp(email);
             }
         });
-        btnChangePassword.setOnClickListener(v -> {
-            String username = etUsername.getText().toString().trim();
-            String email = etEmail.getText().toString().trim();
+
+        // Step 2: Verify OTP (UI only, resetPassword handles actual verification)
+        btnVerifyOtp.setOnClickListener(v -> {
             String otp = etOtp.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
-            String confirmpassword = etConfirmPassword.getText().toString().trim();
-            if(check(username,email,otp,password,confirmpassword)){
-                resetPassword(username, email, otp, password);
+            if (validateStep2(otp)) {
+                showStep(3);
             }
         });
+
+        // Step 3: Change Password
+        btnChangePassword.setOnClickListener(v -> {
+            String password = etPassword.getText().toString().trim();
+            String confirmPassword = etConfirmPassword.getText().toString().trim();
+            String otp = etOtp.getText().toString().trim();
+            
+            if (validateStep3(password, confirmPassword)) {
+                resetPassword(currentUsername, currentEmail, otp, password);
+            }
+        });
+    }
+
+    private void showStep(int step) {
+        layoutStep1.setVisibility(step == 1 ? View.VISIBLE : View.GONE);
+        layoutStep2.setVisibility(step == 2 ? View.VISIBLE : View.GONE);
+        layoutStep3.setVisibility(step == 3 ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean validateStep1(String email) {
+        if (email.isEmpty()) {
+            tilEmail.setError("Vui lòng nhập email");
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            tilEmail.setError("Email không đúng định dạng");
+            return false;
+        }
+        tilEmail.setError(null);
+        return true;
+    }
+
+    private boolean validateStep2(String otp) {
+        if (otp.isEmpty() || otp.length() != 6) {
+            tilOtp.setError("Mã OTP phải gồm 6 chữ số");
+            return false;
+        }
+        tilOtp.setError(null);
+        return true;
+    }
+
+    private boolean validateStep3(String password, String confirmPassword) {
+        if (password.length() < 6) {
+            tilPassword.setError("Mật khẩu phải từ 6 ký tự trở lên");
+            return false;
+        }
+        if (!password.equals(confirmPassword)) {
+            tilConfirmPassword.setError("Mật khẩu không khớp");
+            return false;
+        }
+        tilPassword.setError(null);
+        tilConfirmPassword.setError(null);
+        return true;
     }
 
     private void sendOtp(String email) {
@@ -65,22 +171,24 @@ public class ForgotPasswordActivity extends BaseActivity {
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 loadingDialog.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
-                    GenericResponse genericResponse = response.body();
-                    if ("success".equals(genericResponse.getStatus())) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Mã OTP đã được gửi đến email của bạn", Toast.LENGTH_SHORT).show();
+                    GenericResponse res = response.body();
+                    if ("success".equals(res.getStatus())) {
+                        currentEmail = email;
+                        currentUsername = res.getUsername(); // Saved for later
+                        Toast.makeText(ForgotPasswordActivity.this, "Mã OTP đã được gửi!", Toast.LENGTH_SHORT).show();
+                        showStep(2);
                     } else {
-                        Toast.makeText(ForgotPasswordActivity.this, genericResponse.getMessage() != null ? genericResponse.getMessage() : "Gửi OTP thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForgotPasswordActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Gửi OTP thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this, "Email không tồn tại trong hệ thống", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<GenericResponse> call, Throwable t) {
                 loadingDialog.hideLoading();
-                Log.e("FORGOT_PASSWORD", "Error: " + t.getMessage());
-                Toast.makeText(ForgotPasswordActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotPasswordActivity.this, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -93,12 +201,26 @@ public class ForgotPasswordActivity extends BaseActivity {
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 loadingDialog.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
-                    GenericResponse genericResponse = response.body();
-                    if ("success".equals(genericResponse.getStatus())) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                    GenericResponse res = response.body();
+                    if ("success".equals(res.getStatus())) {
+                        Toast.makeText(ForgotPasswordActivity.this, "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
+                        
+                        // Lưu phiên đăng nhập tự động để vào thẳng MainActivity
+                        SharedPreferences sharedPref = getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("isLoggedIn", true);
+                        editor.putString("username", username);
+                        editor.putString("fullName", "Người dùng"); 
+                        // userId có thể được server trả về thêm trong tương lai để đồng bộ hơn
+                        editor.apply();
+
+                        // Chuyển hướng về Trang chủ (MainActivity)
+                        Intent intent = new Intent(ForgotPasswordActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(ForgotPasswordActivity.this, genericResponse.getMessage() != null ? genericResponse.getMessage() : "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForgotPasswordActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(ForgotPasswordActivity.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
@@ -108,207 +230,8 @@ public class ForgotPasswordActivity extends BaseActivity {
             @Override
             public void onFailure(Call<GenericResponse> call, Throwable t) {
                 loadingDialog.hideLoading();
-                Log.e("FORGOT_PASSWORD", "Error: " + t.getMessage());
-                Toast.makeText(ForgotPasswordActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotPasswordActivity.this, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void mapping(){
-        tvLogin = findViewById(R.id.textView7);
-        btnSendOtp = findViewById(R.id.button4);
-        btnChangePassword = findViewById(R.id.button3);
-
-        tilUsername = findViewById(R.id.textInputLayout4);
-        etUsername = findViewById(R.id.textInputEditText);
-
-        tilEmail = findViewById(R.id.textInputLayout5);
-        etEmail = findViewById(R.id.textInputEditText1);
-
-        tilOtp = findViewById(R.id.textInputLayout6);
-        etOtp = findViewById(R.id.textInputEditText4);
-
-        tilPassword = findViewById(R.id.textInputLayout7);
-        etPassword = findViewById(R.id.textInputEditText2);
-
-        tilConfirmPassword = findViewById(R.id.textInputLayout8);
-        etConfirmPassword = findViewById(R.id.textInputEditText3);
-    }
-    private void setupErrorClearer() {
-        // Xử lý cho Username
-        etUsername.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Khi người dùng gõ bất kỳ ký tự nào, xóa lỗi ngay lập tức
-                if (s.length() > 0) {
-                    tilUsername.setError(null);
-                    tilUsername.setErrorEnabled(false); // Tắt hoàn toàn dòng thông báo lỗi
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-
-        etEmail.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    tilEmail.setError(null);
-                    tilEmail.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-        etOtp.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    tilOtp.setError(null);
-                    tilOtp.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-
-
-        // Xử lý cho Password
-        etPassword.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    tilPassword.setError(null);
-                    tilPassword.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-        etConfirmPassword.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    tilConfirmPassword.setError(null);
-                    tilConfirmPassword.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-    }
-    private Boolean check(String username,String email,String otp,String password,String confirmpassword){
-        boolean rs = true;
-        if (username.isEmpty()) {
-            rs = false;
-            tilUsername.setErrorEnabled(true);
-            tilUsername.setError("Vui lòng nhập tên tài khoản");
-        } else if (username.length() < 6 || username.length() > 20) {
-            rs = false;
-            tilUsername.setErrorEnabled(true);
-            tilUsername.setError("Tên tài khoản phải từ 6 đến 20 ký tự");
-        } else if (Character.isDigit(username.charAt(0))) {
-            rs = false;
-            tilUsername.setErrorEnabled(true);
-            tilUsername.setError("Tên tài khoản không được bắt đầu bằng số");
-        } else if (!username.matches(".*[0-9].*")) {
-            rs = false;
-            tilUsername.setErrorEnabled(true);
-            tilUsername.setError("Tên tài khoản phải có ít nhất 1 chữ số");
-        } else if (!username.matches("^[a-zA-Z0-9]+$")) {
-            rs = false;
-            tilUsername.setErrorEnabled(true);
-            tilUsername.setError("Tên tài khoản không được chứa dấu, khoảng trắng hoặc ký tự đặc biệt");
-        } else {
-            tilUsername.setError(null);
-        }
-
-        if (email.isEmpty()) {
-            tilEmail.setError("Vui lòng nhập email");
-            rs = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Email sai định dạng (VD: ten@gmail.com)");
-            rs = false;
-        } else {
-            tilEmail.setErrorEnabled(false);
-        }
-
-        if (otp.isEmpty()) {
-            rs = false;
-            tilOtp.setErrorEnabled(true);
-            tilOtp.setError("Vui lòng nhập mã OTP");
-        } else if (otp.length() != 6) {
-            rs = false;
-            tilOtp.setErrorEnabled(true);
-            tilOtp.setError("Mã OTP phải có đúng 6 chữ số");
-        } else if (!otp.matches("^[0-9]+$")) {
-            rs = false;
-            tilOtp.setErrorEnabled(true);
-            tilOtp.setError("Mã OTP chỉ được chứa các chữ số");
-        } else {
-            tilOtp.setError(null);
-            tilOtp.setErrorEnabled(false);
-        }
-
-        if (password.isEmpty()) {
-            rs = false;
-            tilPassword.setErrorEnabled(true);
-            tilPassword.setError("Vui lòng nhập mật khẩu");
-        } else if (password.length() < 8 || password.length() > 20) {
-            rs = false;
-            tilPassword.setErrorEnabled(true);
-            tilPassword.setError("Mật khẩu phải từ 8-20 ký tự");
-        } else if (!password.matches(".*[A-Z].*")) {
-            rs = false;
-            tilPassword.setErrorEnabled(true);
-            tilPassword.setError("Mật khẩu phải có ít nhất 1 chữ viết hoa");
-        } else if (!password.matches(".*[0-9].*")) {
-            rs = false;
-            tilPassword.setErrorEnabled(true);
-            tilPassword.setError("Mật khẩu phải có ít nhất 1 chữ số");
-        } else if (!password.matches(".*[@#$%^&+=!].*")) {
-            rs = false;
-            tilPassword.setErrorEnabled(true);
-            tilPassword.setError("Mật khẩu phải có ít nhất 1 ký tự đặc biệt");
-        } else {
-            tilPassword.setError(null);
-        }
-
-        if (confirmpassword.isEmpty()) {
-            rs = false;
-            tilConfirmPassword.setErrorEnabled(true);
-            tilConfirmPassword.setError("Vui lòng xác nhận mật khẩu");
-        } else if (!password.equals(confirmpassword)) {
-            rs = false;
-            tilConfirmPassword.setErrorEnabled(true);
-            tilConfirmPassword.setError("Mật khẩu không khớp");
-        } else {
-            tilConfirmPassword.setError(null);
-        }
-        return rs;
     }
 }

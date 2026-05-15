@@ -1,120 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F7FA">
+    android:background="#F2F4F7">
 
-    <!-- Header (Màu xanh dương) -->
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:background="#0066FF"
-        android:padding="16dp">
+        android:paddingTop="40dp"
+        android:paddingBottom="12dp"
+        android:paddingHorizontal="8dp">
 
-        <!-- Tiêu đề và Nút Lọc -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/white"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lịch khám"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_centerInParent="true"/>
-
-            <ImageView
-                android:id="@+id/btn_filter"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:icon="@drawable/ic_location"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:tint="#FFFFFF"/>
-        </RelativeLayout>
-
-        <!-- Thanh Tìm kiếm (Màu xanh đậm) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="16dp"
-            android:icon="@drawable/ic_location"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:icon="@drawable/ic_location"
-                app:tint="#8A9BB8" />
-
-            <EditText
-                android:id="@+id/edt_search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="12dp"
-                android:background="@null"
-                android:hint="Tìm theo mã phiếu khám, tên bệnh n..."
-                android:textColorHint="#8A9BB8"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:singleLine="true"/>
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lịch khám của tôi"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="4dp"/>
     </LinearLayout>
 
-    <!-- Khu vực nội dung chính -->
+    <!-- Search Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_searchfield"
+            android:hint="Tìm kiếm lịch khám..."
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:singleLine="true"/>
+
+        <ImageView
+            android:id="@+id/btn_filter"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_searchfield"
+            android:src="@drawable/ic_filter"
+            android:padding="10dp"
+            app:tint="#0066FF"/>
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Trạng thái Trống (Empty State) - Giống hệt ảnh -->
+        <!-- Empty state -->
         <LinearLayout
             android:id="@+id/layout_empty_state"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
             android:gravity="center"
-            android:padding="32dp">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
-                android:layout_width="250dp"
-                android:layout_height="180dp"
-                android:src="@drawable/img_empty_appointment"
-                android:scaleType="fitCenter"/>
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/img_empty_appointment"/>
 
             <TextView
+                android:id="@+id/tvEmpty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bạn chưa có lịch khám"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="24dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lịch khám của bạn sẽ được hiển thị tại đây."
-                android:textColor="#666666"
-                android:textSize="14sp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Bạn chưa có lịch khám nào"
+                android:textSize="16sp"
+                android:textColor="#6B7280"
                 android:gravity="center"/>
         </LinearLayout>
 
-        <!-- Danh sách Lịch khám (Sẽ hiện lên khi có data, tạm thời ẩn) -->
+        <!-- Danh sách lịch -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_appointments"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+            android:paddingTop="12dp"
+            android:layout_marginHorizontal="10dp"
             android:clipToPadding="false"
-            android:padding="16dp"/>
-
+            tools:listitem="@layout/item_appointment"/>
     </FrameLayout>
+
 </LinearLayout>

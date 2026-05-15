@@ -1,20 +1,27 @@
 package com.haui.UniCare.feature.patients.appointment.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.haui.UniCare.R;
 import com.haui.UniCare.core.base.BaseActivity;
+import com.haui.UniCare.core.utils.AppConstants;
 import com.haui.UniCare.data.model.table.Doctor;
 import com.haui.UniCare.databinding.ActivityConfirmAppointmentBinding;
 import com.haui.UniCare.feature.patients.appointment.viewmodel.AppointmentViewModel;
+
+import java.util.Locale;
 
 public class ConfirmAppointmentActivity extends BaseActivity {
 
     private ActivityConfirmAppointmentBinding binding;
     private AppointmentViewModel viewModel;
     private Doctor selectedDoctor;
+    private String selectedDate;
+    private String selectedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,24 +33,11 @@ public class ConfirmAppointmentActivity extends BaseActivity {
 
         // Nhận dữ liệu từ BookAppointmentActivity
         selectedDoctor = (Doctor) getIntent().getSerializableExtra("doctor_data");
-        String selectedDate = getIntent().getStringExtra("selected_date");
-        String selectedTime = getIntent().getStringExtra("selected_time");
-        boolean isMorning = getIntent().getBooleanExtra("is_morning", true);
+        selectedDate = getIntent().getStringExtra("selected_date");
+        selectedTime = getIntent().getStringExtra("selected_time");
 
-        // Hiển thị thông tin bác sĩ
-        if (selectedDoctor != null) {
-            binding.tvConfirmDoctorName.setText(selectedDoctor.getName());
-            binding.tvConfirmSpecialty.setText(selectedDoctor.getSpecialties());
-            
-            Glide.with(this)
-                    .load(selectedDoctor.getAvatarUrl())
-                    .placeholder(R.drawable.doctorbook)
-                    .into(binding.imgConfirmDoctor);
-        }
-
-        // Hiển thị thông tin lịch khám
-        binding.tvConfirmDate.setText(selectedDate);
-        binding.tvConfirmTime.setText(selectedTime + (isMorning ? " (Sáng)" : " (Chiều)"));
+        displayDoctorInfo();
+        displayPatientInfo();
 
         // Nút Back
         binding.btnBack.setOnClickListener(v -> finish());
@@ -51,9 +45,12 @@ public class ConfirmAppointmentActivity extends BaseActivity {
         // Nút "Xác nhận đặt lịch"
         binding.btnConfirmBook.setOnClickListener(v -> {
             if (selectedDoctor != null) {
-                // Giả sử patientId = 1 (cần lấy từ Session/Auth sau này)
-                int currentPatientId = 1;
-                viewModel.createAppointment(currentPatientId, selectedDoctor.getId());
+                if (AppConstants.USE_MOCK_DATA) {
+                    Toast.makeText(this, "Đã đặt lịch thành công (Chế độ Mock)", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    performBooking();
+                }
             } else {
                 Toast.makeText(this, "Thiếu thông tin bác sĩ", Toast.LENGTH_SHORT).show();
             }
@@ -65,12 +62,63 @@ public class ConfirmAppointmentActivity extends BaseActivity {
             else hideLoadingDialog();
         });
 
-//        // Thêm xử lý thành công nếu cần (giả định có LiveData này)
-//         viewModel.getIsSuccess().observe(this, success -> {
-//             if (success) {
-//                 Toast.makeText(this, "Đặt lịch thành công!", Toast.LENGTH_SHORT).show();
-//                 finish();
-//             }
-//         });
+        viewModel.getIsBookingSuccess().observe(this, success -> {
+            if (success) {
+                Toast.makeText(this, "Đặt lịch thành công! Vui lòng chờ bác sĩ xác nhận.", Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Đặt lịch thất bại. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void displayDoctorInfo() {
+        if (selectedDoctor != null) {
+            binding.tvConfirmDoctorName.setText(selectedDoctor.getName());
+            binding.tvConfirmSpecialty.setText(selectedDoctor.getSpecialties());
+            binding.tvConfirmFee.setText(String.format(Locale.getDefault(), "%,.0f VNĐ", selectedDoctor.getConsultationFee()));
+            
+            if (selectedDoctor.getAvatarUrl() != null && !selectedDoctor.getAvatarUrl().isEmpty()) {
+                Glide.with(this)
+                        .load(selectedDoctor.getAvatarUrl())
+                        .placeholder(R.drawable.doctorbook)
+                        .into(binding.imgConfirmDoctor);
+            } else {
+                binding.imgConfirmDoctor.setImageResource(selectedDoctor.getAvatarResource() != 0 
+                        ? selectedDoctor.getAvatarResource() : R.drawable.doctorbook);
+            }
+        }
+        binding.tvConfirmDate.setText(selectedDate);
+        binding.tvConfirmTime.setText(selectedTime);
+    }
+
+    private void displayPatientInfo() {
+        SharedPreferences sharedPref = getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
+        String fullName = sharedPref.getString("fullName", "Bùi Văn Quang");
+        String username = sharedPref.getString("username", "0386260806"); // Dùng làm số điện thoại nếu cần
+        
+        // Hiển thị thông tin đã lưu hoặc mock nếu chưa có
+        binding.tvPatientName.setText(fullName);
+        binding.tvPatientPhone.setText(username);
+        
+        // Bạn có thể lưu thêm DOB và Gender vào SharedPreferences lúc Login/Register để hiện ở đây
+        // Hiện tại giả định các giá trị mặc định hoặc lấy từ Prefs nếu có
+        binding.tvPatientDob.setText(sharedPref.getString("dob", "01/01/2006"));
+        binding.tvPatientGender.setText(sharedPref.getString("gender", "Nam"));
+    }
+
+    private void performBooking() {
+        SharedPreferences sharedPref = getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
+        int currentPatientId = sharedPref.getInt("userId", -1);
+
+        if (currentPatientId == -1) {
+            Toast.makeText(this, "Bạn cần đăng nhập để đặt lịch", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String datetime = selectedDate + " " + selectedTime;
+        String note = binding.etAppointmentNote.getText().toString().trim();
+        
+        viewModel.createAppointment(currentPatientId, selectedDoctor.getId(), datetime, note);
     }
 }

@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_item_date"
-    android:layout_width="wrap_content"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardDate"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_margin="1dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0.5dp"
+    app:strokeColor="#F3F4F6"
+    app:cardBackgroundColor="@color/white">
 
-    <TextView
-        android:id="@+id/tv_day_of_week"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="T4"
-        android:textSize="12sp"
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="4dp"
-        android:background="@android:color/transparent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:text="13"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:paddingVertical="6dp">
 
-    <TextView
-        android:id="@+id/tv_slots"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/bg_chip"
-        android:paddingHorizontal="6dp"
-        android:paddingVertical="2dp"
-        android:text="9 slot"
-        android:textColor="#2E7D32"
-        android:textSize="10sp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvDayLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T2"
+            android:textSize="10sp"
+            android:textColor="#9CA3AF"/>
+
+        <TextView
+            android:id="@+id/tvDayNum"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:text="13"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#1F2937"
+            android:gravity="center"
+            android:layout_marginTop="2dp"/>
+
+        <TextView
+            android:id="@+id/tvSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9 slot"
+            android:textSize="8sp"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_slot_badge"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="1dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

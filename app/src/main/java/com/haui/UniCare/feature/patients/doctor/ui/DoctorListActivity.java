@@ -18,6 +18,8 @@ import com.haui.UniCare.core.network.RetrofitClient;
 import com.haui.UniCare.data.model.table.Doctor;
 import com.haui.UniCare.feature.patients.doctor.adapter.DoctorAdapter;
 
+import com.haui.UniCare.core.utils.AppConstants;
+import com.haui.UniCare.data.MockData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +45,36 @@ public class DoctorListActivity extends BaseActivity {
         
         btnBack.setOnClickListener(v -> finish());
 
-        // Gọi API lấy dữ liệu từ server
-        fetchDoctorsFromServer();
+        // Gọi API lấy dữ liệu từ server (Hoặc dùng MockData nếu là bản Debug)
+        loadDoctors();
+    }
+
+    private void loadDoctors() {
+        if (AppConstants.USE_MOCK_DATA) {
+            List<Doctor> doctors = MockData.getMockDoctors();
+            displayDoctors(doctors);
+        } else {
+            fetchDoctorsFromServer();
+        }
+    }
+
+    private void displayDoctors(List<Doctor> doctors) {
+        // Kiểm tra xem có yêu cầu lọc theo chuyên khoa không
+        String specialtyName = getIntent().getStringExtra("specialty_name");
+        if (specialtyName != null && !specialtyName.isEmpty()) {
+            List<Doctor> filtered = new ArrayList<>();
+            for (Doctor d : doctors) {
+                if (d.getSpecialties().toLowerCase().contains(specialtyName.toLowerCase())) {
+                    filtered.add(d);
+                }
+            }
+            doctorAdapter.updateList(filtered);
+            if (filtered.isEmpty()) {
+                Toast.makeText(this, "Không có bác sĩ chuyên khoa " + specialtyName, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            doctorAdapter.updateList(doctors);
+        }
     }
 
     private void mapping() {
@@ -71,8 +101,7 @@ public class DoctorListActivity extends BaseActivity {
             public void onResponse(Call<List<Doctor>> call, Response<List<Doctor>> response) {
                 hideLoadingDialog();
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Doctor> doctors = response.body();
-                    doctorAdapter.updateList(doctors);
+                    displayDoctors(response.body());
                 } else {
                     Toast.makeText(DoctorListActivity.this, "Không thể lấy danh sách bác sĩ", Toast.LENGTH_SHORT).show();
                 }

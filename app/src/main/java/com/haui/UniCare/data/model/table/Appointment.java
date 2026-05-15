@@ -19,6 +19,21 @@ public class Appointment {
     @SerializedName("created_at")
     public String createdAt;
 
+    // Các trường bổ sung để hiển thị (Lấy từ JOIN trong DB)
+    @SerializedName("doctor_name")
+    public String doctorName;
+
+    @SerializedName("specialty_name")
+    public String specialtyName;
+
+    @SerializedName("workplace_address")
+    public String workplaceAddress;
+
+    @SerializedName("consultation_fee")
+    public double consultationFee;
+
+    public String note;
+
     public Appointment() {}
 
     public Appointment(int id, int patientId, int doctorId, String appointmentDatetime, String status, String createdAt) {

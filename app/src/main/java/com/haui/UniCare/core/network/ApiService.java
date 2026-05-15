@@ -7,6 +7,7 @@ import com.haui.UniCare.data.model.LoginResponse;
 import com.haui.UniCare.data.model.RegisterRequest;
 import com.haui.UniCare.data.model.SendOtpRequest;
 import com.haui.UniCare.data.model.ResetPasswordRequest;
+import com.haui.UniCare.data.model.table.Appointment;
 import com.haui.UniCare.data.model.GenericResponse;
 
 import java.util.List;
@@ -23,6 +24,12 @@ public interface ApiService {
 
     @GET("doctors")
     Call<List<Doctor>> getDoctors();
+
+    @GET("appointments")
+    Call<List<Appointment>> getAppointments(@retrofit2.http.Query("patient_id") int patientId);
+
+    @POST("appointments")
+    Call<GenericResponse> createAppointment(@Body Appointment appointment);
 
     @POST("login")
     Call<LoginResponse> login(@Body LoginRequest request);
