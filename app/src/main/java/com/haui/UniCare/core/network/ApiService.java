@@ -42,4 +42,19 @@ public interface ApiService {
 
     @POST("forgot-password/reset")
     Call<GenericResponse> resetPassword(@Body ResetPasswordRequest request);
+
+    @GET("notifications")
+    Call<com.haui.UniCare.data.model.NotificationResponse> getNotifications(@retrofit2.http.Query("userId") int userId);
+
+    @POST("notifications/read-all")
+    Call<GenericResponse> readAllNotifications(@Body java.util.Map<String, Integer> body);
+
+    @POST("appointments/reschedule")
+    Call<GenericResponse> rescheduleAppointment(@Body java.util.Map<String, Integer> body);
+
+    @POST("appointments/cancel")
+    Call<GenericResponse> cancelAppointment(@Body java.util.Map<String, Integer> body);
+
+    @POST("appointments/update-details")
+    Call<GenericResponse> updateAppointmentDetails(@Body java.util.Map<String, Object> body);
 }

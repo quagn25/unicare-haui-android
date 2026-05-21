@@ -63,7 +63,12 @@ public class Doctor implements Serializable {
     public int getAvatarResource() { return avatarResource; }
     public void setAvatarResource(int avatarResource) { this.avatarResource = avatarResource; }
 
-    public String getSpecialties() { return specialties != null ? specialties : ""; }
+    public String getSpecialties() { 
+        if (specialties != null && !specialties.isEmpty()) {
+            return specialties;
+        }
+        return bio != null ? bio : ""; 
+    }
     public void setSpecialties(String specialties) { this.specialties = specialties; }
 
     public String getBio() { return bio != null ? bio : "Thông tin đang cập nhật"; }

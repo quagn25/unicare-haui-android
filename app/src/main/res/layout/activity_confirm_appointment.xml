@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F7FA">
@@ -152,16 +153,21 @@
                     <TextView android:id="@+id/tv_patient_phone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0386 260 806" android:textStyle="bold" android:textSize="16sp" android:textColor="#000" android:layout_marginBottom="12dp"/>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Triệu chứng / Lý do khám" android:textColor="#666" />
-                    <EditText
-                        android:id="@+id/et_appointment_note"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nhập triệu chứng hoặc lưu ý cho bác sĩ..."
-                        android:textSize="14sp"
-                        android:background="@android:color/transparent"
-                        android:paddingVertical="8dp"
-                        android:minHeight="40dp"
-                        android:gravity="top"/>
+                        android:layout_marginTop="8dp"
+                        app:boxStrokeColor="#0066FF"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_appointment_note"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Nhập triệu chứng..."
+                            android:minHeight="80dp"
+                            android:gravity="top" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

@@ -21,6 +21,7 @@ public class DoctorDetailActivity extends BaseActivity {
     private Button btnBookDoctorDetail;
     private Toolbar toolbar;
     private Doctor selectedDoctor;
+    private int rescheduleAppointmentId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class DoctorDetailActivity extends BaseActivity {
 
         // Lấy dữ liệu Doctor từ Intent
         selectedDoctor = (Doctor) getIntent().getSerializableExtra("doctor_data");
+        rescheduleAppointmentId = getIntent().getIntExtra("reschedule_appointment_id", -1);
         if (selectedDoctor != null) {
             displayDoctorInfo(selectedDoctor);
         }
@@ -39,6 +41,7 @@ public class DoctorDetailActivity extends BaseActivity {
         btnBookDoctorDetail.setOnClickListener(v -> {
             Intent intent = new Intent(DoctorDetailActivity.this, BookAppointmentActivity.class);
             intent.putExtra("doctor_data", selectedDoctor);
+            intent.putExtra("reschedule_appointment_id", rescheduleAppointmentId);
             startActivity(intent);
         });
     }

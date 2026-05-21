@@ -81,14 +81,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
                     ? doctor.getAvatarResource() : R.drawable.doctorbook);
         }
 
-        // Sự kiện khi bấm vào item để xem chi tiết
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), DoctorDetailActivity.class);
-            intent.putExtra("doctor_data", doctor);
-            holder.itemView.getContext().startActivity(intent);
-        });
-
-        // Sự kiện khi bấm nút Đặt lịch ngay
+        // Sự kiện khi bấm nút Đặt lịch ngay mới chuyển sang trang chi tiết bác sĩ
         holder.btnBookNow.setOnClickListener(v -> {
             Intent intent = new Intent(holder.itemView.getContext(), DoctorDetailActivity.class);
             intent.putExtra("doctor_data", doctor);

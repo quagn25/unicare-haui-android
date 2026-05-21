@@ -4,52 +4,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.haui.UniCare.R;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PersonFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PersonFragment extends Fragment {
-    Button btnSignOut;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Button btnLogout;
+    private TextView tvShareApp;
+    private TextView tvChangePassword;
+    private TextView tvUserName;
+    private TextView tvHealthRecords;
+    private TextView tvDeleteAccount;
 
     public PersonFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PersonFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PersonFragment newInstance(String param1, String param2) {
         PersonFragment fragment = new PersonFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,16 +39,11 @@ public class PersonFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_person, container, false);
     }
 
@@ -74,24 +51,66 @@ public class PersonFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Ánh xạ View (Logic xử lý ở đây)
-        btnSignOut = view.findViewById(R.id.button2);
+        // Ánh xạ View dùng ID tường minh để dễ phân biệt
+        btnLogout = view.findViewById(R.id.btn_logout);
+        tvShareApp = view.findViewById(R.id.tv_share_app);
+        tvChangePassword = view.findViewById(R.id.tv_change_password);
+        tvUserName = view.findViewById(R.id.tv_user_name);
+        tvHealthRecords = view.findViewById(R.id.tv_health_records);
+        tvDeleteAccount = view.findViewById(R.id.tv_delete_account);
 
-        // 2. Bắt sự kiện Click
-        btnSignOut.setOnClickListener(v -> {
-            // 1. Xóa trạng thái đăng nhập trong SharedPreferences
+        displayUserInfo();
+
+        // 1. Sự kiện Đăng xuất
+        btnLogout.setOnClickListener(v -> {
             SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.clear(); // Xóa sạch dữ liệu (hoặc dùng editor.putBoolean("isLoggedIn", false))
+            editor.clear();
             editor.apply();
 
-            // 2. Chuyển hướng về màn hình Đăng nhập
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
 
-            // 3. Đóng Activity hiện tại
             requireActivity().finish();
         });
+
+        // 2. Sự kiện Chia sẻ ứng dụng
+        tvShareApp.setOnClickListener(v -> {
+            String packageName = requireContext().getPackageName();
+            String deepLink = "unicare://app";
+            String shareMessage = "Truy cập UniCare ngay tại: " + deepLink + packageName;
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(intent, "Chia sẻ qua:"));
+        });
+
+        // 3. Sự kiện Đổi mật khẩu
+        tvChangePassword.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Tính năng Đổi mật khẩu đang được phát triển", Toast.LENGTH_SHORT).show();
+            // TODO: Tạo Activity ChangePass và cập nhật Intent dưới đây
+            // Intent intent = new Intent(getActivity(), ChangePass.class);
+            // startActivity(intent);
+        });
+
+        // 4. Sự kiện Hồ sơ y tế
+        tvHealthRecords.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Tính năng Hồ sơ y tế đang được phát triển", Toast.LENGTH_SHORT).show();
+        });
+
+        // 5. Sự kiện Yêu cầu xóa tài khoản
+        tvDeleteAccount.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đang được tiếp nhận", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void displayUserInfo() {
+        if (getContext() != null) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+            String fullName = sharedPref.getString("fullName", "Người dùng");
+            tvUserName.setText(fullName);
+        }
     }
 }

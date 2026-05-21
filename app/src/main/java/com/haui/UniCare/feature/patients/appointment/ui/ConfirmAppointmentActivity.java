@@ -1,11 +1,17 @@
 package com.haui.UniCare.feature.patients.appointment.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
+import com.haui.UniCare.MainActivity;
 import com.haui.UniCare.R;
 import com.haui.UniCare.core.base.BaseActivity;
 import com.haui.UniCare.core.utils.AppConstants;
@@ -22,6 +28,7 @@ public class ConfirmAppointmentActivity extends BaseActivity {
     private Doctor selectedDoctor;
     private String selectedDate;
     private String selectedTime;
+    private int rescheduleAppointmentId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,11 @@ public class ConfirmAppointmentActivity extends BaseActivity {
         selectedDoctor = (Doctor) getIntent().getSerializableExtra("doctor_data");
         selectedDate = getIntent().getStringExtra("selected_date");
         selectedTime = getIntent().getStringExtra("selected_time");
+        rescheduleAppointmentId = getIntent().getIntExtra("reschedule_appointment_id", -1);
+
+        if (rescheduleAppointmentId != -1) {
+            binding.btnConfirmBook.setText("Xác nhận đổi lịch");
+        }
 
         displayDoctorInfo();
         displayPatientInfo();
@@ -46,7 +58,12 @@ public class ConfirmAppointmentActivity extends BaseActivity {
         binding.btnConfirmBook.setOnClickListener(v -> {
             if (selectedDoctor != null) {
                 if (AppConstants.USE_MOCK_DATA) {
-                    Toast.makeText(this, "Đã đặt lịch thành công (Chế độ Mock)", Toast.LENGTH_LONG).show();
+                    String toastMsg = rescheduleAppointmentId != -1 ? "Đã đổi lịch thành công (Chế độ Mock)" : "Đã đặt lịch thành công (Chế độ Mock)";
+                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(ConfirmAppointmentActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.putExtra("select_tab", "schedule");
+                    startActivity(intent);
                     finish();
                 } else {
                     performBooking();
@@ -64,11 +81,24 @@ public class ConfirmAppointmentActivity extends BaseActivity {
 
         viewModel.getIsBookingSuccess().observe(this, success -> {
             if (success) {
-                Toast.makeText(this, "Đặt lịch thành công! Vui lòng chờ bác sĩ xác nhận.", Toast.LENGTH_LONG).show();
+                String successMsg = rescheduleAppointmentId != -1 ? "Đổi lịch hẹn thành công!" : "Đặt lịch thành công! Vui lòng chờ bác sĩ xác nhận.";
+                Toast.makeText(this, successMsg, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(ConfirmAppointmentActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("select_tab", "schedule");
+                startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(this, "Đặt lịch thất bại. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
+                String errorMsg = rescheduleAppointmentId != -1 ? "Đổi lịch thất bại. Vui lòng thử lại sau." : "Đặt lịch thất bại. Vui lòng thử lại sau.";
+                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
             }
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            // Bỏ systemBars.bottom để BottomNav tràn xuống dưới
+            v.setPadding(systemBars.left, 0, systemBars.right, 0);
+            return insets;
         });
     }
 
@@ -116,9 +146,40 @@ public class ConfirmAppointmentActivity extends BaseActivity {
             return;
         }
 
-        String datetime = selectedDate + " " + selectedTime;
+        // Parse date (d/M/yyyy or dd/MM/yyyy) to (yyyy-MM-dd)
+        String formattedDate = "";
+        try {
+            if (selectedDate != null && selectedDate.contains("/")) {
+                String[] dateParts = selectedDate.split("/");
+                int day = Integer.parseInt(dateParts[0]);
+                int month = Integer.parseInt(dateParts[1]);
+                int year = Integer.parseInt(dateParts[2]);
+                formattedDate = String.format(Locale.US, "%04d-%02d-%02d", year, month, day);
+            } else {
+                formattedDate = selectedDate;
+            }
+        } catch (Exception e) {
+            formattedDate = selectedDate;
+        }
+
+        // Parse time (HH:mm - HH:mm (Period)) to (HH:mm:00)
+        String formattedTime = "00:00:00";
+        try {
+            if (selectedTime != null && selectedTime.contains("-")) {
+                String startHour = selectedTime.split("-")[0].trim();
+                formattedTime = startHour + ":00";
+            }
+        } catch (Exception e) {
+            // fallback
+        }
+
+        String datetime = formattedDate + " " + formattedTime;
         String note = binding.etAppointmentNote.getText().toString().trim();
         
-        viewModel.createAppointment(currentPatientId, selectedDoctor.getId(), datetime, note);
+        if (rescheduleAppointmentId != -1) {
+            viewModel.updateAppointment(rescheduleAppointmentId, datetime, note);
+        } else {
+            viewModel.createAppointment(currentPatientId, selectedDoctor.getId(), datetime, note);
+        }
     }
 }

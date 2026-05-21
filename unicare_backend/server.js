@@ -40,6 +40,101 @@ db.connect((err) => {
         db.query(createOtpTable, (err) => {
             if (err) console.error("❌ Lỗi tạo bảng otps:", err.message);
         });
+
+        // Tự động kiểm tra và thêm cột 'note' vào bảng appointments nếu chưa có
+        db.query("SHOW COLUMNS FROM appointments LIKE 'note'", (err, colResults) => {
+            if (!err && colResults && colResults.length === 0) {
+                db.query("ALTER TABLE appointments ADD COLUMN note TEXT NULL", (alterErr) => {
+                    if (alterErr) console.error("❌ Lỗi thêm cột note vào bảng appointments:", alterErr.message);
+                    else console.log("🌱 Đã thêm cột note vào bảng appointments thành công!");
+                });
+            }
+        });
+
+        // Tự động sửa lỗi schema nếu bảng notifications cũ thiếu cột 'content'
+        db.query("SHOW COLUMNS FROM notifications LIKE 'content'", (err, colResults) => {
+            if (!err && colResults && colResults.length === 0) {
+                console.log("⚠️ Bảng notifications cũ thiếu cột 'content'. Tiến hành xoá bảng để tự động khởi tạo lại...");
+                db.query("DROP TABLE IF EXISTS notifications", (dropErr) => {
+                    if (dropErr) console.error("❌ Lỗi xoá bảng notifications:", dropErr.message);
+                    createAndSeedNotifications();
+                });
+            } else {
+                createAndSeedNotifications();
+            }
+        });
+
+        function createAndSeedNotifications() {
+            const createNotificationTable = `
+                CREATE TABLE IF NOT EXISTS notifications (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT,
+                    title VARCHAR(255) NOT NULL,
+                    content TEXT NOT NULL,
+                    type VARCHAR(50) NOT NULL,
+                    is_read TINYINT(1) DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            `;
+            db.query(createNotificationTable, (err) => {
+                if (err) {
+                    console.error("❌ Lỗi tạo bảng notifications:", err.message);
+                } else {
+                    // Kiểm tra xem có dữ liệu chưa
+                    db.query("SELECT COUNT(*) AS count FROM notifications", (err, results) => {
+                        if (!err && results && results[0] && results[0].count === 0) {
+                        // Bảng trống, tiến hành seed dữ liệu mẫu tương tự ảnh chụp
+                        const now = new Date();
+                        const seedQuery = `
+                            INSERT INTO notifications (title, content, type, is_read, created_at) VALUES
+                            ('Nhắc lịch khám', 'Bạn có lịch khám Tim mạch vào 09:00 ngày mai với BS. Nguyễn Văn An.', 'LICH_KHAM', 0, ?),
+                            ('Sắp đến lịch tiêm', 'Vắc-xin Cúm mùa - 08:30 ngày 22/05/2026 tại Phòng 201.', 'TIEM_CHUNG', 0, ?),
+                            ('Kết quả xét nghiệm', 'Kết quả xét nghiệm máu của bạn đã có. Nhấn để xem chi tiết.', 'KET_QUA', 0, ?),
+                            ('Ưu đãi tháng 5', 'Giảm 20% gói khám tổng quát cho khách hàng thân thiết.', 'UU_DAI', 1, ?),
+                            ('Cập nhật ứng dụng', 'Phiên bản 2.4 đã có. Trải nghiệm giao diện mới mượt mà hơn.', 'CAP_NHAT', 1, ?)
+                        `;
+                        const date1 = new Date(now.getTime() - 2 * 60 * 60 * 1000); // 2 giờ trước
+                        const date2 = new Date(now.getTime() - 5 * 60 * 60 * 1000); // 5 giờ trước
+                        const date3 = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 1 ngày trước
+                        const date4 = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 ngày trước
+                        const date5 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 ngày trước
+                        
+                        db.query(seedQuery, [date1, date2, date3, date4, date5], (err) => {
+                            if (err) console.error("❌ Lỗi seed notifications:", err.message);
+                            else console.log("🌱 Đã seed dữ liệu thông báo mẫu thành công!");
+                        });
+                    }
+                });
+            }
+        });
+        }
+
+        // 3. Tiến hành cập nhật/seed dữ liệu bác sĩ và vắc xin để khớp ảnh mẫu
+        db.query("UPDATE doctors SET name = 'Nguyễn Văn An', title = 'ThS. BS', workplace_address = 'UniCare - Phòng 105', bio = 'Tim mạch' WHERE id = 1", (err) => {
+            if (err) console.error("❌ Lỗi update doctor 1:", err.message);
+        });
+        
+        db.query("UPDATE doctors SET name = 'Trần Thị Bình', title = 'BS', workplace_address = 'UniCare - Phòng 203', bio = 'Nha khoa' WHERE id = 2", (err) => {
+            if (err) console.error("❌ Lỗi update doctor 2:", err.message);
+        });
+        
+        db.query("UPDATE doctors SET name = 'Phạm Quốc Dũng', title = 'TS. BS', workplace_address = 'UniCare - Phòng 101', bio = 'Khám tổng quát' WHERE id = 4", (err) => {
+            if (err) console.error("❌ Lỗi update doctor 4:", err.message);
+        });
+        
+        // Seed các bác sĩ vắc-xin ảo
+        const seedVaccineDoctors = `
+            INSERT IGNORE INTO doctors (id, name, title, workplace_address, bio, experience_years, consultation_fee, is_active) VALUES
+            (21, 'Vắc-xin Cúm mùa', 'Liều nhắc lại', 'Phòng 201 - UniCare', 'Tiêm chủng', 10, 0, 1),
+            (22, 'Vắc-xin HPV', 'Mũi 2/3', 'Phòng 105 - UniCare', 'Tiêm chủng', 10, 0, 1),
+            (23, 'Vắc-xin Viêm gan B', 'Mũi 3/3', 'Phòng 203 - UniCare', 'Tiêm chủng', 10, 0, 1),
+            (24, 'Vắc-xin Covid-19', 'Mũi nhắc', 'Phòng 105 - UniCare', 'Tiêm chủng', 10, 0, 1),
+            (25, 'Vắc-xin Sởi - Quai bị - Rubella', 'Mũi 1', 'Phòng 201 - UniCare', 'Tiêm chủng', 10, 0, 1)
+        `;
+        db.query(seedVaccineDoctors, (err) => {
+            if (err) console.error("❌ Lỗi seed vaccine doctors:", err.message);
+            else console.log("🌱 Đã seed hoặc cập nhật danh sách bác sĩ/vắc xin thành công!");
+        });
     }
 });
 
@@ -163,38 +258,137 @@ app.get('/doctors', (req, res) => {
 // API ĐẶT LỊCH HẸN
 app.post("/appointments", (req, res) => {
     const { patient_id, doctor_id, appointment_datetime, status, note } = req.body;
-    const sql = "INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, status, note) VALUES (?, ?, ?, ?, ?)";
-    db.query(sql, [patient_id, doctor_id, appointment_datetime, status, note], (err, result) => {
-        if (err) {
-            console.error("❌ Booking Error:", err.message);
-            return res.status(500).json({ message: "Lỗi lưu lịch hẹn" });
+    
+    // Resolve patient_id (if it is user_id, map to patients.id)
+    db.query("SELECT id FROM patients WHERE user_id = ?", [patient_id], (err, patientResults) => {
+        let actualPatientId = patient_id;
+        if (!err && patientResults && patientResults.length > 0) {
+            actualPatientId = patientResults[0].id;
         }
-        res.status(200).json({ status: "success", message: "Đặt lịch thành công" });
+
+        const sql = "INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, status, note) VALUES (?, ?, ?, ?, ?)";
+        db.query(sql, [actualPatientId, doctor_id, appointment_datetime, status, note], (err, result) => {
+            if (err) {
+                console.error("❌ Booking Error:", err.message);
+                return res.status(500).json({ message: "Lỗi lưu lịch hẹn" });
+            }
+            res.status(200).json({ status: "success", message: "Đặt lịch thành công" });
+        });
     });
 });
 
-// API LẤY LỊCH HẸN CỦA BỆNH NHÂN (JOIN để lấy thông tin bác sĩ)
+// API LẤY LỊCH HẸN CỦA BỆNH NHÂN (Có tự động seed nếu chưa có dữ liệu)
 app.get("/appointments", (req, res) => {
     const { patient_id } = req.query;
     if (!patient_id) return res.status(400).json({ message: "Thiếu patient_id" });
 
-    const sql = `
-        SELECT a.*, d.name as doctor_name, d.workplace_address, d.consultation_fee,
-               GROUP_CONCAT(s.name SEPARATOR ', ') as specialty_name
-        FROM appointments a
-        JOIN doctors d ON a.doctor_id = d.id
-        LEFT JOIN doctor_specialties ds ON d.id = ds.doctor_id
-        LEFT JOIN specialties s ON ds.specialty_id = s.id
-        WHERE a.patient_id = ?
-        GROUP BY a.id
-        ORDER BY a.appointment_datetime DESC
-    `;
-    db.query(sql, [patient_id], (err, results) => {
-        if (err) {
-            console.error("❌ Fetch Appointments Error:", err.message);
-            return res.status(500).json(err);
+    // Resolve patient_id (if it is user_id, map to patients.id)
+    db.query("SELECT id FROM patients WHERE user_id = ?", [patient_id], (err, patientResults) => {
+        let actualPatientId = patient_id;
+        if (!err && patientResults && patientResults.length > 0) {
+            actualPatientId = patientResults[0].id;
         }
-        res.json(results);
+
+        // Hàm thực hiện lấy dữ liệu sau khi đảm bảo đã có dữ liệu trong DB
+        const fetchAppointments = () => {
+            const sql = `
+                SELECT a.*, d.name as doctor_name, d.title as doctor_title, d.bio as doctor_bio, d.workplace_address, d.consultation_fee,
+                       GROUP_CONCAT(s.name SEPARATOR ', ') as specialty_name
+                FROM appointments a
+                JOIN doctors d ON a.doctor_id = d.id
+                LEFT JOIN doctor_specialties ds ON d.id = ds.doctor_id
+                LEFT JOIN specialties s ON ds.specialty_id = s.id
+                WHERE a.patient_id = ? AND a.status != 'CANCELLED'
+                GROUP BY a.id
+                ORDER BY CASE WHEN a.status = 'PENDING' THEN 0 ELSE 1 END, a.appointment_datetime ASC
+            `;
+            db.query(sql, [actualPatientId], (err, results) => {
+                if (err) {
+                    console.error("❌ Fetch Appointments Error:", err.message);
+                    return res.status(500).json(err);
+                }
+                res.json(results);
+            });
+        };
+
+        // Kiểm tra xem bệnh nhân này đã có cuộc hẹn nào chưa
+        db.query("SELECT COUNT(*) AS count FROM appointments WHERE patient_id = ?", [actualPatientId], (err, countResults) => {
+            if (err) {
+                console.error("❌ Check Appointments Count Error:", err.message);
+                return res.status(500).json(err);
+            }
+
+            if (countResults[0].count === 0) {
+                console.log(`🌱 Chưa có lịch hẹn cho bệnh nhân ${actualPatientId}. Tiến hành tự động seed dữ liệu mẫu.`);
+                const seedAppointmentsQuery = `
+                    INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, status, note) VALUES
+                    (?, 1, '2026-06-01 09:00:00', 'PENDING', 'Khám Tim mạch'),
+                    (?, 2, '2026-06-02 14:30:00', 'PENDING', 'Khám Nha khoa'),
+                    (?, 4, '2026-03-12 08:30:00', 'COMPLETED', 'Khám tổng quát'),
+                    (?, 21, '2026-05-22 08:30:00', 'PENDING', 'Liều nhắc lại'),
+                    (?, 22, '2026-06-10 09:00:00', 'PENDING', 'Mũi 2/3'),
+                    (?, 23, '2026-07-05 14:00:00', 'PENDING', 'Mũi 3/3'),
+                    (?, 24, '2026-03-12 10:00:00', 'COMPLETED', 'Mũi nhắc'),
+                    (?, 25, '2026-01-20 08:00:00', 'COMPLETED', 'Mũi 1')
+                `;
+                db.query(seedAppointmentsQuery, [actualPatientId, actualPatientId, actualPatientId, actualPatientId, actualPatientId, actualPatientId, actualPatientId, actualPatientId], (err) => {
+                    if (err) {
+                        console.error("❌ Seed Appointments Error:", err.message);
+                        // Vẫn trả về rỗng thay vì bị crash nếu lỗi seed xảy ra
+                        return res.json([]);
+                    }
+                    console.log("✅ Seed lịch hẹn mẫu thành công!");
+                    fetchAppointments();
+                });
+            } else {
+                fetchAppointments();
+            }
+        });
+    });
+});
+
+// API ĐỔI LỊCH HẸN (+7 ngày)
+app.post("/appointments/reschedule", (req, res) => {
+    const { appointmentId } = req.body;
+    if (!appointmentId) return res.status(400).json({ message: "Thiếu appointmentId" });
+
+    const sql = "UPDATE appointments SET appointment_datetime = DATE_ADD(appointment_datetime, INTERVAL 7 DAY) WHERE id = ?";
+    db.query(sql, [appointmentId], (err, result) => {
+        if (err) {
+            console.error("❌ Reschedule Error:", err.message);
+            return res.status(500).json({ message: "Lỗi dời lịch hẹn" });
+        }
+        res.json({ status: "success", message: "Đổi lịch thành công" });
+    });
+});
+
+// API CẬP NHẬT CHI TIẾT LỊCH HẸN (Đổi ngày/giờ và note)
+app.post("/appointments/update-details", (req, res) => {
+    const { appointmentId, appointment_datetime, note } = req.body;
+    if (!appointmentId) return res.status(400).json({ message: "Thiếu appointmentId" });
+
+    const sql = "UPDATE appointments SET appointment_datetime = ?, note = ? WHERE id = ?";
+    db.query(sql, [appointment_datetime, note, appointmentId], (err, result) => {
+        if (err) {
+            console.error("❌ Update Details Error:", err.message);
+            return res.status(500).json({ message: "Lỗi cập nhật lịch hẹn" });
+        }
+        res.json({ status: "success", message: "Cập nhật lịch hẹn thành công" });
+    });
+});
+
+// API HUỶ LỊCH HẸN
+app.post("/appointments/cancel", (req, res) => {
+    const { appointmentId } = req.body;
+    if (!appointmentId) return res.status(400).json({ message: "Thiếu appointmentId" });
+
+    const sql = "UPDATE appointments SET status = 'CANCELLED' WHERE id = ?";
+    db.query(sql, [appointmentId], (err, result) => {
+        if (err) {
+            console.error("❌ Cancel Error:", err.message);
+            return res.status(500).json({ message: "Lỗi huỷ lịch hẹn" });
+        }
+        res.json({ status: "success", message: "Huỷ lịch hẹn thành công" });
     });
 });
 
@@ -226,7 +420,27 @@ app.post("/forgot-password/send-otp", (req, res) => {
             db.query("INSERT INTO otps (email, otp) VALUES (?, ?)", [email, otp], (err) => {
                 if (err) return res.status(500).json({ status: "error", message: "Lỗi lưu OTP" });
 
-                // 4. Gửi mail thật qua Gmail
+                // 4. Kiểm tra xem có cấu hình Email thật không, nếu không cấu hình thì bật CHẾ ĐỘ DEMO
+                const isDemoMode = !process.env.EMAIL_USER || 
+                                   process.env.EMAIL_USER === "your_email@gmail.com" || 
+                                   !process.env.EMAIL_PASS || 
+                                   process.env.EMAIL_PASS.includes("your_app_password");
+
+                if (isDemoMode) {
+                    console.log("\n=============================================");
+                    console.log("🔒 [CHẾ ĐỘ DEMO - KHÔNG CÓ CẤU HÌNH GMAIL THẬT]");
+                    console.log(`🔑 OTP ĐỂ LẤY LẠI MẬT KHẨU CỦA ${email} LÀ:`);
+                    console.log(`👉 ${otp} 👈`);
+                    console.log("=============================================\n");
+
+                    return res.json({ 
+                        status: "success", 
+                        message: "Mã OTP đã được tạo (Vui lòng xem log server NodeJS để lấy mã)",
+                        username: username // Gửi kèm username về cho App
+                    });
+                }
+
+                // Gửi mail thật qua Gmail
                 const mailOptions = {
                     from: `"UniCare Support" <${process.env.EMAIL_USER}>`,
                     to: email,
@@ -283,6 +497,53 @@ app.post("/forgot-password/reset", async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Lỗi mã hóa mật khẩu" });
     }
+});
+
+
+// API LẤY DANH SÁCH THÔNG BÁO
+app.get("/notifications", (req, res) => {
+    const userId = req.query.userId || 0;
+    
+    // Lấy thông báo cá nhân (user_id = userId) HOẶC thông báo chung (user_id IS NULL hoặc user_id = 0)
+    const sql = `
+        SELECT * FROM notifications 
+        WHERE user_id = ? OR user_id IS NULL OR user_id = 0 
+        ORDER BY created_at DESC
+    `;
+    
+    db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error("❌ Lỗi lấy thông báo:", err.message);
+            return res.status(500).json({ status: "error", message: err.message });
+        }
+        res.json({
+            status: "success",
+            data: results
+        });
+    });
+});
+
+// API ĐÁNH DẤU ĐỌC HẾT TẤT CẢ THÔNG BÁO
+app.post("/notifications/read-all", (req, res) => {
+    const { userId } = req.body;
+    
+    // Đánh dấu tất cả thông báo của người dùng này hoặc thông báo chung là đã đọc
+    const sql = `
+        UPDATE notifications 
+        SET is_read = 1 
+        WHERE user_id = ? OR user_id IS NULL OR user_id = 0
+    `;
+    
+    db.query(sql, [userId || 0], (err, results) => {
+        if (err) {
+            console.error("❌ Lỗi đọc hết thông báo:", err.message);
+            return res.status(500).json({ status: "error", message: err.message });
+        }
+        res.json({
+            status: "success",
+            message: "Đã đánh dấu đọc tất cả thông báo"
+        });
+    });
 });
 
 

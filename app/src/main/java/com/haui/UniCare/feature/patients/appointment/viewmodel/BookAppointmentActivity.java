@@ -38,6 +38,7 @@ public class BookAppointmentActivity extends AppCompatActivity {
     private ImageView imgAvatar;
     private TextView tvName, tvTitle, tvExperience, tvMonth, tvBiography;
     private Doctor selectedDoctor;
+    private int rescheduleAppointmentId = -1;
 
     private List<TimeSlot> morningSlots = new ArrayList<>();
     private List<TimeSlot> afternoonSlots = new ArrayList<>();
@@ -51,6 +52,7 @@ public class BookAppointmentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_appointment);
 
         selectedDoctor = (Doctor) getIntent().getSerializableExtra("doctor_data");
+        rescheduleAppointmentId = getIntent().getIntExtra("reschedule_appointment_id", -1);
         currentCalendar = Calendar.getInstance();
 
         mapping();
@@ -245,6 +247,7 @@ public class BookAppointmentActivity extends AppCompatActivity {
                 intent.putExtra("selected_date", dateString);
                 intent.putExtra("selected_time", selectedTime.getTimeRange() + " (" + periodName + ")");
                 intent.putExtra("is_morning", isMorning);
+                intent.putExtra("reschedule_appointment_id", rescheduleAppointmentId);
 
                 startActivity(intent);
             } else {

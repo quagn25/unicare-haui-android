@@ -7,7 +7,7 @@
     <item
         android:id="@+id/nav_schedule"
         android:icon="@drawable/outline_date_range_24"
-        android:title="Lịch khám" />
+        android:title="Lịch tiêm" />
     <item
         android:id="@+id/nav_notifications"
         android:icon="@drawable/outline_notifications_24"
@@ -15,5 +15,5 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/outline_person_24"
-        android:title="Tài khoản" />
+        android:title="Hồ sơ" />
 </menu>

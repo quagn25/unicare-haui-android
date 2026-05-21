@@ -1,20 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".feature.patients.home.ui.PersonFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hồ sơ" />
+        android:padding="10dp"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Đăng xuất" />
+        <TableRow
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:background="@drawable/circleconner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgAvatarPerson"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="15dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_avt"
+                app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="Người dùng" />
+        </TableRow>
+
+        <LinearLayout
+            android:background="@drawable/circleconner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_health_records"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/filehealth"
+                android:drawableTint="#2196F3"
+                android:gravity="center_vertical"
+                android:text="Hồ sơ y tế" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#E0E0E0" />
+
+            <TextView
+                android:id="@+id/tv_share_app"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:drawablePadding="10dp"
+                android:drawableTint="#2196F3"
+                android:gravity="center_vertical"
+                android:text="Chia sẻ ứng dụng" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#E0E0E0" />
+
+            <TextView
+                android:id="@+id/tv_change_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/outline_lock_open_24"
+                android:drawableTint="#2196F3"
+                android:gravity="center_vertical"
+                android:text="Thay đổi mật khẩu" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:background="#E0E0E0" />
+
+            <TextView
+                android:id="@+id/tv_delete_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/outline_person_24"
+                android:drawableTint="#2196F3"
+                android:gravity="center_vertical"
+                android:text="Yêu cầu xoá tài khoản" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:backgroundTint="#295FD0"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:text="Đăng xuất" />
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -23,6 +23,12 @@ public class Appointment {
     @SerializedName("doctor_name")
     public String doctorName;
 
+    @SerializedName("doctor_title")
+    public String doctorTitle;
+
+    @SerializedName("doctor_bio")
+    public String doctorBio;
+
     @SerializedName("specialty_name")
     public String specialtyName;
 

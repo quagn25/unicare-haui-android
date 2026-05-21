@@ -46,6 +46,31 @@ public class DoctorHomeAdapter extends RecyclerView.Adapter<DoctorHomeAdapter.Vi
 
         holder.tvName.setText(doctor.getName());
         
+        // Bind degree and specialty
+        String degree = doctor.getDegree();
+        String spec = doctor.getSpecialties();
+        String fullSpec = "";
+        if (degree != null && !degree.isEmpty()) {
+            fullSpec += degree;
+        }
+        if (spec != null && !spec.isEmpty()) {
+            if (!fullSpec.isEmpty()) {
+                fullSpec += " ";
+            }
+            fullSpec += spec;
+        }
+        if (fullSpec.isEmpty()) {
+            fullSpec = "Bác sĩ";
+        }
+        holder.tvSpecialty.setText(fullSpec);
+
+        // Bind experience text
+        holder.tvExperience.setText(doctor.getExperienceYears() + " năm KN");
+
+        // Bind mock dynamic rating (e.g. 4.9, 4.8, 4.7) based on doctor ID
+        double rating = 4.9 - (doctor.getId() % 3) * 0.1;
+        holder.tvRating.setText(String.format(java.util.Locale.getDefault(), "%.1f", rating));
+        
         // Load avatar using Glide
         if (doctor.getAvatarUrl() != null && !doctor.getAvatarUrl().isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -79,11 +104,17 @@ public class DoctorHomeAdapter extends RecyclerView.Adapter<DoctorHomeAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView imgAvatar;
         TextView tvName;
+        TextView tvSpecialty;
+        TextView tvRating;
+        TextView tvExperience;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgAvatar = itemView.findViewById(R.id.imgDoctorAvatar);
             tvName = itemView.findViewById(R.id.tvDoctorName);
+            tvSpecialty = itemView.findViewById(R.id.tvDoctorSpecialty);
+            tvRating = itemView.findViewById(R.id.tvDoctorRating);
+            tvExperience = itemView.findViewById(R.id.tvDoctorExperience);
         }
     }
 }

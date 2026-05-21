@@ -196,7 +196,24 @@ public class HomeFragment extends Fragment {
             SharedPreferences sharedPref = getActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
             String fullName = sharedPref.getString("fullName", "Người dùng");
             tvUserNameHome.setText(fullName);
+            
+            TextView tvAvatarInitials = getView() != null ? getView().findViewById(R.id.tvAvatarInitials) : null;
+            if (tvAvatarInitials != null) {
+                tvAvatarInitials.setText(getInitials(fullName));
+            }
         }
+    }
+
+    private String getInitials(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) return "U";
+        String[] words = fullName.trim().split("\\s+");
+        if (words.length == 0) return "U";
+        if (words.length == 1) {
+            return words[0].substring(0, Math.min(2, words[0].length())).toUpperCase();
+        }
+        String first = words[0].substring(0, 1);
+        String last = words[words.length - 1].substring(0, 1);
+        return (first + last).toUpperCase();
     }
 
     private final Runnable sliderRunnable = new Runnable() {

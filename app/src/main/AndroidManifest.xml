@@ -36,6 +36,7 @@
         <activity android:name=".feature.patients.doctor.ui.DoctorDetailActivity" />
         <activity android:name=".feature.patients.appointment.viewmodel.BookAppointmentActivity" />
         <activity android:name=".feature.patients.appointment.ui.ConfirmAppointmentActivity" />
+        <activity android:name=".feature.patients.appointment.viewmodel.BookVaccineActivity" />
 
     </application>
 

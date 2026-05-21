@@ -61,10 +61,16 @@ public class DoctorListActivity extends BaseActivity {
     private void displayDoctors(List<Doctor> doctors) {
         // Kiểm tra xem có yêu cầu lọc theo chuyên khoa không
         String specialtyName = getIntent().getStringExtra("specialty_name");
-        if (specialtyName != null && !specialtyName.isEmpty()) {
+        
+        // Nếu chuyên khoa là "Tổng quát", hiển thị tất cả các bác sĩ (không lọc)
+        if (specialtyName != null && !specialtyName.isEmpty() && !specialtyName.equalsIgnoreCase("Tổng quát")) {
             List<Doctor> filtered = new ArrayList<>();
             for (Doctor d : doctors) {
-                if (d.getSpecialties().toLowerCase().contains(specialtyName.toLowerCase())) {
+                // Kiểm tra chuyên khoa ở cả trường 'specialties' và trường 'bio' (tránh việc database lưu chuyên khoa ở cột 'bio')
+                boolean matchSpecialties = d.getSpecialties() != null && d.getSpecialties().toLowerCase().contains(specialtyName.toLowerCase());
+                boolean matchBio = d.getBio() != null && d.getBio().toLowerCase().contains(specialtyName.toLowerCase());
+                
+                if (matchSpecialties || matchBio) {
                     filtered.add(d);
                 }
             }
@@ -73,6 +79,7 @@ public class DoctorListActivity extends BaseActivity {
                 Toast.makeText(this, "Không có bác sĩ chuyên khoa " + specialtyName, Toast.LENGTH_SHORT).show();
             }
         } else {
+            // Hiển thị tất cả bác sĩ nếu không chọn chuyên khoa hoặc chọn chuyên khoa "Tổng quát"
             doctorAdapter.updateList(doctors);
         }
     }
