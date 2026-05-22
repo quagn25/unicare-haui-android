@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Màu chính -->
+    <color name="primary_blue">#1B6BF5</color>
+    <color name="primary_blue_light">#4D8FF7</color>
+    <color name="primary_blue_dark">#1254CC</color>
+
+    <!-- Nền -->
+    <color name="background_grey">#F2F4F7</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="hint_color">#9CA3AF</color>
+
+    <!-- Chip -->
+    <color name="chip_background">#EFF4FF</color>
+    <color name="chip_text">#1B6BF5</color>
+
+    <!-- Khác -->
+    <color name="divider">#E5E7EB</color>
+    <color name="slot_green">#22C55E</color>
+    <color name="warning_orange">#F5A623</color>
+    <color name="error_red">#E84040</color>
 </resources>

@@ -6,12 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.haui.UniCare.R;
 import com.haui.UniCare.data.model.TimeSlot;
 import java.util.List;
 
-public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeViewHolder> {
+public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSlotViewHolder> {
 
     private List<TimeSlot> timeSlots;
     private int selectedPosition = -1;
@@ -26,30 +27,24 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeVi
         this.listener = listener;
     }
 
-    public void updateData(List<TimeSlot> newList) {
-        this.timeSlots = newList;
-        this.selectedPosition = -1; // Reset selection when switching tabs
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
-    public TimeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TimeSlotViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_time_slot, parent, false);
-        return new TimeViewHolder(view);
+        return new TimeSlotViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TimeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TimeSlotViewHolder holder, int position) {
         TimeSlot timeSlot = timeSlots.get(position);
-        holder.tvTimeRange.setText(timeSlot.getTimeRange());
+        holder.tvSlot.setText(timeSlot.getTimeRange());
 
         if (position == selectedPosition) {
-            holder.tvTimeRange.setBackgroundResource(R.drawable.bg_time_selected);
-            holder.tvTimeRange.setTextColor(Color.WHITE);
+            holder.cardSlot.setCardBackgroundColor(Color.parseColor("#009688"));
+            holder.tvSlot.setTextColor(Color.WHITE);
         } else {
-            holder.tvTimeRange.setBackgroundResource(R.drawable.bg_chip);
-            holder.tvTimeRange.setTextColor(Color.BLACK);
+            holder.cardSlot.setCardBackgroundColor(Color.WHITE);
+            holder.tvSlot.setTextColor(Color.BLACK);
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -69,16 +64,28 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeVi
     }
 
     public TimeSlot getSelectedTime() {
-        if (selectedPosition != -1) return timeSlots.get(selectedPosition);
+        if (selectedPosition != -1 && selectedPosition < timeSlots.size()) {
+            return timeSlots.get(selectedPosition);
+        }
         return null;
     }
 
-    public static class TimeViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTimeRange;
+    public void clearSelection() {
+        int previousSelected = selectedPosition;
+        selectedPosition = -1;
+        if (previousSelected != -1) {
+            notifyItemChanged(previousSelected);
+        }
+    }
 
-        public TimeViewHolder(@NonNull View itemView) {
+    public static class TimeSlotViewHolder extends RecyclerView.ViewHolder {
+        CardView cardSlot;
+        TextView tvSlot;
+
+        public TimeSlotViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTimeRange = itemView.findViewById(R.id.tv_time_range);
+            cardSlot = itemView.findViewById(R.id.cardSlot);
+            tvSlot = itemView.findViewById(R.id.tvSlot);
         }
     }
 }

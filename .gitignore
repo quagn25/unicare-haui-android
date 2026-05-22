@@ -4,13 +4,40 @@
 build/
 *.iml
 local.properties
+.cxx/
+captures/
 
+# Build artifacts
+*.apk
+*.aar
+*.ap_
+*.dex
+*.class
 
-# Backend secrets
+# Generated files
+bin/
+gen/
+out/
+
+# Log files
+*.log
+
+# Backend secrets & Dependencies
 .env
 node_modules/
-package.json
-package-lock.json
 
 # Database files
 *.sql
+*.db
+*.db-journal
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keystore files (Quan trọng: Không nên đưa khóa ký ứng dụng lên Git)
+*.jks
+*.keystore
+*.p12
+*.key
+google-services.json

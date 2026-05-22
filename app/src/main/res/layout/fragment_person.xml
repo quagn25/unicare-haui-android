@@ -2,12 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/background"
+    android:background="#F1F5F9"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".feature.patients.profile.ui.PersonFragment">
-
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,25 +22,24 @@
             android:layout_height="wrap_content" >
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgAvatarPerson"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginEnd="15dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/macdinh"
-                app:shapeAppearanceOverlay="@style/circleImage"/>
-
+                android:src="@drawable/default_avt"
+                app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:textStyle="bold"
-                android:textSize="20dp"
-                android:text="TextView" />
+                android:textSize="20sp"
+                android:text="Người dùng" />
         </TableRow>
-
 
         <LinearLayout
             android:background="@drawable/circleconner"
@@ -52,14 +50,15 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_health_records"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:drawablePadding="10dp"
                 android:drawableStart="@drawable/outline_lab_profile_24"
                 android:drawableTint="#2196F3"
-                android:text="Hồ sơ y tế" />
+                android:gravity="center_vertical"
+                android:text="Hồ sơ" />
 
             <View
                 android:layout_width="match_parent"
@@ -69,13 +68,14 @@
                 android:background="#E0E0E0" />
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_share_app"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:drawablePadding="10dp"
-                android:drawableStart="@drawable/outline_share_24"
                 android:drawableTint="#2196F3"
+                android:drawableStart="@drawable/outline_share_24"
+                android:gravity="center_vertical"
                 android:text="Chia sẻ ứng dụng" />
 
             <View
@@ -86,13 +86,14 @@
                 android:background="#E0E0E0" />
 
             <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_change_password"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:drawablePadding="10dp"
-                android:drawableStart="@drawable/outline_lock_open_circle_24"
+                android:drawableStart="@drawable/outline_lock_open_24"
                 android:drawableTint="#2196F3"
+                android:gravity="center_vertical"
                 android:text="Thay đổi mật khẩu" />
 
             <View
@@ -102,21 +103,21 @@
                 android:layout_marginTop="15dp"
                 android:background="#E0E0E0" />
 
-
             <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_delete_account"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:drawablePadding="10dp"
-                android:drawableStart="@drawable/outline_person_cancel_24"
+                android:drawableStart="@drawable/outline_person_24"
                 android:drawableTint="#2196F3"
+                android:gravity="center_vertical"
                 android:text="Yêu cầu xoá tài khoản" />
         </LinearLayout>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -124,8 +125,6 @@
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:text="Đăng xuất" />
-
-
 
     </LinearLayout>
 

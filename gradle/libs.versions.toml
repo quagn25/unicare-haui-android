@@ -9,6 +9,8 @@ activity = "1.9.3"
 constraintlayout = "2.2.1"
 playServicesCloudMessaging = "17.4.0"
 firebaseAppdistributionGradle = "5.2.1"
+legacySupportV4 = "1.0.0"
+impress = "0.0.14"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,6 +22,8 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-cloud-messaging = { group = "com.google.android.gms", name = "play-services-cloud-messaging", version.ref = "playServicesCloudMessaging" }
 firebase-appdistribution-gradle = { group = "com.google.firebase", name = "firebase-appdistribution-gradle", version.ref = "firebaseAppdistributionGradle" }
+legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+impress = { group = "com.google.ar", name = "impress", version.ref = "impress" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

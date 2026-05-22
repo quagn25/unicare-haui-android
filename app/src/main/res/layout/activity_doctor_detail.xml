@@ -18,6 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="15dp"
             app:navigationIcon="@drawable/outline_arrow_back_24"
             app:title="Chi tiết bác sĩ"
             app:titleTextColor="@android:color/black" />

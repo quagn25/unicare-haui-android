@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:gravity="top">
+
+        <!-- Date badge on the left -->
+        <LinearLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_vaccine_card_date">
+
+            <TextView
+                android:id="@+id/tv_vaccine_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tháng 6"
+                android:textColor="#0066FF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tv_vaccine_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textColor="#0066FF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="-2dp" />
+        </LinearLayout>
+
+        <!-- Information details on the right -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <!-- Title and Badge row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_vaccine_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Khám Tim mạch"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tv_vaccine_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Sắp tới"
+                    android:background="@drawable/bg_status_upcoming"
+                    android:textColor="#D97706"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp" />
+            </LinearLayout>
+
+            <!-- Details list -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp">
+
+                <!-- Time -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_clock"
+                        app:tint="#6B7280" />
+
+                    <TextView
+                        android:id="@+id/tv_vaccine_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="09:00"
+                        android:textColor="#6B7280"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- Location -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_location"
+                        app:tint="#6B7280" />
+
+                    <TextView
+                        android:id="@+id/tv_vaccine_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="UniCare - Phòng 105"
+                        android:textColor="#6B7280"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- Doctor / Vaccine dose info line -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/iv_vaccine_extra_icon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/outline_person_24"
+                        app:tint="#6B7280" />
+
+                    <TextView
+                        android:id="@+id/tv_vaccine_note"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="BS. Nguyễn Văn An"
+                        android:textColor="#6B7280"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Buttons row -->
+            <LinearLayout
+                android:id="@+id/layout_buttons_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <!-- Đổi lịch button -->
+                <LinearLayout
+                    android:id="@+id/btn_vaccine_reschedule"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_appointment_reschedule_btn"
+                    android:paddingVertical="9dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_calendar_white"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đổi lịch"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Huỷ lịch hẹn button -->
+                <LinearLayout
+                    android:id="@+id/btn_vaccine_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:layout_marginStart="12dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_appointment_cancel_btn"
+                    android:paddingVertical="9dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_close_red"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Huỷ lịch hẹn"
+                        android:textColor="#FF4D4D"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

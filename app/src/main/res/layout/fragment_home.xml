@@ -1,223 +1,371 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#F1F5F9"
     tools:context=".feature.patients.home.ui.HomeFragment">
 
+    <!-- Header Area: Dùng FrameLayout để nổi lên trên -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Banner xanh cố định - Không bị co giãn -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@drawable/bg_home_header" />
+
+        <!-- Nội dung nổi phía trên -->
+        <LinearLayout
+            android:id="@+id/headerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="33dp"
+            android:paddingHorizontal="20dp"
+            android:animateLayoutChanges="true">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/profileCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_profile_card_gradient"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvAvatarInitials"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_circle_avatar"
+                        android:backgroundTint="#40FFFFFF"
+                        android:gravity="center"
+                        android:text="DA"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Xin chào,"
+                            android:textColor="#E3F2FD"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:id="@+id/tvUserNameHome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Developer Admin"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ivExpandArrow"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/outline_keyboard_arrow_up_24"
+                        app:tint="@color/white" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Search Input: Sẽ được đẩy xuống khi card mở, nhưng không đổi hình dạng -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearchHome"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="16dp"
+                android:background="@drawable/bg_search_field_pill"
+                android:drawableStart="@drawable/outline_search_24"
+                android:drawableTint="#94A3B8"
+                android:hint="Tìm kiếm..."
+                android:textColor="#0F172A"
+                android:textSize="14sp"
+                android:drawablePadding="10dp"
+                android:focusable="false"
+                android:clickable="true" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- NestedScrollView bên dưới giữ nguyên... -->
+
+    <!-- Scrollable Body Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingBottom="24dp">
 
-
-            <TableRow
-                android:layout_marginTop="10dp"
-                android:padding="10dp"
-                android:background="@drawable/circleconner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="15dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/macdinh"
-                    app:shapeAppearanceOverlay="@style/circleImage"/>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-
-
-                    <TextView
-                        android:id="@+id/tvGreeting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Xin chào,"
-                        android:textSize="18sp"
-                        android:textColor="@android:color/black"
-                        />
-
-                    <TextView
-                        android:id="@+id/tvUserNameHome"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textSize="20dp"
-                        android:text="TextView" />
-                </LinearLayout>
-
-
-            </TableRow>
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearchHome"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:padding="15dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/circleconner"
-                android:drawableStart="@drawable/outline_search_24"
-                android:hint="Tên bác sĩ, chuyên khoa, ...."
-                android:drawablePadding="10dp"
-                android:focusable="false"
-                android:clickable="true" />
-
-            <!-- Banner Slider -->
+            <!-- ViewPager Banner Slider (Replaces static promo card) -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp">
+                android:layout_height="170dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="12dp">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPagerBanner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/layoutIndicator" />
 
+                <!-- Indicator dots for the active slide -->
                 <LinearLayout
                     android:id="@+id/layoutIndicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center"
                     android:orientation="horizontal" />
             </RelativeLayout>
 
-            <!-- Các nút chức năng -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:background="@drawable/circleconner"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
+            <!-- Quick Action Card (Đặt khám, Lịch tiêm, Hồ sơ) -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Đặt khám bác sĩ -->
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/doctorbook"
-                        app:shapeAppearanceOverlay="@style/roundedImage" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đặt khám"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <!-- Đặt lịch tiêm -->
-                <LinearLayout
-                    android:id="@+id/linearLayout2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-                    app:layout_constraintStart_toEndOf="@+id/linearLayout"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/vaccine"
-                        app:shapeAppearanceOverlay="@style/roundedImage" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lịch tiêm"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <!-- Hồ sơ sức khỏe -->
-                <LinearLayout
-                    android:id="@+id/linearLayout3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/filehealth"
-                        app:shapeAppearanceOverlay="@style/roundedImage" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hồ sơ"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="10dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:text="Khám theo chuyên khoa" />
+                android:layout_marginHorizontal="20dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="3dp"
+                app:strokeWidth="0dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/circleconner"
-                android:layout_gravity="center"
-                android:padding="10dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="18dp"
+                    android:baselineAligned="false">
+
+                    <!-- Đặt khám -->
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp">
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_circle_avatar"
+                                android:backgroundTint="#0B5CFF" />
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_action_book" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Đặt khám"
+                            android:textSize="12sp"
+                            android:textColor="#1E293B"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+                    <!-- Lịch tiêm -->
+                    <LinearLayout
+                        android:id="@+id/linearLayout2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp">
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_circle_avatar"
+                                android:backgroundTint="#00B686" />
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_action_vaccine" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Lịch tiêm"
+                            android:textSize="12sp"
+                            android:textColor="#1E293B"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+                    <!-- Hồ sơ -->
+                    <LinearLayout
+                        android:id="@+id/linearLayout3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp">
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_circle_avatar"
+                                android:backgroundTint="#EF4444" />
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_action_file" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Hồ sơ"
+                            android:textSize="12sp"
+                            android:textColor="#1E293B"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Featured Doctors Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bác sĩ nổi bật"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#1E293B"/>
+
+                </LinearLayout>
+
+                <!-- Doctors RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHomeDoctors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal" />
+
+                <!-- Custom Slider Progress Capsule -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="120dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/bg_scrollbar_track" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Specialties Grid Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Khám theo chuyên khoa"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#1E293B"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"/>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</FrameLayout>
+
+</LinearLayout>

@@ -27,14 +27,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="unicare" android:host="app" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
 
         <activity android:name=".feature.auth.ui.RegisterActivity" />
         <activity android:name=".feature.auth.ui.ForgotPasswordActivity" />
@@ -43,7 +36,9 @@
         <activity android:name=".feature.patients.doctor.ui.DoctorDetailActivity" />
         <activity android:name=".feature.patients.appointment.viewmodel.BookAppointmentActivity" />
         <activity android:name=".feature.patients.appointment.ui.ConfirmAppointmentActivity" />
-        <activity android:name=".feature.patients.profile.viewmodel.ChangePass"/>
+        <activity android:name=".feature.patients.appointment.viewmodel.BookVaccineActivity" />
+        <activity android:name=".feature.patients.profile.ui.FilePerson" />
+        <activity android:name=".feature.patients.profile.ui.EditProfilePerson" />
 
     </application>
 
