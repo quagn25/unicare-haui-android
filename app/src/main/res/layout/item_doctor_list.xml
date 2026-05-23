@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
     app:cardBackgroundColor="@color/white">
 
     <LinearLayout
@@ -16,107 +16,136 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <!-- Avatar -->
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgDoctorAvatar"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_doctor_placeholder"
-                app:shapeAppearanceOverlay="@style/CircleImageView"
-                app:strokeWidth="2dp"
-                app:strokeColor="@color/primary_blue_light"/>
-
-            <!-- Thông tin -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:id="@+id/tvDoctorTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"/>
-
-                <TextView
-                    android:id="@+id/tvDoctorName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:id="@+id/tvDoctorExperience"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginTop="2dp"/>
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupSpecialties"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:chipSpacingHorizontal="4dp"
-                    app:chipSpacingVertical="0dp"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider"
-            android:layout_marginVertical="12dp"/>
-
-        <!-- Địa chỉ -->
+        <!-- Phần trên: Avatar và Thông tin chính -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="18dp"
-                android:layout_height="wrap_content"
-                android:text="📍"
-                android:textSize="12sp"/>
+            <!-- Avatar bác sĩ với viền xanh nhạt -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgDoctorAvatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_doctor_placeholder"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                app:strokeWidth="1dp"
+                app:strokeColor="#D1E3FF"/>
 
-            <TextView
-                android:id="@+id/tvDoctorAddress"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                android:textSize="13sp"
-                android:textColor="@color/text_secondary"
-                android:maxLines="2"
-                android:ellipsize="end"/>
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:id="@+id/tvDoctorTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:text="BS. CKI" />
+
+                <TextView
+                    android:id="@+id/tvDoctorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginTop="2dp"
+                    android:text="BS. Trần Thị Bình" />
+
+                <TextView
+                    android:id="@+id/tvDoctorExperience"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="4dp"
+                    android:text="8 năm kinh nghiệm" />
+
+                <TextView
+                    android:id="@+id/tvDoctorSpecialty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#0056B3"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"
+                    android:text="Chuyên khoa" />
+
+                <!-- Giữ ID nhưng ẩn nếu giao diện mới không cần dùng Chip -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupSpecialties"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Nút đặt lịch -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBooking"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:layout_marginTop="12dp"
-            android:text="Đặt lịch ngay"
-            android:textSize="14sp"
-            android:layout_gravity="end"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/primary_blue"
-            app:cornerRadius="8dp"/>
+        <!-- Đường kẻ phân cách -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F0F0F0"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Phần dưới: Địa chỉ và Nút đặt lịch -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/btnBooking"
+                android:layout_marginEnd="8dp">
+
+                <!-- Icon vị trí -->
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_location"
+                    app:tint="@color/primary_blue_dark"/>
+
+                <TextView
+                    android:id="@+id/tvDoctorAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:text="UniCare - Phòng 202"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
+            </LinearLayout>
+
+            <!-- Nút đặt lịch ngay theo kiểu 2 dòng như trong ảnh -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBooking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="54dp"
+                android:paddingHorizontal="24dp"
+                android:text="Đặt lịch\nngay"
+                android:textSize="15sp"
+                android:textAllCaps="false"
+                android:lineSpacingExtra="2dp"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/primary_blue"
+                app:cornerRadius="12dp"/>
+        </RelativeLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

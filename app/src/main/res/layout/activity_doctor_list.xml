@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="#F1F5F9"
     tools:context=".feature.patients.doctor.ui.DoctorListActivity">
 
     <!-- Header with Back Button and Title -->
@@ -16,7 +16,7 @@
         android:elevation="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="15dp"
+        android:paddingTop="25dp"
         android:paddingHorizontal="8dp"
         app:layout_constraintTop_toTopOf="parent">
 

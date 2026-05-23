@@ -175,13 +175,29 @@ public class ForgotPasswordActivity extends BaseActivity {
                     if ("success".equals(res.getStatus())) {
                         currentEmail = email;
                         currentUsername = res.getUsername(); // Saved for later
-                        Toast.makeText(ForgotPasswordActivity.this, "Mã OTP đã được gửi!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForgotPasswordActivity.this, res.getMessage() != null ? res.getMessage() : "Mã OTP đã được gửi!", Toast.LENGTH_LONG).show();
                         showStep(2);
                     } else {
                         Toast.makeText(ForgotPasswordActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Email không tồn tại trong hệ thống", Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Email không tồn tại trong hệ thống";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errStr = response.errorBody().string();
+                            com.google.gson.Gson gson = new com.google.gson.Gson();
+                            GenericResponse errorResponse = gson.fromJson(errStr, GenericResponse.class);
+                            if (errorResponse != null && errorResponse.getMessage() != null) {
+                                errorMsg = errorResponse.getMessage();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (response.code() == 500) {
+                            errorMsg = "Lỗi kết nối server gửi email";
+                        }
+                    }
+                    Toast.makeText(ForgotPasswordActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -223,7 +239,20 @@ public class ForgotPasswordActivity extends BaseActivity {
                         Toast.makeText(ForgotPasswordActivity.this, res.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Đổi mật khẩu thất bại";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errStr = response.errorBody().string();
+                            com.google.gson.Gson gson = new com.google.gson.Gson();
+                            GenericResponse errorResponse = gson.fromJson(errStr, GenericResponse.class);
+                            if (errorResponse != null && errorResponse.getMessage() != null) {
+                                errorMsg = errorResponse.getMessage();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(ForgotPasswordActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                 }
             }
 

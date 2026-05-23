@@ -36,8 +36,13 @@ public class AppointmentViewModel extends BaseViewModel {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 showLoading.setValue(false);
-                if (response.isSuccessful()) {
-                    isBookingSuccess.setValue(true);
+                if (response.isSuccessful() && response.body() != null) {
+                    // Check body status - some APIs return 200 even on logical errors
+                    if ("success".equalsIgnoreCase(response.body().getStatus()) || response.body().getStatus() == null) {
+                        isBookingSuccess.setValue(true);
+                    } else {
+                        isBookingSuccess.setValue(false);
+                    }
                 } else {
                     isBookingSuccess.setValue(false);
                 }
@@ -77,5 +82,12 @@ public class AppointmentViewModel extends BaseViewModel {
                 isBookingSuccess.setValue(false);
             }
         });
+    }
+    
+    /**
+     * Resets the booking success state to avoid repeated triggers
+     */
+    public void resetBookingState() {
+        isBookingSuccess.setValue(null);
     }
 }

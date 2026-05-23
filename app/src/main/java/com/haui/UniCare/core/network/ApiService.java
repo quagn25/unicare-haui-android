@@ -9,6 +9,8 @@ import com.haui.UniCare.data.model.SendOtpRequest;
 import com.haui.UniCare.data.model.ResetPasswordRequest;
 import com.haui.UniCare.data.model.table.Appointment;
 import com.haui.UniCare.data.model.GenericResponse;
+import com.haui.UniCare.data.model.PatientProfileResponse;
+import com.haui.UniCare.data.model.PatientProfileUpdateRequest;
 
 import java.util.List;
 
@@ -57,4 +59,22 @@ public interface ApiService {
 
     @POST("appointments/update-details")
     Call<GenericResponse> updateAppointmentDetails(@Body java.util.Map<String, Object> body);
+
+    @GET("patients/profile")
+    Call<PatientProfileResponse> getPatientProfile(@retrofit2.http.Query("userId") int userId);
+
+    @POST("patients/profile/update")
+    Call<GenericResponse> updatePatientProfile(@Body PatientProfileUpdateRequest request);
+
+    @POST("change-password")
+    Call<GenericResponse> changePassword(@Body com.haui.UniCare.data.model.ChangePasswordRequest request);
+
+    @GET("appointments/{id}/details")
+    Call<com.haui.UniCare.data.model.AppointmentDetailResponse> getAppointmentDetails(@retrofit2.http.Path("id") int appointmentId);
+
+    @GET("appointments/{id}/medical-record")
+    Call<com.haui.UniCare.data.model.MedicalRecordResponse> getMedicalRecord(@retrofit2.http.Path("id") int appointmentId);
+
+    @GET("medical-records/{recordId}/treatment-plans")
+    Call<com.haui.UniCare.data.model.TreatmentPlansResponse> getTreatmentPlans(@retrofit2.http.Path("recordId") int recordId);
 }

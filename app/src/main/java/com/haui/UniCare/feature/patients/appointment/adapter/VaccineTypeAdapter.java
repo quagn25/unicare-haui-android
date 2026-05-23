@@ -85,6 +85,16 @@ public class VaccineTypeAdapter extends RecyclerView.Adapter<VaccineTypeAdapter.
         return null;
     }
 
+    public void setSelectedPosition(int position) {
+        int prevSelected = selectedPosition;
+        selectedPosition = position;
+        notifyItemChanged(prevSelected);
+        notifyItemChanged(selectedPosition);
+        if (listener != null && position != -1 && position < vaccineList.size()) {
+            listener.onVaccineSelected(vaccineList.get(position));
+        }
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardVaccineType;
         TextView tvVaccineName, tvDoseInfo, tvVaccinePrice;

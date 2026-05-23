@@ -2,7 +2,7 @@ package com.haui.UniCare.data.model.table;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Appointment {
+public class Appointment implements java.io.Serializable {
     public int id;
 
     @SerializedName("patient_id")
@@ -39,6 +39,15 @@ public class Appointment {
     public double consultationFee;
 
     public String note;
+
+    @SerializedName("patient_name")
+    public String patientName;
+
+    @SerializedName("patient_dob")
+    public String patientDob;
+
+    @SerializedName("patient_phone")
+    public String patientPhone;
 
     public Appointment() {}
 

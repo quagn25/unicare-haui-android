@@ -9,7 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,12 +48,23 @@ public class BookAppointmentActivity extends AppCompatActivity {
     private List<TimeSlot> afternoonSlots = new ArrayList<>();
     private List<TimeSlot> eveningSlots = new ArrayList<>();
     
+    private final String[] allMorning = {"07:00 - 07:30", "07:30 - 08:00", "08:00 - 08:30", "08:30 - 09:00", "09:00 - 09:30", "09:30 - 10:00"};
+    private final String[] allAfternoon = {"13:30 - 14:00", "14:00 - 14:30", "14:30 - 15:00", "15:00 - 15:30", "15:30 - 16:00", "16:00 - 16:30"};
+    private final String[] allEvening = {"18:00 - 18:30", "18:30 - 19:00", "19:00 - 19:30"};
+    
     private Calendar currentCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_book_appointment);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         selectedDoctor = (Doctor) getIntent().getSerializableExtra("doctor_data");
         rescheduleAppointmentId = getIntent().getIntExtra("reschedule_appointment_id", -1);
@@ -128,45 +143,106 @@ public class BookAppointmentActivity extends AppCompatActivity {
             cal.set(Calendar.DAY_OF_MONTH, i);
             String dayLabel = daysOfWeekLabels[cal.get(Calendar.DAY_OF_WEEK) - 1];
             
-            // Only show slots for future days (or today)
             String slots = "";
-            if (!isCurrentMonth || i >= today.get(Calendar.DAY_OF_MONTH)) {
-                slots = "9 slot";
+            int available = getAvailableSlotsCount(cal, today);
+            if (available > 0) {
+                slots = available + " slot";
             }
             
             dates.add(new BookingDate(dayLabel, String.valueOf(i), slots));
         }
 
-        dateAdapter = new BookingDateAdapter(dates, date -> validateSelection());
+        dateAdapter = new BookingDateAdapter(dates, date -> {
+            updateTimeSlots(date);
+            validateSelection();
+        });
         rcvCalendar.setLayoutManager(new GridLayoutManager(this, 7));
         rcvCalendar.setAdapter(dateAdapter);
 
-        // 3. Time Slots
-        initTimeSlots();
+        // Select the first available day by default
+        for (BookingDate bd : dates) {
+            if (!bd.getDate().isEmpty() && !bd.getSlotCount().isEmpty()) {
+                bd.setSelected(true);
+                dateAdapter.setSelectedDate(bd);
+                updateTimeSlots(bd);
+                break;
+            }
+        }
         validateSelection();
     }
 
-    private void initTimeSlots() {
-        morningSlots.clear();
-        morningSlots.add(new TimeSlot("07:00 - 07:30"));
-        morningSlots.add(new TimeSlot("07:30 - 08:00"));
-        morningSlots.add(new TimeSlot("08:00 - 08:30"));
-        morningSlots.add(new TimeSlot("08:30 - 09:00"));
-        morningSlots.add(new TimeSlot("09:00 - 09:30"));
-        morningSlots.add(new TimeSlot("09:30 - 10:00"));
+    private int getAvailableSlotsCount(Calendar targetDay, Calendar today) {
+        if (targetDay.get(Calendar.YEAR) < today.get(Calendar.YEAR) ||
+            (targetDay.get(Calendar.YEAR) == today.get(Calendar.YEAR) && targetDay.get(Calendar.DAY_OF_YEAR) < today.get(Calendar.DAY_OF_YEAR))) {
+            return 0; // Past day
+        }
+        
+        if (targetDay.get(Calendar.YEAR) == today.get(Calendar.YEAR) && targetDay.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+            int count = 0;
+            int currentHour = today.get(Calendar.HOUR_OF_DAY);
+            int currentMinute = today.get(Calendar.MINUTE);
+            for (String s : allMorning) if (isFutureSlot(s, currentHour, currentMinute)) count++;
+            for (String s : allAfternoon) if (isFutureSlot(s, currentHour, currentMinute)) count++;
+            for (String s : allEvening) if (isFutureSlot(s, currentHour, currentMinute)) count++;
+            return count;
+        }
+        
+        return allMorning.length + allAfternoon.length + allEvening.length;
+    }
 
+    private boolean isFutureSlot(String slotText, int currentHour, int currentMinute) {
+        String startTime = slotText.split(" - ")[0];
+        String[] parts = startTime.split(":");
+        int h = Integer.parseInt(parts[0]);
+        int m = Integer.parseInt(parts[1]);
+        if (h > currentHour) return true;
+        if (h == currentHour && m >= currentMinute) return true;
+        return false;
+    }
+
+    private boolean isCurrentMonth() {
+        Calendar today = Calendar.getInstance();
+        return today.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR) &&
+               today.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH);
+    }
+
+    private void updateTimeSlots(BookingDate selectedDate) {
+        if (selectedDate == null || selectedDate.getDate().isEmpty()) {
+            morningSlots.clear(); afternoonSlots.clear(); eveningSlots.clear();
+            notifyAdapters();
+            return;
+        }
+
+        Calendar today = Calendar.getInstance();
+        boolean isToday = isCurrentMonth() && Integer.parseInt(selectedDate.getDate()) == today.get(Calendar.DAY_OF_MONTH);
+        
+        int currentHour = today.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = today.get(Calendar.MINUTE);
+
+        morningSlots.clear();
+        for (String s : allMorning) {
+            if (!isToday || isFutureSlot(s, currentHour, currentMinute)) morningSlots.add(new TimeSlot(s));
+        }
+        
         afternoonSlots.clear();
-        afternoonSlots.add(new TimeSlot("13:30 - 14:00"));
-        afternoonSlots.add(new TimeSlot("14:00 - 14:30"));
-        afternoonSlots.add(new TimeSlot("14:30 - 15:00"));
-        afternoonSlots.add(new TimeSlot("15:00 - 15:30"));
-        afternoonSlots.add(new TimeSlot("15:30 - 16:00"));
-        afternoonSlots.add(new TimeSlot("16:00 - 16:30"));
+        for (String s : allAfternoon) {
+            if (!isToday || isFutureSlot(s, currentHour, currentMinute)) afternoonSlots.add(new TimeSlot(s));
+        }
 
         eveningSlots.clear();
-        eveningSlots.add(new TimeSlot("18:00 - 18:30"));
-        eveningSlots.add(new TimeSlot("18:30 - 19:00"));
-        eveningSlots.add(new TimeSlot("19:00 - 19:30"));
+        for (String s : allEvening) {
+            if (!isToday || isFutureSlot(s, currentHour, currentMinute)) eveningSlots.add(new TimeSlot(s));
+        }
+
+        if (morningAdapter != null) morningAdapter.clearSelection();
+        if (afternoonAdapter != null) afternoonAdapter.clearSelection();
+        if (eveningAdapter != null) eveningAdapter.clearSelection();
+
+        notifyAdapters();
+    }
+
+    private void notifyAdapters() {
+
 
         if (morningAdapter == null) {
             morningAdapter = new TimeSlotAdapter(morningSlots, slot -> onTimeSlotSelected(1));

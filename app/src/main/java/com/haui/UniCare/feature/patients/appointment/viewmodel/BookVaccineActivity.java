@@ -15,9 +15,8 @@ import com.haui.UniCare.R;
 import com.haui.UniCare.data.model.BookingDate;
 import com.haui.UniCare.data.model.TimeSlot;
 import com.haui.UniCare.data.model.VaccineType;
-import com.haui.UniCare.data.model.table.Doctor;
 import com.haui.UniCare.feature.patients.appointment.adapter.VaccineTypeAdapter;
-import com.haui.UniCare.feature.patients.appointment.ui.ConfirmAppointmentActivity;
+import com.haui.UniCare.feature.patients.appointment.ui.ConfirmVaccineActivity;
 import com.haui.UniCare.feature.patients.doctor.adapter.BookingDateAdapter;
 import com.haui.UniCare.feature.patients.doctor.adapter.TimeSlotAdapter;
 import java.text.SimpleDateFormat;
@@ -45,18 +44,24 @@ public class BookVaccineActivity extends AppCompatActivity {
     private List<TimeSlot> eveningSlots = new ArrayList<>();
     
     private Calendar currentCalendar;
+    private int rescheduleAppointmentId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_vaccine);
 
+        rescheduleAppointmentId = getIntent().getIntExtra("reschedule_appointment_id", -1);
         currentCalendar = Calendar.getInstance();
 
         mapping();
         initVaccineData();
         updateCalendar();
         setupEvents();
+        
+        if (rescheduleAppointmentId != -1) {
+            btnBookVaccine.setText("Xác nhận đổi lịch");
+        }
     }
 
     private void mapping() {
@@ -83,6 +88,21 @@ public class BookVaccineActivity extends AppCompatActivity {
         vaccineAdapter = new VaccineTypeAdapter(vaccineList, vaccine -> validateSelection());
         rvVaccineTypes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvVaccineTypes.setAdapter(vaccineAdapter);
+
+        String selectedVaccineName = getIntent().getStringExtra("selected_vaccine_name");
+        if (selectedVaccineName != null) {
+            for (int i = 0; i < vaccineList.size(); i++) {
+                if (vaccineList.get(i).getName().equals(selectedVaccineName) || 
+                    selectedVaccineName.contains(vaccineList.get(i).getName())) {
+                    int finalI = i;
+                    rvVaccineTypes.post(() -> {
+                        vaccineAdapter.setSelectedPosition(finalI);
+                        rvVaccineTypes.scrollToPosition(finalI);
+                    });
+                    break;
+                }
+            }
+        }
     }
 
     private void updateCalendar() {
@@ -208,12 +228,10 @@ public class BookVaccineActivity extends AppCompatActivity {
             BookingDate selectedDate = dateAdapter.getSelectedDate();
             TimeSlot selectedTime = null;
             String periodName = "";
-            boolean isMorning = false;
 
             if (morningAdapter.getSelectedTime() != null) {
                 selectedTime = morningAdapter.getSelectedTime();
                 periodName = "Sáng";
-                isMorning = true;
             } else if (afternoonAdapter.getSelectedTime() != null) {
                 selectedTime = afternoonAdapter.getSelectedTime();
                 periodName = "Chiều";
@@ -223,18 +241,8 @@ public class BookVaccineActivity extends AppCompatActivity {
             }
 
             if (selectedVaccine != null && selectedDate != null && selectedTime != null) {
-                // Reconstruct a virtual Doctor object to seamlessly reuse ConfirmAppointmentActivity
-                Doctor vaccineDoc = new Doctor();
-                vaccineDoc.setId(selectedVaccine.getDbDoctorId());
-                vaccineDoc.setName(selectedVaccine.getName());
-                vaccineDoc.setDegree(selectedVaccine.getDoseInfo());
-                vaccineDoc.setSpecialties("Tiêm chủng");
-                vaccineDoc.setConsultationFee((float) selectedVaccine.getPrice());
-                vaccineDoc.setBio("Tiêm chủng");
-                vaccineDoc.setAddress(selectedVaccine.getNote()); // Contains the specific room details e.g. "Phòng 201 - UniCare"
-
-                Intent intent = new Intent(this, ConfirmAppointmentActivity.class);
-                intent.putExtra("doctor_data", vaccineDoc);
+                Intent intent = new Intent(this, ConfirmVaccineActivity.class);
+                intent.putExtra("vaccine_data", selectedVaccine);
 
                 String dateString = selectedDate.getDate() + "/" + 
                                   (currentCalendar.get(Calendar.MONTH) + 1) + "/" + 
@@ -242,7 +250,7 @@ public class BookVaccineActivity extends AppCompatActivity {
                 
                 intent.putExtra("selected_date", dateString);
                 intent.putExtra("selected_time", selectedTime.getTimeRange() + " (" + periodName + ")");
-                intent.putExtra("is_morning", isMorning);
+                intent.putExtra("reschedule_appointment_id", rescheduleAppointmentId);
 
                 startActivity(intent);
             } else {

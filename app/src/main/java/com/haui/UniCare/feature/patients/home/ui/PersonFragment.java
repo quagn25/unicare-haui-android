@@ -1,116 +1,189 @@
 package com.haui.UniCare.feature.patients.home.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.haui.UniCare.R;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 
 public class PersonFragment extends Fragment {
 
-    private Button btnLogout;
-    private TextView tvShareApp;
-    private TextView tvChangePassword;
     private TextView tvUserName;
-    private TextView tvHealthRecords;
-    private TextView tvDeleteAccount;
+    private ImageView imgAvatarPerson;
+    private View btnEditAvatar;
+
+    // Launcher to pick image from gallery
+    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri selectedImageUri = result.getData().getData();
+                    if (selectedImageUri != null) {
+                        updateAvatar(selectedImageUri);
+                    }
+                }
+            }
+    );
 
     public PersonFragment() {
         // Required empty public constructor
     }
 
-    public static PersonFragment newInstance(String param1, String param2) {
-        PersonFragment fragment = new PersonFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    public static PersonFragment newInstance() {
+        return new PersonFragment();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_person, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Ánh xạ View dùng ID tường minh để dễ phân biệt
-        btnLogout = view.findViewById(R.id.btn_logout);
-        tvShareApp = view.findViewById(R.id.tv_share_app);
-        tvChangePassword = view.findViewById(R.id.tv_change_password);
+        // Mapping views
         tvUserName = view.findViewById(R.id.tv_user_name);
-        tvHealthRecords = view.findViewById(R.id.tv_health_records);
-        tvDeleteAccount = view.findViewById(R.id.tv_delete_account);
+        imgAvatarPerson = view.findViewById(R.id.imgAvatarPerson);
+        btnEditAvatar = view.findViewById(R.id.btn_edit_avatar);
+        
+        Button btnLogout = view.findViewById(R.id.btn_logout);
+        View layoutShareApp = view.findViewById(R.id.layout_share_app);
+        View layoutChangePassword = view.findViewById(R.id.layout_change_password);
+        View layoutDeleteAccount = view.findViewById(R.id.layout_delete_account);
+        View layoutProfileHeader = view.findViewById(R.id.layoutProfileHeader);
 
+        // Display user info from SharedPreferences
         displayUserInfo();
 
-        // 1. Sự kiện Đăng xuất
-        btnLogout.setOnClickListener(v -> {
+        // Image picker click events
+        if (imgAvatarPerson != null) {
+            imgAvatarPerson.setOnClickListener(v -> openImagePicker());
+        }
+        if (btnEditAvatar != null) {
+            btnEditAvatar.setOnClickListener(v -> openImagePicker());
+        }
+
+        // Navigate to profile details
+        if (layoutProfileHeader != null) {
+            layoutProfileHeader.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.patients.profile.ui.ProfileActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // Logout
+        if (btnLogout != null) {
+            btnLogout.setOnClickListener(v -> {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Đăng xuất")
+                        .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                        .setPositiveButton("Đăng xuất", (dialog, which) -> {
+                            SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+                            sharedPref.edit().clear().apply();
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            requireActivity().finish();
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
+            });
+        }
+
+        // Share app
+        if (layoutShareApp != null) {
+            layoutShareApp.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, "Truy cập UniCare ngay tại: https://unicare.haui.edu.vn");
+                startActivity(Intent.createChooser(intent, "Chia sẻ qua:"));
+            });
+        }
+
+        // Placeholder actions
+        if (layoutChangePassword != null) {
+            layoutChangePassword.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.auth.ui.ChangePasswordActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (layoutDeleteAccount != null) {
+            layoutDeleteAccount.setOnClickListener(v -> {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Xóa tài khoản")
+                        .setMessage("Bạn có chắc chắn muốn xóa tài khoản không? Hành động này không thể hoàn tác.")
+                        .setPositiveButton("Xóa", (dialog, which) -> {
+                            Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đã được ghi nhận", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
+            });
+        }
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        pickImageLauncher.launch(intent);
+    }
+
+    private void updateAvatar(Uri imageUri) {
+        if (imgAvatarPerson != null) {
+            Glide.with(this)
+                    .load(imageUri)
+                    .circleCrop()
+                    .placeholder(R.drawable.default_avt)
+                    .into(imgAvatarPerson);
+            
+            // Persist the image URI locally (optional: upload to server)
             SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.clear();
-            editor.apply();
+            sharedPref.edit().putString("avatarUri", imageUri.toString()).apply();
+            
+            Toast.makeText(getContext(), "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-
-            requireActivity().finish();
-        });
-
-        // 2. Sự kiện Chia sẻ ứng dụng
-        tvShareApp.setOnClickListener(v -> {
-            String packageName = requireContext().getPackageName();
-            String deepLink = "unicare://app";
-            String shareMessage = "Truy cập UniCare ngay tại: " + deepLink + packageName;
-
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(intent, "Chia sẻ qua:"));
-        });
-
-        // 3. Sự kiện Đổi mật khẩu
-        tvChangePassword.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Tính năng Đổi mật khẩu đang được phát triển", Toast.LENGTH_SHORT).show();
-            // TODO: Tạo Activity ChangePass và cập nhật Intent dưới đây
-            // Intent intent = new Intent(getActivity(), ChangePass.class);
-            // startActivity(intent);
-        });
-
-        // 4. Sự kiện Hồ sơ y tế
-        tvHealthRecords.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Tính năng Hồ sơ y tế đang được phát triển", Toast.LENGTH_SHORT).show();
-        });
-
-        // 5. Sự kiện Yêu cầu xóa tài khoản
-        tvDeleteAccount.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đang được tiếp nhận", Toast.LENGTH_SHORT).show();
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+        displayUserInfo();
     }
 
     private void displayUserInfo() {
-        if (getContext() != null) {
+        if (getContext() != null && tvUserName != null) {
             SharedPreferences sharedPref = getActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
             String fullName = sharedPref.getString("fullName", "Người dùng");
             tvUserName.setText(fullName);
+            
+            String avatarUriStr = sharedPref.getString("avatarUri", null);
+            if (avatarUriStr != null && imgAvatarPerson != null) {
+                Glide.with(this)
+                        .load(Uri.parse(avatarUriStr))
+                        .circleCrop()
+                        .placeholder(R.drawable.default_avt)
+                        .into(imgAvatarPerson);
+            }
         }
     }
 }

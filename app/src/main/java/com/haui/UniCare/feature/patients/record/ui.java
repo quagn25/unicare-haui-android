@@ -1,4 +1,2 @@
 package com.haui.UniCare.feature.patients.record;
-
-public class ui {
-}
+// This file is empty to avoid clashing with the 'ui' package.

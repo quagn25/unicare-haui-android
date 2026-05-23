@@ -1,5 +1,6 @@
 package com.haui.UniCare.feature.patients.appointment.adapter;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -167,6 +168,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             if (actionListener != null) {
                 actionListener.onCancel(appointment);
             }
+        });
+
+        // Bấm vào item để xem chi tiết thông tin lượt khám
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Context context = holder.itemView.getContext();
+            Intent intent = new Intent(context, com.haui.UniCare.feature.patients.appointment.ui.AppointmentDetailActivity.class);
+            intent.putExtra("appointment_data", appointment);
+            context.startActivity(intent);
         });
     }
 

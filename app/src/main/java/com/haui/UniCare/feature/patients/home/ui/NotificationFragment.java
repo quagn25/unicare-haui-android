@@ -21,6 +21,7 @@ import com.haui.UniCare.R;
 import com.haui.UniCare.core.network.ApiService;
 import com.haui.UniCare.core.network.RetrofitClient;
 import com.haui.UniCare.core.utils.AppConstants;
+import com.haui.UniCare.data.MockData;
 import com.haui.UniCare.data.model.GenericResponse;
 import com.haui.UniCare.data.model.Notification;
 import com.haui.UniCare.data.model.NotificationResponse;
@@ -66,7 +67,6 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
 
-        // Get stored user ID from preferences
         if (getActivity() != null) {
             SharedPreferences sharedPref = getActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
             userId = sharedPref.getInt("userId", 0);
@@ -126,20 +126,15 @@ public class NotificationFragment extends Fragment {
     }
 
     private void updateTabUI() {
-        // Reset all tabs to default unselected style
         tabAll.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
         tvTabAll.setTextColor(Color.parseColor("#475569"));
-
         tabLichKham.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
         tvTabLichKham.setTextColor(Color.parseColor("#475569"));
-
         tabTiemChung.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
         tvTabTiemChung.setTextColor(Color.parseColor("#475569"));
-
         tabKetQua.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
         tvTabKetQua.setTextColor(Color.parseColor("#475569"));
 
-        // Highlight selected tab visually
         switch (currentFilter) {
             case "ALL":
                 tabAll.setCardBackgroundColor(Color.parseColor("#0B5CFF"));
@@ -175,26 +170,29 @@ public class NotificationFragment extends Fragment {
     }
 
     private void fetchNotifications() {
+        if (AppConstants.USE_MOCK_DATA) {
+            allNotifications.clear();
+            allNotifications.addAll(MockData.getMockNotifications());
+            updateUnreadCountHeader();
+            applyFilter();
+            return;
+        }
+
         ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
         apiService.getNotifications(userId).enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(@NonNull Call<NotificationResponse> call, @NonNull Response<NotificationResponse> response) {
                 if (!isAdded() || getContext() == null) return;
-
                 if (response.isSuccessful() && response.body() != null) {
                     NotificationResponse notifResponse = response.body();
                     if ("success".equals(notifResponse.getStatus()) && notifResponse.getData() != null) {
                         allNotifications.clear();
                         allNotifications.addAll(notifResponse.getData());
-                        
                         updateUnreadCountHeader();
                         applyFilter();
                     }
-                } else {
-                    Log.e("NotificationFragment", "API failed to fetch notifications: " + response.code());
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<NotificationResponse> call, @NonNull Throwable t) {
                 if (!isAdded() || getContext() == null) return;
@@ -214,33 +212,29 @@ public class NotificationFragment extends Fragment {
     }
 
     private void readAllNotifications() {
+        if (AppConstants.USE_MOCK_DATA) {
+            for (Notification item : allNotifications) item.setIsRead(1);
+            updateUnreadCountHeader();
+            applyFilter();
+            Toast.makeText(getContext(), "Đã đánh dấu đọc tất cả (Mock Mode)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
         Map<String, Integer> body = new HashMap<>();
         body.put("userId", userId);
-
         apiService.readAllNotifications(body).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(@NonNull Call<GenericResponse> call, @NonNull Response<GenericResponse> response) {
-                if (!isAdded() || getContext() == null) return;
-
                 if (response.isSuccessful()) {
-                    // Update all local notifications as read
-                    for (Notification item : allNotifications) {
-                        item.setIsRead(1);
-                    }
+                    for (Notification item : allNotifications) item.setIsRead(1);
                     updateUnreadCountHeader();
                     applyFilter();
                     Toast.makeText(getContext(), "Đã đánh dấu đọc tất cả thông báo", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("NotificationFragment", "API failed to mark read-all: " + response.code());
                 }
             }
-
             @Override
-            public void onFailure(@NonNull Call<GenericResponse> call, @NonNull Throwable t) {
-                if (!isAdded() || getContext() == null) return;
-                Log.e("NotificationFragment", "Error calling read-all: " + t.getMessage());
-            }
+            public void onFailure(@NonNull Call<GenericResponse> call, @NonNull Throwable t) {}
         });
     }
 }

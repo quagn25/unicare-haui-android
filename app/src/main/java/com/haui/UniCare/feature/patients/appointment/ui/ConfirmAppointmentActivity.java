@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.graphics.Insets;
@@ -14,12 +15,19 @@ import com.bumptech.glide.Glide;
 import com.haui.UniCare.MainActivity;
 import com.haui.UniCare.R;
 import com.haui.UniCare.core.base.BaseActivity;
+import com.haui.UniCare.core.network.ApiService;
+import com.haui.UniCare.core.network.RetrofitClient;
 import com.haui.UniCare.core.utils.AppConstants;
+import com.haui.UniCare.data.model.PatientProfileResponse;
 import com.haui.UniCare.data.model.table.Doctor;
 import com.haui.UniCare.databinding.ActivityConfirmAppointmentBinding;
 import com.haui.UniCare.feature.patients.appointment.viewmodel.AppointmentViewModel;
 
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ConfirmAppointmentActivity extends BaseActivity {
 
@@ -49,7 +57,7 @@ public class ConfirmAppointmentActivity extends BaseActivity {
         }
 
         displayDoctorInfo();
-        displayPatientInfo();
+        loadPatientProfile(); // Thay thế displayPatientInfo bằng load từ API
 
         // Nút Back
         binding.btnBack.setOnClickListener(v -> finish());
@@ -96,7 +104,6 @@ public class ConfirmAppointmentActivity extends BaseActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // Bỏ systemBars.bottom để BottomNav tràn xuống dưới
             v.setPadding(systemBars.left, 0, systemBars.right, 0);
             return insets;
         });
@@ -122,26 +129,54 @@ public class ConfirmAppointmentActivity extends BaseActivity {
         binding.tvConfirmTime.setText(selectedTime);
     }
 
-    private void displayPatientInfo() {
+    private void loadPatientProfile() {
         SharedPreferences sharedPref = getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
-        String fullName = sharedPref.getString("fullName", "Bùi Văn Quang");
-        String username = sharedPref.getString("username", "0386260806"); // Dùng làm số điện thoại nếu cần
-        
-        // Hiển thị thông tin đã lưu hoặc mock nếu chưa có
-        binding.tvPatientName.setText(fullName);
-        binding.tvPatientPhone.setText(username);
-        
-        // Bạn có thể lưu thêm DOB và Gender vào SharedPreferences lúc Login/Register để hiện ở đây
-        // Hiện tại giả định các giá trị mặc định hoặc lấy từ Prefs nếu có
-        binding.tvPatientDob.setText(sharedPref.getString("dob", "01/01/2006"));
-        binding.tvPatientGender.setText(sharedPref.getString("gender", "Nam"));
+        int userId = sharedPref.getInt("userId", 0);
+
+        if (userId == 0) {
+            // Hiển thị mặc định nếu chưa đăng nhập (để tránh crash hoặc UI xấu)
+            binding.tvPatientName.setText(sharedPref.getString("fullName", "Người dùng"));
+            binding.tvPatientPhone.setText(sharedPref.getString("username", ""));
+            return;
+        }
+
+        showLoadingDialog();
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        apiService.getPatientProfile(userId).enqueue(new Callback<PatientProfileResponse>() {
+            @Override
+            public void onResponse(Call<PatientProfileResponse> call, Response<PatientProfileResponse> response) {
+                hideLoadingDialog();
+                if (response.isSuccessful() && response.body() != null && "success".equals(response.body().status)) {
+                    PatientProfileResponse.Profile profile = response.body().profile;
+                    if (profile != null) {
+                        binding.tvPatientName.setText(profile.fullName != null ? profile.fullName : sharedPref.getString("fullName", ""));
+                        binding.tvPatientPhone.setText(profile.phone != null ? profile.phone : (profile.username != null ? profile.username : ""));
+                        binding.tvPatientDob.setText(profile.dob != null && !profile.dob.equalsIgnoreCase("null") ? profile.dob : "");
+                        binding.tvPatientGender.setText(profile.gender != null && !profile.gender.equalsIgnoreCase("null") ? profile.gender : "");
+                    }
+                } else {
+                    // Fallback to basic prefs if API fails
+                    binding.tvPatientName.setText(sharedPref.getString("fullName", "Bùi Văn Quang"));
+                    binding.tvPatientPhone.setText(sharedPref.getString("username", ""));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PatientProfileResponse> call, Throwable t) {
+                hideLoadingDialog();
+                Log.e("CONFIRM_BOOK_DEBUG", "Lỗi tải profile: " + t.getMessage());
+                // Fallback
+                binding.tvPatientName.setText(sharedPref.getString("fullName", "Bùi Văn Quang"));
+                binding.tvPatientPhone.setText(sharedPref.getString("username", ""));
+            }
+        });
     }
 
     private void performBooking() {
         SharedPreferences sharedPref = getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
-        int currentPatientId = sharedPref.getInt("userId", -1);
+        int currentUserId = sharedPref.getInt("userId", -1);
 
-        if (currentPatientId == -1) {
+        if (currentUserId == -1) {
             Toast.makeText(this, "Bạn cần đăng nhập để đặt lịch", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -179,7 +214,7 @@ public class ConfirmAppointmentActivity extends BaseActivity {
         if (rescheduleAppointmentId != -1) {
             viewModel.updateAppointment(rescheduleAppointmentId, datetime, note);
         } else {
-            viewModel.createAppointment(currentPatientId, selectedDoctor.getId(), datetime, note);
+            viewModel.createAppointment(currentUserId, selectedDoctor.getId(), datetime, note);
         }
     }
 }

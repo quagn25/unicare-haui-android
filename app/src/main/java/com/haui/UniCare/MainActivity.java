@@ -72,10 +72,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent != null && "schedule".equals(intent.getStringExtra("select_tab"))) {
+        if (intent != null) {
+            String selectTab = intent.getStringExtra("select_tab");
             BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-            if (bottomNav != null) {
-                bottomNav.setSelectedItemId(R.id.nav_schedule);
+            if (bottomNav != null && selectTab != null) {
+                if ("schedule".equals(selectTab)) {
+                    bottomNav.setSelectedItemId(R.id.nav_schedule);
+                } else if ("profile".equals(selectTab)) {
+                    bottomNav.setSelectedItemId(R.id.nav_profile);
+                } else if ("notifications".equals(selectTab)) {
+                    bottomNav.setSelectedItemId(R.id.nav_notifications);
+                } else if ("home".equals(selectTab)) {
+                    bottomNav.setSelectedItemId(R.id.nav_home);
+                }
             }
         }
     }

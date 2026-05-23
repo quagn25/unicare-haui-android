@@ -112,6 +112,18 @@ public class BookingDateAdapter extends RecyclerView.Adapter<BookingDateAdapter.
         return null;
     }
 
+    public void setSelectedDate(BookingDate date) {
+        for (int i = 0; i < dateList.size(); i++) {
+            if (dateList.get(i) == date) {
+                int previousSelected = selectedPosition;
+                selectedPosition = i;
+                if (previousSelected != -1) notifyItemChanged(previousSelected);
+                notifyItemChanged(selectedPosition);
+                break;
+            }
+        }
+    }
+
     public static class DateViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardDate;
         TextView tvDayOfWeek, tvDate, tvSlots;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="#F1F5F9"
     tools:context=".feature.patients.doctor.ui.DoctorDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="15dp"
+            android:paddingTop="25dp"
             app:navigationIcon="@drawable/outline_arrow_back_24"
             app:title="Chi tiết bác sĩ"
             app:titleTextColor="@android:color/black" />

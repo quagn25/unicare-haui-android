@@ -68,6 +68,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         holder.tvName.setText(doctor.getName());
         holder.tvExperience.setText(doctor.getExperienceText());
         holder.tvAddress.setText(doctor.getAddress());
+        holder.tvSpecialty.setText(doctor.getSpecialties());
 
         // Xử lý ảnh đại diện
         if (doctor.getAvatarUrl() != null && !doctor.getAvatarUrl().isEmpty()) {
@@ -96,7 +97,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
 
     public static class DoctorViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
-        TextView tvDegree, tvName, tvExperience, tvAddress;
+        TextView tvDegree, tvName, tvExperience, tvAddress, tvSpecialty;
         Button btnBookNow;
 
         public DoctorViewHolder(@NonNull View itemView) {
@@ -106,6 +107,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
             tvName = itemView.findViewById(R.id.tvDoctorName);
             tvExperience = itemView.findViewById(R.id.tvDoctorExperience);
             tvAddress = itemView.findViewById(R.id.tvDoctorAddress);
+            tvSpecialty = itemView.findViewById(R.id.tvDoctorSpecialty);
             btnBookNow = itemView.findViewById(R.id.btnBooking);
         }
     }

@@ -1,12 +1,54 @@
 package com.haui.UniCare.data;
 
 import com.haui.UniCare.R;
+import com.haui.UniCare.data.model.Notification;
+import com.haui.UniCare.data.model.table.Appointment;
 import com.haui.UniCare.data.model.table.Doctor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MockData {
+    private static List<Appointment> mockAppointments = new ArrayList<>();
+    private static List<Notification> mockNotifications = new ArrayList<>();
+
+    static {
+        // Khởi tạo một số dữ liệu mẫu ban đầu
+        // Khám Tim mạch (Sắp tới)
+        Appointment a1 = new Appointment(1, 1, 1, "2026-06-01 09:00:00", "PENDING", "2026-05-15");
+        a1.doctorName = "Nguyễn Văn An";
+        a1.doctorTitle = "ThS. BS";
+        a1.doctorBio = "Tim mạch";
+        a1.workplaceAddress = "UniCare - Phòng 105";
+        
+        // Khám Nha khoa (Sắp tới)
+        Appointment a2 = new Appointment(2, 1, 2, "2026-06-02 14:30:00", "PENDING", "2026-05-15");
+        a2.doctorName = "Trần Thị Bình";
+        a2.doctorTitle = "BS";
+        a2.doctorBio = "Nha khoa";
+        a2.workplaceAddress = "UniCare - Phòng 203";
+        
+        // Vắc-xin Cúm mùa
+        Appointment v1 = new Appointment(4, 1, 21, "2026-05-22 08:30:00", "PENDING", "2026-05-15");
+        v1.doctorName = "Vắc-xin Cúm mùa";
+        v1.doctorTitle = "Liều nhắc lại";
+        v1.workplaceAddress = "Phòng 201 - UniCare";
+
+        mockAppointments.add(a1);
+        mockAppointments.add(a2);
+        mockAppointments.add(v1);
+
+        // Khởi tạo thông báo mẫu
+        Notification n1 = new Notification();
+        n1.setId(1);
+        n1.setTitle("Chào mừng bạn đến với UniCare");
+        n1.setContent("Cảm ơn bạn đã tin tưởng sử dụng ứng dụng chăm sóc sức khỏe của chúng tôi.");
+        n1.setType("ALL");
+        n1.setIsRead(0);
+        n1.setCreatedAt("2024-05-20 08:00:00");
+        mockNotifications.add(n1);
+    }
+
     public static List<Doctor> getMockDoctors() {
         List<Doctor> doctors = new ArrayList<>();
         
@@ -20,21 +62,28 @@ public class MockData {
         d2.setConsultationFee(300000);
         doctors.add(d2);
 
-        Doctor d3 = new Doctor(3, "BSCKII Lê Hoàng Nam", "Bác sĩ Chuyên khoa II", 18, "Bệnh viện Da liễu Trung ương", R.drawable.doctorbook, "Da liễu");
-        d3.setBio("Chuyên điều trị các bệnh về da liễu thẩm mỹ, mụn trứng cá và các bệnh da tự miễn.");
-        d3.setConsultationFee(400000);
-        doctors.add(d3);
-
-        Doctor d4 = new Doctor(4, "TS.BS Phạm Minh Đức", "Tiến sĩ - Bác sĩ", 20, "Bệnh viện Mắt Trung ương", R.drawable.doctorbook, "Nhãn khoa");
-        d4.setBio("Chuyên gia phẫu thuật Phaco và điều trị các tật khúc xạ mắt. Có nhiều công trình nghiên cứu khoa học cấp quốc gia.");
-        d4.setConsultationFee(450000);
-        doctors.add(d4);
-
-        Doctor d5 = new Doctor(5, "BS Hoàng Thị Mai", "Bác sĩ", 8, "Phòng khám Đa khoa UniCare", R.drawable.doctorbook, "Nha khoa");
-        d5.setBio("Bác sĩ Mai chuyên về nha khoa thẩm mỹ và phục hình răng sứ. Luôn tận tâm với khách hàng.");
-        d5.setConsultationFee(200000);
-        doctors.add(d5);
-
         return doctors;
+    }
+
+    public static List<Appointment> getMockAppointments() {
+        return mockAppointments;
+    }
+
+    public static void addMockAppointment(Appointment appointment) {
+        mockAppointments.add(0, appointment);
+    }
+
+    public static void removeMockAppointment(int id) {
+        mockAppointments.removeIf(a -> a.id == id);
+    }
+
+    public static List<Notification> getMockNotifications() {
+        return mockNotifications;
+    }
+
+    public static void addMockNotification(Notification notification) {
+        notification.setId(mockNotifications.size() + 1);
+        notification.setCreatedAt(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date()));
+        mockNotifications.add(0, notification);
     }
 }

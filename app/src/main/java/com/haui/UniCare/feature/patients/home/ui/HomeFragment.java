@@ -50,6 +50,8 @@ public class HomeFragment extends Fragment {
     
     private TextView tvUserNameHome;
     private LinearLayout btnBookDoctor;
+    private LinearLayout btnVaccineTab;
+    private LinearLayout btnProfileTab;
     private EditText etSearchHome;
 
     private RecyclerView rvHomeDoctors;
@@ -76,6 +78,8 @@ public class HomeFragment extends Fragment {
         // Ánh xạ View
         tvUserNameHome = view.findViewById(R.id.tvUserNameHome);
         btnBookDoctor = view.findViewById(R.id.linearLayout); 
+        btnVaccineTab = view.findViewById(R.id.linearLayout2);
+        btnProfileTab = view.findViewById(R.id.linearLayout3);
         etSearchHome = view.findViewById(R.id.etSearchHome);
         
         // Lấy tên người dùng từ SharedPreferences và hiển thị
@@ -151,6 +155,25 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), DoctorListActivity.class);
             startActivity(intent);
         });
+
+        // Xử lý sự kiện click Lịch tiêm (linearLayout2)
+        if (btnVaccineTab != null) {
+            btnVaccineTab.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("select_tab", "schedule");
+                intent.putExtra("active_tab", "vaccine");
+                startActivity(intent);
+            });
+        }
+
+        // Xử lý sự kiện click Hồ sơ (linearLayout3) chuyển thẳng sang ProfileActivity
+        if (btnProfileTab != null) {
+            btnProfileTab.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.patients.profile.ui.ProfileActivity.class);
+                startActivity(intent);
+            });
+        }
 
         // Xử lý sự kiện click cho Specialties
         specialtyadapter.setOnItemClickListener(specialty -> {
