@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.haui.UniCare.feature.patients.home.ui.AppointmentFragment;
 import com.haui.UniCare.feature.patients.home.ui.HomeFragment;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 import com.haui.UniCare.feature.patients.home.ui.NotificationFragment;
