@@ -1,120 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F7FA">
+    android:background="#F4F6F9">
 
-    <!-- Header (Màu xanh dương) -->
+    <!-- Header Banner -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#0066FF"
-        android:padding="16dp">
+        android:background="@drawable/bg_appointment_header"
+        android:paddingTop="50dp"
+        android:paddingBottom="30dp"
+        android:paddingHorizontal="24dp">
 
-        <!-- Tiêu đề và Nút Lọc -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lịch trình"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quản lý lịch khám và lịch tiêm"
+            android:textColor="#E0EBFB"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp" />
+    </LinearLayout>
+
+    <!-- Tab Selector -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="16dp"
+        android:background="@drawable/bg_tab_container"
+        android:padding="4dp"
+        android:gravity="center_vertical">
+
+        <!-- Tab Đặt lịch khám -->
+        <LinearLayout
+            android:id="@+id/layout_tab_upcoming"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tab_active"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/img_tab_upcoming"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/outline_date_range_24"
+                android:layout_marginEnd="6dp"
+                app:tint="@color/white" />
 
             <TextView
+                android:id="@+id/tv_tab_upcoming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lịch khám"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_centerInParent="true"/>
-
-            <ImageView
-                android:id="@+id/btn_filter"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:icon="@drawable/ic_location"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:tint="#FFFFFF"/>
-        </RelativeLayout>
-
-        <!-- Thanh Tìm kiếm (Màu xanh đậm) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="16dp"
-            android:icon="@drawable/ic_location"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:icon="@drawable/ic_location"
-                app:tint="#8A9BB8" />
-
-            <EditText
-                android:id="@+id/edt_search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="12dp"
-                android:background="@null"
-                android:hint="Tìm theo mã phiếu khám, tên bệnh n..."
-                android:textColorHint="#8A9BB8"
-                android:textColor="#FFFFFF"
+                android:text="Đặt lịch khám"
+                android:textColor="@color/white"
                 android:textSize="14sp"
-                android:singleLine="true"/>
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Tab Lịch tiêm -->
+        <LinearLayout
+            android:id="@+id/layout_tab_completed"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/img_tab_completed"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_action_vaccine"
+                android:layout_marginEnd="6dp"
+                app:tint="#6B7280" />
+
+            <TextView
+                android:id="@+id/tv_tab_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lịch tiêm"
+                android:textColor="#6B7280"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Khu vực nội dung chính -->
-    <FrameLayout
+    <!-- Scrollable content -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Trạng thái Trống (Empty State) - Giống hệt ảnh -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
         <LinearLayout
-            android:id="@+id/layout_empty_state"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
-            android:padding="32dp">
+            android:paddingBottom="30dp">
 
-            <ImageView
-                android:layout_width="250dp"
-                android:layout_height="180dp"
-                android:src="@drawable/img_empty_appointment"
-                android:scaleType="fitCenter"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Empty state -->
+            <LinearLayout
+                android:id="@+id/layout_empty_state"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bạn chưa có lịch khám"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="24dp"/>
+                android:layout_marginTop="50dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:src="@drawable/img_empty_appointment" />
+
+                <TextView
+                    android:id="@+id/tvEmpty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Không có lịch hẹn nào"
+                    android:textSize="16sp"
+                    android:textColor="#6B7280"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Recycler View -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_appointments"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lịch khám của bạn sẽ được hiển thị tại đây."
-                android:textColor="#666666"
-                android:textSize="14sp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"/>
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_appointment" />
+
+            <!-- Nút đăng ký lịch trình mới -->
+            <LinearLayout
+                android:id="@+id/btn_register_vaccine"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_add_vaccine_button"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tv_register_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ Đặt lịch khám mới"
+                    android:textColor="#0066FF"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <!-- Danh sách Lịch khám (Sẽ hiện lên khi có data, tạm thời ẩn) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_appointments"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:clipToPadding="false"
-            android:padding="16dp"/>
-
-    </FrameLayout>
 </LinearLayout>

@@ -1,12 +1,15 @@
 package com.haui.UniCare.feature.patients.doctor.adapter;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.card.MaterialCardView;
 import com.haui.UniCare.R;
 import com.haui.UniCare.data.model.BookingDate;
 import java.util.List;
@@ -36,19 +39,57 @@ public class BookingDateAdapter extends RecyclerView.Adapter<BookingDateAdapter.
     @Override
     public void onBindViewHolder(@NonNull DateViewHolder holder, int position) {
         BookingDate date = dateList.get(position);
+        
+        if (date.getDate().isEmpty()) {
+            holder.itemView.setVisibility(View.INVISIBLE);
+            return;
+        } else {
+            holder.itemView.setVisibility(View.VISIBLE);
+        }
+
         holder.tvDayOfWeek.setText(date.getDayOfWeek());
         holder.tvDate.setText(date.getDate());
-        holder.tvSlots.setText(date.getSlotCount());
+        
+        boolean hasSlots = date.getSlotCount() != null && !date.getSlotCount().isEmpty();
+        
+        if (hasSlots) {
+            holder.tvSlots.setText(date.getSlotCount());
+            holder.tvSlots.setVisibility(View.VISIBLE);
+            holder.cardDate.setCardBackgroundColor(Color.WHITE);
+            holder.tvDayOfWeek.setTextColor(Color.parseColor("#9CA3AF"));
+            holder.tvDate.setTextColor(Color.parseColor("#1F2937"));
+            holder.cardDate.setStrokeColor(Color.parseColor("#F3F4F6"));
+        } else {
+            holder.tvSlots.setVisibility(View.GONE);
+            holder.cardDate.setCardBackgroundColor(Color.parseColor("#F9FAFB"));
+            holder.tvDayOfWeek.setTextColor(Color.parseColor("#D1D5DB"));
+            holder.tvDate.setTextColor(Color.parseColor("#D1D5DB"));
+            holder.cardDate.setStrokeColor(Color.TRANSPARENT);
+        }
 
+        // Special color for Sunday
+        if ("CN".equals(date.getDayOfWeek()) && !hasSlots) {
+            holder.tvDayOfWeek.setTextColor(Color.parseColor("#FCA5A5"));
+            holder.tvDate.setTextColor(Color.parseColor("#FCA5A5"));
+        } else if ("CN".equals(date.getDayOfWeek())) {
+            holder.tvDayOfWeek.setTextColor(Color.parseColor("#EF4444"));
+            holder.tvDate.setTextColor(Color.parseColor("#EF4444"));
+        }
+
+        // Selection UI
         if (position == selectedPosition) {
             holder.tvDate.setBackgroundResource(R.drawable.bg_date_selected);
             holder.tvDate.setTextColor(Color.WHITE);
+            holder.tvDate.setTypeface(null, Typeface.BOLD);
         } else {
             holder.tvDate.setBackgroundResource(0);
-            holder.tvDate.setTextColor(Color.BLACK);
+            holder.tvDate.setTypeface(null, Typeface.NORMAL);
+            // Color is already set above based on hasSlots/Sunday
         }
 
         holder.itemView.setOnClickListener(v -> {
+            if (!hasSlots) return;
+            
             int previousSelected = selectedPosition;
             selectedPosition = holder.getAdapterPosition();
             notifyItemChanged(previousSelected);
@@ -61,22 +102,38 @@ public class BookingDateAdapter extends RecyclerView.Adapter<BookingDateAdapter.
 
     @Override
     public int getItemCount() {
-        return dateList.size();
+        return dateList != null ? dateList.size() : 0;
     }
 
     public BookingDate getSelectedDate() {
-        if (selectedPosition != -1) return dateList.get(selectedPosition);
+        if (selectedPosition != -1 && selectedPosition < dateList.size()) {
+            return dateList.get(selectedPosition);
+        }
         return null;
     }
 
+    public void setSelectedDate(BookingDate date) {
+        for (int i = 0; i < dateList.size(); i++) {
+            if (dateList.get(i) == date) {
+                int previousSelected = selectedPosition;
+                selectedPosition = i;
+                if (previousSelected != -1) notifyItemChanged(previousSelected);
+                notifyItemChanged(selectedPosition);
+                break;
+            }
+        }
+    }
+
     public static class DateViewHolder extends RecyclerView.ViewHolder {
+        MaterialCardView cardDate;
         TextView tvDayOfWeek, tvDate, tvSlots;
 
         public DateViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDayOfWeek = itemView.findViewById(R.id.tv_day_of_week);
-            tvDate = itemView.findViewById(R.id.tv_date);
-            tvSlots = itemView.findViewById(R.id.tv_slots);
+            cardDate = (MaterialCardView) itemView.findViewById(R.id.cardDate);
+            tvDayOfWeek = itemView.findViewById(R.id.tvDayLabel);
+            tvDate = itemView.findViewById(R.id.tvDayNum);
+            tvSlots = itemView.findViewById(R.id.tvSlots);
         }
     }
 }

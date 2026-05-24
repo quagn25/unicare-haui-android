@@ -2,7 +2,7 @@ package com.haui.UniCare.data.model.table;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TreatmentPlan {
+public class TreatmentPlan implements java.io.Serializable {
     public int id;
 
     @SerializedName("record_id")

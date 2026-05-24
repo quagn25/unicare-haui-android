@@ -99,13 +99,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        tvRegister = findViewById(R.id.textView3);
-        tvForgotPass = findViewById(R.id.textView2);
-        tilUsername = findViewById(R.id.textInputLayout4);
-        tilPassword = findViewById(R.id.textInputLayout5);
-        etUsername = findViewById(R.id.textInputEditText);
-        etPassword = findViewById(R.id.textInputEditText1);
-        btnLogin = findViewById(R.id.button);
+        tvRegister = findViewById(R.id.tv_register_now);
+        tvForgotPass = findViewById(R.id.tv_forgot_password);
+        tilUsername = findViewById(R.id.til_username);
+        tilPassword = findViewById(R.id.til_password);
+        etUsername = findViewById(R.id.tv_username);
+        etPassword = findViewById(R.id.tv_password);
+        btnLogin = findViewById(R.id.buttonLogin);
     }
 
     private boolean validateInput(String username, String password) {
@@ -162,7 +162,11 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                    if (response.code() == 401) {
+                        Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

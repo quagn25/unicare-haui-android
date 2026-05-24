@@ -15,14 +15,19 @@
         android:theme="@style/Theme.UniCare"
         android:usesCleartextTraffic="true">
 
-        <!-- MainActivity làm màn hình khởi động để xử lý logic check Login/DevMode -->
         <activity
-            android:name=".feature.auth.ui.LoginActivity"
+            android:name=".feature.auth.ui.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- LoginActivity giờ chỉ là màn hình bình thường -->
+        <activity
+            android:name=".feature.auth.ui.LoginActivity"
+            android:exported="true">
         </activity>
 
         <activity
@@ -36,6 +41,14 @@
         <activity android:name=".feature.patients.doctor.ui.DoctorDetailActivity" />
         <activity android:name=".feature.patients.appointment.viewmodel.BookAppointmentActivity" />
         <activity android:name=".feature.patients.appointment.ui.ConfirmAppointmentActivity" />
+        <activity android:name=".feature.patients.appointment.viewmodel.BookVaccineActivity" />
+        <activity android:name=".feature.patients.appointment.ui.ConfirmVaccineActivity" />
+        <activity android:name=".feature.patients.profile.ui.ProfileActivity" />
+        <activity android:name=".feature.patients.profile.ui.EditProfileActivity" />
+        <activity android:name=".feature.patients.appointment.ui.AppointmentDetailActivity" />
+        <activity android:name=".feature.patients.record.activity.MedicalRecordActivity" />
+        <activity android:name=".feature.patients.record.activity.TreatmentPlanActivity" />
+        <activity android:name=".feature.auth.ui.ChangePasswordActivity" />
 
     </application>
 

@@ -34,6 +34,7 @@ public class RegisterActivity extends BaseActivity {
                 Intent intent = new Intent(RegisterActivity.this, CreateFileActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("password", password);
+                intent.putExtra("role", "PATIENT");
                 startActivity(intent);
             }
         });

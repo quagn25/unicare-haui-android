@@ -2,7 +2,7 @@ package com.haui.UniCare.data.model.table;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Appointment {
+public class Appointment implements java.io.Serializable {
     public int id;
 
     @SerializedName("patient_id")
@@ -18,6 +18,36 @@ public class Appointment {
 
     @SerializedName("created_at")
     public String createdAt;
+
+    // Các trường bổ sung để hiển thị (Lấy từ JOIN trong DB)
+    @SerializedName("doctor_name")
+    public String doctorName;
+
+    @SerializedName("doctor_title")
+    public String doctorTitle;
+
+    @SerializedName("doctor_bio")
+    public String doctorBio;
+
+    @SerializedName("specialty_name")
+    public String specialtyName;
+
+    @SerializedName("workplace_address")
+    public String workplaceAddress;
+
+    @SerializedName("consultation_fee")
+    public double consultationFee;
+
+    public String note;
+
+    @SerializedName("patient_name")
+    public String patientName;
+
+    @SerializedName("patient_dob")
+    public String patientDob;
+
+    @SerializedName("patient_phone")
+    public String patientPhone;
 
     public Appointment() {}
 

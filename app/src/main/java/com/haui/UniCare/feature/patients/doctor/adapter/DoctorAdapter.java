@@ -54,7 +54,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
     @NonNull
     @Override
     public DoctorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_doctor, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_doctor_list, parent, false);
         return new DoctorViewHolder(view);
     }
 
@@ -67,8 +67,8 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
         holder.tvDegree.setText(doctor.getDegree());
         holder.tvName.setText(doctor.getName());
         holder.tvExperience.setText(doctor.getExperienceText());
-        holder.tvSpecialties.setText(doctor.getSpecialties());
         holder.tvAddress.setText(doctor.getAddress());
+        holder.tvSpecialty.setText(doctor.getSpecialties());
 
         // Xử lý ảnh đại diện
         if (doctor.getAvatarUrl() != null && !doctor.getAvatarUrl().isEmpty()) {
@@ -82,14 +82,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
                     ? doctor.getAvatarResource() : R.drawable.doctorbook);
         }
 
-        // Sự kiện khi bấm vào item để xem chi tiết
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), DoctorDetailActivity.class);
-            intent.putExtra("doctor_data", doctor);
-            holder.itemView.getContext().startActivity(intent);
-        });
-
-        // Sự kiện khi bấm nút Đặt lịch ngay
+        // Sự kiện khi bấm nút Đặt lịch ngay mới chuyển sang trang chi tiết bác sĩ
         holder.btnBookNow.setOnClickListener(v -> {
             Intent intent = new Intent(holder.itemView.getContext(), DoctorDetailActivity.class);
             intent.putExtra("doctor_data", doctor);
@@ -104,18 +97,18 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.DoctorView
 
     public static class DoctorViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
-        TextView tvDegree, tvName, tvExperience, tvSpecialties, tvAddress;
+        TextView tvDegree, tvName, tvExperience, tvAddress, tvSpecialty;
         Button btnBookNow;
 
         public DoctorViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgAvatar = itemView.findViewById(R.id.img_doctor_avatar);
-            tvDegree = itemView.findViewById(R.id.tv_doctor_degree);
-            tvName = itemView.findViewById(R.id.tv_doctor_name);
-            tvExperience = itemView.findViewById(R.id.tv_experience);
-            tvSpecialties = itemView.findViewById(R.id.tv_specialties);
-            tvAddress = itemView.findViewById(R.id.tv_address);
-            btnBookNow = itemView.findViewById(R.id.btn_book_now);
+            imgAvatar = itemView.findViewById(R.id.imgDoctorAvatar);
+            tvDegree = itemView.findViewById(R.id.tvDoctorTitle);
+            tvName = itemView.findViewById(R.id.tvDoctorName);
+            tvExperience = itemView.findViewById(R.id.tvDoctorExperience);
+            tvAddress = itemView.findViewById(R.id.tvDoctorAddress);
+            tvSpecialty = itemView.findViewById(R.id.tvDoctorSpecialty);
+            btnBookNow = itemView.findViewById(R.id.btnBooking);
         }
     }
 }

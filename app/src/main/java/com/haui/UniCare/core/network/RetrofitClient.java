@@ -9,17 +9,11 @@ public class RetrofitClient {
     private static Retrofit retrofit;
 
     private static String getBaseUrl() {
-        // CÁCH 1: DÙNG NGROK CHO TẤT CẢ (Khuyên dùng để gửi cho bạn bè/thầy giáo)
-        // Dù là máy ảo hay máy thật, ở bất cứ đâu cũng sẽ kết nối được về máy tính của bạn.
-        return "https://jailbird-twenty-recovery.ngrok-free.dev/";
-
-        /* 
-        // CÁCH 2: DÙNG LOCAL CHO MÁY ẢO CỦA BẠN (Chỉ dùng khi bạn tự dev một mình)
+        // Tự động kiểm tra: Nếu là máy ảo thì dùng localhost (10.0.2.2), nếu là máy thật dùng Ngrok
         if (isEmulator()) {
             return "http://10.0.2.2:3000/";
         }
         return "https://jailbird-twenty-recovery.ngrok-free.dev/";
-        */
     }
 
     private static boolean isEmulator() {

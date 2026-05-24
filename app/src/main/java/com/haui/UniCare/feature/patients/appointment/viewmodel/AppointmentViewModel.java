@@ -4,95 +4,90 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.haui.UniCare.core.base.BaseViewModel;
-import com.haui.UniCare.data.model.datetime.DateSlot;
-import com.haui.UniCare.data.model.datetime.TimeSlot;
+import com.haui.UniCare.core.network.ApiService;
+import com.haui.UniCare.core.network.RetrofitClient;
+import com.haui.UniCare.data.model.GenericResponse;
+import com.haui.UniCare.data.model.table.Appointment;
 
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AppointmentViewModel extends BaseViewModel {
 
-    private final MutableLiveData<List<DateSlot>> availableDates = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<List<TimeSlot>> availableTimes = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<DateSlot> selectedDate = new MutableLiveData<>();
-    private final MutableLiveData<TimeSlot> selectedTime = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isNextButtonEnabled = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> isBookingSuccess = new MutableLiveData<>();
 
-    public LiveData<List<DateSlot>> getAvailableDates() {
-        return availableDates;
+    public LiveData<Boolean> getIsBookingSuccess() {
+        return isBookingSuccess;
     }
 
-    public LiveData<List<TimeSlot>> getAvailableTimes() {
-        return availableTimes;
-    }
-
-    public LiveData<DateSlot> getSelectedDate() {
-        return selectedDate;
-    }
-
-    public LiveData<TimeSlot> getSelectedTime() {
-        return selectedTime;
-    }
-
-    public LiveData<Boolean> getIsNextButtonEnabled() {
-        return isNextButtonEnabled;
-    }
-
-    public void selectDate(DateSlot date) {
-        selectedDate.setValue(date);
-        selectedTime.setValue(null);
-        loadTimeSlots(date);
-        checkEnableNextButton();
-    }
-
-    public void selectTime(TimeSlot time) {
-        selectedTime.setValue(time);
-        checkEnableNextButton();
-    }
-
-    private void loadTimeSlots(DateSlot date) {
-        // TODO: Gọi Repository để lấy list giờ theo ngày được chọn
-        List<TimeSlot> mockTimes = new ArrayList<>();
-        mockTimes.add(new TimeSlot("08:00 - 08:30", true, false));
-        mockTimes.add(new TimeSlot("09:00 - 09:30", true, false));
-        mockTimes.add(new TimeSlot("14:00 - 14:30", true, false));
-        mockTimes.add(new TimeSlot("15:00 - 15:30", true, false));
-        availableTimes.setValue(mockTimes);
-    }
-
-    private void checkEnableNextButton() {
-        boolean isEnabled = selectedDate.getValue() != null && selectedTime.getValue() != null;
-        isNextButtonEnabled.setValue(isEnabled);
-    }
-
-    public void filterTimeSlots(String period) {
-        List<TimeSlot> allSlots = availableTimes.getValue();
-        if (allSlots == null) return;
-        
-        // Logic lọc Sáng/Chiều
-        List<TimeSlot> filteredList = new ArrayList<>();
-        for (TimeSlot slot : allSlots) {
-            String hourStr = slot.getTimeRange().split(":")[0].trim();
-            int hour = Integer.parseInt(hourStr);
-            if ("Sáng".equalsIgnoreCase(period) && hour < 12) {
-                filteredList.add(slot);
-            } else if ("Chiều".equalsIgnoreCase(period) && hour >= 12) {
-                filteredList.add(slot);
-            }
-        }
-        availableTimes.setValue(filteredList);
-    }
-
-    public void loadDoctorInfo(int doctorId) {
-        // TODO: Load thông tin bác sĩ
-    }
-
-    public void loadPatientProfile() {
-        // TODO: Load thông tin bệnh nhân
-    }
-
-    public void createAppointment(int patientId, int doctorId) {
+    public void createAppointment(int patientId, int doctorId, String datetime, String note) {
         showLoading.setValue(true);
-        // TODO: Thực hiện đăng ký lịch hẹn
+        
+        Appointment appointment = new Appointment();
+        appointment.patientId = patientId;
+        appointment.doctorId = doctorId;
+        appointment.appointmentDatetime = datetime;
+        appointment.status = "PENDING";
+        appointment.note = note;
+
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        apiService.createAppointment(appointment).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                showLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    // Check body status - some APIs return 200 even on logical errors
+                    if ("success".equalsIgnoreCase(response.body().getStatus()) || response.body().getStatus() == null) {
+                        isBookingSuccess.setValue(true);
+                    } else {
+                        isBookingSuccess.setValue(false);
+                    }
+                } else {
+                    isBookingSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                showLoading.setValue(false);
+                isBookingSuccess.setValue(false);
+            }
+        });
+    }
+
+    public void updateAppointment(int appointmentId, String datetime, String note) {
+        showLoading.setValue(true);
+        
+        java.util.Map<String, Object> body = new java.util.HashMap<>();
+        body.put("appointmentId", appointmentId);
+        body.put("appointment_datetime", datetime);
+        body.put("note", note);
+
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        apiService.updateAppointmentDetails(body).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                showLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    isBookingSuccess.setValue(true);
+                } else {
+                    isBookingSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                showLoading.setValue(false);
+                isBookingSuccess.setValue(false);
+            }
+        });
+    }
+    
+    /**
+     * Resets the booking success state to avoid repeated triggers
+     */
+    public void resetBookingState() {
+        isBookingSuccess.setValue(null);
     }
 }

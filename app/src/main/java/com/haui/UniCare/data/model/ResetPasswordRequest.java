@@ -1,16 +1,20 @@
 package com.haui.UniCare.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ResetPasswordRequest {
     private String username;
     private String email;
     private String otp;
-    private String newPassword;
+    
+    @SerializedName("password")
+    private String password;
 
-    public ResetPasswordRequest(String username, String email, String otp, String newPassword) {
+    public ResetPasswordRequest(String username, String email, String otp, String password) {
         this.username = username;
         this.email = email;
         this.otp = otp;
-        this.newPassword = newPassword;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -37,11 +41,11 @@ public class ResetPasswordRequest {
         this.otp = otp;
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

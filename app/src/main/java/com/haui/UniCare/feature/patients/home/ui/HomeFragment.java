@@ -24,10 +24,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.haui.UniCare.R;
+import com.haui.UniCare.feature.patients.doctor.ui.DoctorDetailActivity;
 import com.haui.UniCare.feature.patients.doctor.ui.DoctorListActivity;
 import com.haui.UniCare.feature.patients.home.adapter.BannerAdapter;
+import com.haui.UniCare.feature.patients.home.adapter.DoctorHomeAdapter;
 import com.haui.UniCare.feature.patients.home.adapter.SpecialtyAdapter;
+import com.haui.UniCare.data.model.table.Doctor;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.haui.UniCare.core.utils.AppConstants;
+import com.haui.UniCare.data.MockData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +50,17 @@ public class HomeFragment extends Fragment {
     
     private TextView tvUserNameHome;
     private LinearLayout btnBookDoctor;
+    private LinearLayout btnVaccineTab;
+    private LinearLayout btnProfileTab;
     private EditText etSearchHome;
+
+    private RecyclerView rvHomeDoctors;
+    private DoctorHomeAdapter doctorHomeAdapter;
+    private List<Doctor> homeDoctorList;
+    
+    private View scrollbarContainer;
+    private View scrollbarThumb;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -64,9 +80,15 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Ánh xạ View
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvUserNameHome = view.findViewById(R.id.tvUserNameHome);
         btnBookDoctor = view.findViewById(R.id.linearLayout); 
+        btnVaccineTab = view.findViewById(R.id.linearLayout2);
+        btnProfileTab = view.findViewById(R.id.linearLayout3);
         etSearchHome = view.findViewById(R.id.etSearchHome);
+        
+        scrollbarContainer = view.findViewById(R.id.scrollbarContainer);
+        scrollbarThumb = view.findViewById(R.id.scrollbarThumb);
         
         // Lấy tên người dùng từ SharedPreferences và hiển thị
         displayUserInfo();
@@ -120,10 +142,108 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(specialtyadapter); 
         recyclerView.setNestedScrollingEnabled(false);
 
+        // Khởi tạo RecyclerView Bác sĩ nổi bật
+        rvHomeDoctors = view.findViewById(R.id.rvHomeDoctors);
+        rvHomeDoctors.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        homeDoctorList = new ArrayList<>();
+        doctorHomeAdapter = new DoctorHomeAdapter(homeDoctorList);
+        rvHomeDoctors.setAdapter(doctorHomeAdapter);
+
+        doctorHomeAdapter.setOnItemClickListener(doctor -> {
+            Intent intent = new Intent(getActivity(), DoctorDetailActivity.class);
+            intent.putExtra("doctor_data", doctor);
+            startActivity(intent);
+        });
+
+        // Xử lý thanh trượt (slider progress) khi cuộn danh sách bác sĩ
+        rvHomeDoctors.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                
+                int offset = recyclerView.computeHorizontalScrollOffset();
+                int extent = recyclerView.computeHorizontalScrollExtent();
+                int range = recyclerView.computeHorizontalScrollRange();
+                
+                int maxOffset = range - extent;
+                if (maxOffset > 0 && scrollbarContainer != null && scrollbarThumb != null) {
+                    float progress = (float) offset / maxOffset;
+                    
+                    int trackWidth = scrollbarContainer.getWidth();
+                    int thumbWidth = scrollbarThumb.getWidth();
+                    int maxTranslate = trackWidth - thumbWidth;
+                    
+                    if (maxTranslate > 0) {
+                        scrollbarThumb.setTranslationX(progress * maxTranslate);
+                    }
+                }
+            }
+        });
+
+        // Load dữ liệu bác sĩ (Dùng MockData nếu là bản Debug)
+        loadHomeDoctors();
+
         // Xử lý sự kiện click chuyển sang Danh sách bác sĩ
         btnBookDoctor.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DoctorListActivity.class);
             startActivity(intent);
+        });
+
+        // Xử lý sự kiện click Lịch tiêm (linearLayout2)
+        if (btnVaccineTab != null) {
+            btnVaccineTab.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("select_tab", "schedule");
+                intent.putExtra("active_tab", "vaccine");
+                startActivity(intent);
+            });
+        }
+
+        // Xử lý sự kiện click Hồ sơ (linearLayout3) chuyển thẳng sang ProfileActivity
+        if (btnProfileTab != null) {
+            btnProfileTab.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.patients.profile.ui.ProfileActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // Xử lý sự kiện click cho Specialties
+        specialtyadapter.setOnItemClickListener(specialty -> {
+            Intent intent = new Intent(getActivity(), DoctorListActivity.class);
+            intent.putExtra("specialty_name", specialty.getName());
+            startActivity(intent);
+        });
+    }
+
+    private void loadHomeDoctors() {
+        if (AppConstants.USE_MOCK_DATA) {
+            // Chế độ Dev: Dùng dữ liệu mẫu
+            homeDoctorList.clear();
+            homeDoctorList.addAll(MockData.getMockDoctors());
+            doctorHomeAdapter.notifyDataSetChanged();
+        } else {
+            // Chế độ Production: Gọi API (ở đây tạm thời chưa có API riêng cho Home, dùng chung API lấy tất cả)
+            fetchDoctorsFromServer();
+        }
+    }
+
+    private void fetchDoctorsFromServer() {
+        com.haui.UniCare.core.network.ApiService apiService = com.haui.UniCare.core.network.RetrofitClient.getInstance().create(com.haui.UniCare.core.network.ApiService.class);
+        apiService.getDoctors().enqueue(new retrofit2.Callback<List<Doctor>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Doctor>> call, retrofit2.Response<List<Doctor>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    homeDoctorList.clear();
+                    homeDoctorList.addAll(response.body());
+                    doctorHomeAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Doctor>> call, Throwable t) {
+                // Xử lý lỗi
+            }
         });
     }
 
@@ -132,7 +252,24 @@ public class HomeFragment extends Fragment {
             SharedPreferences sharedPref = getActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
             String fullName = sharedPref.getString("fullName", "Người dùng");
             tvUserNameHome.setText(fullName);
+            
+            TextView tvAvatarInitials = getView() != null ? getView().findViewById(R.id.tvAvatarInitials) : null;
+            if (tvAvatarInitials != null) {
+                tvAvatarInitials.setText(getInitials(fullName));
+            }
         }
+    }
+
+    private String getInitials(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) return "U";
+        String[] words = fullName.trim().split("\\s+");
+        if (words.length == 0) return "U";
+        if (words.length == 1) {
+            return words[0].substring(0, Math.min(2, words[0].length())).toUpperCase();
+        }
+        String first = words[0].substring(0, 1);
+        String last = words[words.length - 1].substring(0, 1);
+        return (first + last).toUpperCase();
     }
 
     private final Runnable sliderRunnable = new Runnable() {

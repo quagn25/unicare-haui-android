@@ -14,6 +14,11 @@ import com.haui.UniCare.feature.patients.appointment.viewmodel.BookAppointmentAc
 
 import java.text.DecimalFormat;
 
+import androidx.activity.EdgeToEdge;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 public class DoctorDetailActivity extends BaseActivity {
 
     private ImageView imgDoctorDetail;
@@ -21,17 +26,26 @@ public class DoctorDetailActivity extends BaseActivity {
     private Button btnBookDoctorDetail;
     private Toolbar toolbar;
     private Doctor selectedDoctor;
+    private int rescheduleAppointmentId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_doctor_detail);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         initViews();
         setupToolbar();
 
         // Lấy dữ liệu Doctor từ Intent
         selectedDoctor = (Doctor) getIntent().getSerializableExtra("doctor_data");
+        rescheduleAppointmentId = getIntent().getIntExtra("reschedule_appointment_id", -1);
         if (selectedDoctor != null) {
             displayDoctorInfo(selectedDoctor);
         }
@@ -39,6 +53,7 @@ public class DoctorDetailActivity extends BaseActivity {
         btnBookDoctorDetail.setOnClickListener(v -> {
             Intent intent = new Intent(DoctorDetailActivity.this, BookAppointmentActivity.class);
             intent.putExtra("doctor_data", selectedDoctor);
+            intent.putExtra("reschedule_appointment_id", rescheduleAppointmentId);
             startActivity(intent);
         });
     }

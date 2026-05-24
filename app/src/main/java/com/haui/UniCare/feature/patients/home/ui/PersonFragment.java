@@ -1,97 +1,238 @@
 package com.haui.UniCare.feature.patients.home.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.haui.UniCare.R;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PersonFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PersonFragment extends Fragment {
-    Button btnSignOut;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TextView tvUserName;
+    private ImageView imgAvatarPerson;
+    private View btnEditAvatar;
+    
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri selectedImageUri = result.getData().getData();
+                    if (selectedImageUri != null) {
+                        updateAvatar(selectedImageUri);
+                    }
+                }
+            }
+    );
 
     public PersonFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PersonFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PersonFragment newInstance(String param1, String param2) {
-        PersonFragment fragment = new PersonFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static PersonFragment newInstance() {
+        return new PersonFragment();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_person, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Ánh xạ View (Logic xử lý ở đây)
-        btnSignOut = view.findViewById(R.id.button2);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        tvUserName = view.findViewById(R.id.tv_user_name);
+        imgAvatarPerson = view.findViewById(R.id.imgAvatarPerson);
+        btnEditAvatar = view.findViewById(R.id.btn_edit_avatar);
+        
+        Button btnLogout = view.findViewById(R.id.btn_logout);
+        View layoutShareApp = view.findViewById(R.id.layout_share_app);
+        View layoutChangePassword = view.findViewById(R.id.layout_change_password);
+        View layoutDeleteAccount = view.findViewById(R.id.layout_delete_account);
+        View layoutProfileHeader = view.findViewById(R.id.layoutProfileHeader);
 
-        // 2. Bắt sự kiện Click
-        btnSignOut.setOnClickListener(v -> {
-            // 1. Xóa trạng thái đăng nhập trong SharedPreferences
+        displayUserInfo();
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                    displayUserInfo();
+                    swipeRefreshLayout.setRefreshing(false);
+                }, 1000);
+            });
+        }
+
+        if (imgAvatarPerson != null) {
+            imgAvatarPerson.setOnClickListener(v -> openImagePicker());
+        }
+        if (btnEditAvatar != null) {
+            btnEditAvatar.setOnClickListener(v -> openImagePicker());
+        }
+
+        if (layoutProfileHeader != null) {
+            layoutProfileHeader.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.patients.profile.ui.ProfileActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        if (btnLogout != null) {
+            btnLogout.setOnClickListener(v -> {
+                android.app.Dialog dialog = new android.app.Dialog(requireContext());
+                dialog.setContentView(R.layout.dialog_custom_confirm);
+                
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+
+                android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+                if (btnCloseIcon != null) {
+                    btnCloseIcon.setOnClickListener(btnV -> dialog.dismiss());
+                }
+
+                android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                tvTitle.setText("Đăng xuất?");
+                
+                android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                tvMessage.setText("Bạn có chắc chắn muốn đăng xuất không?");
+
+                com.google.android.material.button.MaterialButton btnLogoutAction = dialog.findViewById(R.id.btnPrimary);
+                btnLogoutAction.setText("Đăng xuất");
+                btnLogoutAction.setOnClickListener(btnV -> {
+                    dialog.dismiss();
+                    SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+                    sharedPref.edit().clear().apply();
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    requireActivity().finish();
+                });
+
+                com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+                btnCancel.setText("Đóng");
+                btnCancel.setOnClickListener(btnV -> dialog.dismiss());
+
+                dialog.show();
+            });
+        }
+
+        if (layoutShareApp != null) {
+            layoutShareApp.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, "Truy cập UniCare ngay tại: https://unicare.haui.edu.vn");
+                startActivity(Intent.createChooser(intent, "Chia sẻ qua:"));
+            });
+        }
+
+        if (layoutChangePassword != null) {
+            layoutChangePassword.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.auth.ui.ChangePasswordActivity.class);
+                startActivity(intent);
+            });
+        }
+        
+        if (layoutDeleteAccount != null) {
+            layoutDeleteAccount.setOnClickListener(v -> {
+                android.app.Dialog dialog = new android.app.Dialog(requireContext());
+                dialog.setContentView(R.layout.dialog_custom_confirm);
+                
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+
+                android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+                if (btnCloseIcon != null) {
+                    btnCloseIcon.setOnClickListener(btnV -> dialog.dismiss());
+                }
+
+                android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                tvTitle.setText("Xóa tài khoản?");
+                
+                android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                tvMessage.setText("Hành động này không thể hoàn tác. Bạn có chắc muốn tiếp tục?");
+
+                com.google.android.material.button.MaterialButton btnDelete = dialog.findViewById(R.id.btnPrimary);
+                btnDelete.setText("Xóa");
+                btnDelete.setOnClickListener(btnV -> {
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đã được ghi nhận", Toast.LENGTH_SHORT).show();
+                });
+
+                com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+                btnCancel.setText("Đóng");
+                btnCancel.setOnClickListener(btnV -> dialog.dismiss());
+
+                dialog.show();
+            });
+        }
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        pickImageLauncher.launch(intent);
+    }
+
+    private void updateAvatar(Uri imageUri) {
+        if (imgAvatarPerson != null) {
+            Glide.with(this)
+                    .load(imageUri)
+                    .circleCrop()
+                    .placeholder(R.drawable.default_avt)
+                    .into(imgAvatarPerson);
+            
             SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.clear(); // Xóa sạch dữ liệu (hoặc dùng editor.putBoolean("isLoggedIn", false))
-            editor.apply();
+            sharedPref.edit().putString("avatarUri", imageUri.toString()).apply();
+            
+            Toast.makeText(getContext(), "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-            // 2. Chuyển hướng về màn hình Đăng nhập
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+    @Override
+    public void onResume() {
+        super.onResume();
+        displayUserInfo();
+    }
 
-            // 3. Đóng Activity hiện tại
-            requireActivity().finish();
-        });
+    private void displayUserInfo() {
+        if (getContext() != null && tvUserName != null) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+            String fullName = sharedPref.getString("fullName", "Người dùng");
+            tvUserName.setText(fullName);
+            
+            String avatarUriStr = sharedPref.getString("avatarUri", null);
+            if (avatarUriStr != null && imgAvatarPerson != null) {
+                Glide.with(this)
+                        .load(Uri.parse(avatarUriStr))
+                        .circleCrop()
+                        .placeholder(R.drawable.default_avt)
+                        .into(imgAvatarPerson);
+            }
+        }
     }
 }
