@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.patients.profile.ui;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends BaseActivity {
 
     private ImageButton btnBack;
     private TextInputEditText etEditName;

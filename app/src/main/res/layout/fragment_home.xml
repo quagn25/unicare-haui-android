@@ -89,11 +89,16 @@
     </LinearLayout>
 
     <!-- Scrollable Body Content -->
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -303,10 +308,22 @@
                     android:layout_marginTop="12dp"
                     android:orientation="horizontal">
 
-                    <View
+                    <FrameLayout
+                        android:id="@+id/scrollbarContainer"
                         android:layout_width="120dp"
-                        android:layout_height="6dp"
-                        android:background="@drawable/bg_scrollbar_track" />
+                        android:layout_height="6dp">
+                        
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_scrollbar_base" />
+                            
+                        <View
+                            android:id="@+id/scrollbarThumb"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_scrollbar_thumb" />
+                    </FrameLayout>
 
                 </LinearLayout>
             </LinearLayout>
@@ -346,5 +363,6 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

@@ -57,6 +57,10 @@ public class HomeFragment extends Fragment {
     private RecyclerView rvHomeDoctors;
     private DoctorHomeAdapter doctorHomeAdapter;
     private List<Doctor> homeDoctorList;
+    
+    private View scrollbarContainer;
+    private View scrollbarThumb;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -76,11 +80,15 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Ánh xạ View
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvUserNameHome = view.findViewById(R.id.tvUserNameHome);
         btnBookDoctor = view.findViewById(R.id.linearLayout); 
         btnVaccineTab = view.findViewById(R.id.linearLayout2);
         btnProfileTab = view.findViewById(R.id.linearLayout3);
         etSearchHome = view.findViewById(R.id.etSearchHome);
+        
+        scrollbarContainer = view.findViewById(R.id.scrollbarContainer);
+        scrollbarThumb = view.findViewById(R.id.scrollbarThumb);
         
         // Lấy tên người dùng từ SharedPreferences và hiển thị
         displayUserInfo();
@@ -145,6 +153,31 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), DoctorDetailActivity.class);
             intent.putExtra("doctor_data", doctor);
             startActivity(intent);
+        });
+
+        // Xử lý thanh trượt (slider progress) khi cuộn danh sách bác sĩ
+        rvHomeDoctors.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                
+                int offset = recyclerView.computeHorizontalScrollOffset();
+                int extent = recyclerView.computeHorizontalScrollExtent();
+                int range = recyclerView.computeHorizontalScrollRange();
+                
+                int maxOffset = range - extent;
+                if (maxOffset > 0 && scrollbarContainer != null && scrollbarThumb != null) {
+                    float progress = (float) offset / maxOffset;
+                    
+                    int trackWidth = scrollbarContainer.getWidth();
+                    int thumbWidth = scrollbarThumb.getWidth();
+                    int maxTranslate = trackWidth - thumbWidth;
+                    
+                    if (maxTranslate > 0) {
+                        scrollbarThumb.setTranslationX(progress * maxTranslate);
+                    }
+                }
+            }
         });
 
         // Load dữ liệu bác sĩ (Dùng MockData nếu là bản Debug)

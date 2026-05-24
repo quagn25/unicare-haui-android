@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.AlertDialog;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.haui.UniCare.R;
 import com.haui.UniCare.feature.auth.ui.LoginActivity;
 
@@ -30,8 +30,9 @@ public class PersonFragment extends Fragment {
     private TextView tvUserName;
     private ImageView imgAvatarPerson;
     private View btnEditAvatar;
+    
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
 
-    // Launcher to pick image from gallery
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -45,7 +46,6 @@ public class PersonFragment extends Fragment {
     );
 
     public PersonFragment() {
-        // Required empty public constructor
     }
 
     public static PersonFragment newInstance() {
@@ -62,7 +62,7 @@ public class PersonFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Mapping views
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvUserName = view.findViewById(R.id.tv_user_name);
         imgAvatarPerson = view.findViewById(R.id.imgAvatarPerson);
         btnEditAvatar = view.findViewById(R.id.btn_edit_avatar);
@@ -73,10 +73,17 @@ public class PersonFragment extends Fragment {
         View layoutDeleteAccount = view.findViewById(R.id.layout_delete_account);
         View layoutProfileHeader = view.findViewById(R.id.layoutProfileHeader);
 
-        // Display user info from SharedPreferences
         displayUserInfo();
 
-        // Image picker click events
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                    displayUserInfo();
+                    swipeRefreshLayout.setRefreshing(false);
+                }, 1000);
+            });
+        }
+
         if (imgAvatarPerson != null) {
             imgAvatarPerson.setOnClickListener(v -> openImagePicker());
         }
@@ -84,7 +91,6 @@ public class PersonFragment extends Fragment {
             btnEditAvatar.setOnClickListener(v -> openImagePicker());
         }
 
-        // Navigate to profile details
         if (layoutProfileHeader != null) {
             layoutProfileHeader.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.patients.profile.ui.ProfileActivity.class);
@@ -92,26 +98,47 @@ public class PersonFragment extends Fragment {
             });
         }
 
-        // Logout
         if (btnLogout != null) {
             btnLogout.setOnClickListener(v -> {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Đăng xuất")
-                        .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
-                        .setPositiveButton("Đăng xuất", (dialog, which) -> {
-                            SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
-                            sharedPref.edit().clear().apply();
-                            Intent intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            requireActivity().finish();
-                        })
-                        .setNegativeButton("Hủy", null)
-                        .show();
+                android.app.Dialog dialog = new android.app.Dialog(requireContext());
+                dialog.setContentView(R.layout.dialog_custom_confirm);
+                
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+
+                android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+                if (btnCloseIcon != null) {
+                    btnCloseIcon.setOnClickListener(btnV -> dialog.dismiss());
+                }
+
+                android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                tvTitle.setText("Đăng xuất?");
+                
+                android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                tvMessage.setText("Bạn có chắc chắn muốn đăng xuất không?");
+
+                com.google.android.material.button.MaterialButton btnLogoutAction = dialog.findViewById(R.id.btnPrimary);
+                btnLogoutAction.setText("Đăng xuất");
+                btnLogoutAction.setOnClickListener(btnV -> {
+                    dialog.dismiss();
+                    SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+                    sharedPref.edit().clear().apply();
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    requireActivity().finish();
+                });
+
+                com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+                btnCancel.setText("Đóng");
+                btnCancel.setOnClickListener(btnV -> dialog.dismiss());
+
+                dialog.show();
             });
         }
 
-        // Share app
         if (layoutShareApp != null) {
             layoutShareApp.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_SEND);
@@ -121,23 +148,46 @@ public class PersonFragment extends Fragment {
             });
         }
 
-        // Placeholder actions
         if (layoutChangePassword != null) {
             layoutChangePassword.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.auth.ui.ChangePasswordActivity.class);
                 startActivity(intent);
             });
         }
+        
         if (layoutDeleteAccount != null) {
             layoutDeleteAccount.setOnClickListener(v -> {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Xóa tài khoản")
-                        .setMessage("Bạn có chắc chắn muốn xóa tài khoản không? Hành động này không thể hoàn tác.")
-                        .setPositiveButton("Xóa", (dialog, which) -> {
-                            Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đã được ghi nhận", Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton("Hủy", null)
-                        .show();
+                android.app.Dialog dialog = new android.app.Dialog(requireContext());
+                dialog.setContentView(R.layout.dialog_custom_confirm);
+                
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+
+                android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+                if (btnCloseIcon != null) {
+                    btnCloseIcon.setOnClickListener(btnV -> dialog.dismiss());
+                }
+
+                android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                tvTitle.setText("Xóa tài khoản?");
+                
+                android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                tvMessage.setText("Hành động này không thể hoàn tác. Bạn có chắc muốn tiếp tục?");
+
+                com.google.android.material.button.MaterialButton btnDelete = dialog.findViewById(R.id.btnPrimary);
+                btnDelete.setText("Xóa");
+                btnDelete.setOnClickListener(btnV -> {
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đã được ghi nhận", Toast.LENGTH_SHORT).show();
+                });
+
+                com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+                btnCancel.setText("Đóng");
+                btnCancel.setOnClickListener(btnV -> dialog.dismiss());
+
+                dialog.show();
             });
         }
     }
@@ -156,7 +206,6 @@ public class PersonFragment extends Fragment {
                     .placeholder(R.drawable.default_avt)
                     .into(imgAvatarPerson);
             
-            // Persist the image URI locally (optional: upload to server)
             SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
             sharedPref.edit().putString("avatarUri", imageUri.toString()).apply();
             

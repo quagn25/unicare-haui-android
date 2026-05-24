@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.patients.record.ui;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,7 +15,7 @@ import com.haui.UniCare.data.model.table.MedicalRecord;
 
 import java.util.Calendar;
 
-public class MedicalRecordActivity extends AppCompatActivity {
+public class MedicalRecordActivity extends BaseActivity {
 
     private ImageView btnBack;
     private TextView tvPatientHeader, tvRecordCode;

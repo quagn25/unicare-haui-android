@@ -117,23 +117,57 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container, selectedFragment)
                         .commit();
             }
+
+            // Remove badge when switching to notifications tab
+            if (id == R.id.nav_notifications) {
+                bottomNav.removeBadge(R.id.nav_notifications);
+            }
+
             return true;
         });
+
+        // Set mock unread notification badge
+        com.google.android.material.badge.BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_notifications);
+        badge.setVisible(true);
+        badge.setNumber(3); // Mock number of unread notifications
+        badge.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+        badge.setBadgeTextColor(getResources().getColor(android.R.color.white));
     }
     private void showExitDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Thông báo")
-                .setMessage("Bạn muốn đóng ứng dụng hay đăng xuất khỏi hệ thống?")
-                .setPositiveButton("Thoát App", (dialog, which) -> finish())
-                .setNeutralButton("Đăng xuất", (dialog, which) -> {
-                    SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
-                    sharedPref.edit().clear().apply();
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                })
-                .setNegativeButton("Hủy", null)
-                .show();
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.setContentView(R.layout.dialog_custom_confirm);
+        
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+        if (btnCloseIcon != null) {
+            btnCloseIcon.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+        tvTitle.setText("Thoát ứng dụng?");
+
+        android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+        tvMessage.setText("Bạn có chắc chắn muốn thoát ứng dụng không?");
+
+        com.google.android.material.button.MaterialButton btnExit = dialog.findViewById(R.id.btnPrimary);
+        btnExit.setText("Thoát App");
+        btnExit.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#EF4444")));
+        btnExit.setOnClickListener(v -> {
+            dialog.dismiss();
+            finish();
+        });
+
+        com.google.android.material.button.MaterialButton btnLogout = dialog.findViewById(R.id.btnSecondary);
+        btnLogout.setVisibility(android.view.View.GONE);
+
+        com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+        btnCancel.setText("Đóng");
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 }

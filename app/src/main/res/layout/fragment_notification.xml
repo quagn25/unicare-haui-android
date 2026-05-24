@@ -196,12 +196,19 @@
     </HorizontalScrollView>
 
     <!-- Notification RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNotifications"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="20dp"
-        android:clipToPadding="false"
-        android:paddingBottom="24dp" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNotifications"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="20dp"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp" />
+            
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

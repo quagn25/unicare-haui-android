@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.patients.appointment.viewmodel;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,7 +27,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class BookVaccineActivity extends AppCompatActivity {
+public class BookVaccineActivity extends BaseActivity {
 
     private RecyclerView rvVaccineTypes;
     private RecyclerView rcvCalendar, rvMorningSlots, rvAfternoonSlots, rvEveningSlots;

@@ -51,6 +51,7 @@ public class NotificationFragment extends Fragment {
     private List<Notification> allNotifications = new ArrayList<>();
     private List<Notification> filteredNotifications = new ArrayList<>();
 
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
     private String currentFilter = "ALL"; // ALL, LICH_KHAM, TIEM_CHUNG, KET_QUA
     private int userId = 0;
 
@@ -86,6 +87,7 @@ public class NotificationFragment extends Fragment {
     }
 
     private void initViews(View view) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         rvNotifications = view.findViewById(R.id.rvNotifications);
         tvUnreadCount = view.findViewById(R.id.tvUnreadCount);
         btnReadAll = view.findViewById(R.id.btnReadAll);
@@ -99,6 +101,15 @@ public class NotificationFragment extends Fragment {
         tvTabLichKham = view.findViewById(R.id.tvTabLichKham);
         tvTabTiemChung = view.findViewById(R.id.tvTabTiemChung);
         tvTabKetQua = view.findViewById(R.id.tvTabKetQua);
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                    fetchNotifications();
+                    swipeRefreshLayout.setRefreshing(false);
+                }, 1000);
+            });
+        }
     }
 
     private void setupRecyclerView() {

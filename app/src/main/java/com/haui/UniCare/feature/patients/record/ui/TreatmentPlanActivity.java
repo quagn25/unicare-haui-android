@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.patients.record.ui;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TreatmentPlanActivity extends AppCompatActivity {
+public class TreatmentPlanActivity extends BaseActivity {
 
     private ImageView btnBack;
     private RecyclerView rcvTreatmentPlans;

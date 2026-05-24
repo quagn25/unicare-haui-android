@@ -55,6 +55,7 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
     private ImageView imgTabUpcoming, imgTabCompleted;
     private LinearLayout btnRegisterVaccine;
 
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
     private String currentTab = "Đặt lịch khám"; 
 
     public AppointmentFragment() {}
@@ -84,6 +85,7 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
     }
 
     private void initViews(View view) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         layoutEmptyState = view.findViewById(R.id.layout_empty_state);
         rcvAppointments = view.findViewById(R.id.rcv_appointments);
         layoutTabUpcoming = view.findViewById(R.id.layout_tab_upcoming);
@@ -94,6 +96,15 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
         imgTabCompleted = view.findViewById(R.id.img_tab_completed);
         btnRegisterVaccine = view.findViewById(R.id.btn_register_vaccine);
         tvRegisterButton = view.findViewById(R.id.tv_register_button);
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                    loadData();
+                    swipeRefreshLayout.setRefreshing(false);
+                }, 1000);
+            });
+        }
     }
 
     private void setupRecyclerView() {

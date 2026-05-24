@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.auth.ui;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -26,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreateFileActivity extends AppCompatActivity {
+public class CreateFileActivity extends BaseActivity {
     TextInputLayout tilName, tilDate, tilEmail, tilGender;
     TextInputEditText edtName, edtDate, edtEmail;
     Button btnNext;

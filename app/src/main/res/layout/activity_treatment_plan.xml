@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Phác đồ điều trị"
+            android:paddingTop="23dp"
             android:textColor="#1F2937"
             android:textSize="18sp"
             android:textStyle="bold" />

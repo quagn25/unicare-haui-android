@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.patients.record.activity;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,7 +15,7 @@ import com.haui.UniCare.data.model.table.MedicalRecord;
 
 import java.util.Calendar;
 
-public class MedicalRecordActivity extends AppCompatActivity {
+public class MedicalRecordActivity extends BaseActivity {
 
     private ImageView btnBack;
     private TextView tvPatientHeader, tvRecordCode;
@@ -62,7 +64,31 @@ public class MedicalRecordActivity extends AppCompatActivity {
         
         btnSetReminder.setOnClickListener(v -> {
             Toast.makeText(this, "Đã đặt nhắc nhở lịch uống thuốc thành công!", Toast.LENGTH_SHORT).show();
+            sendMockNotification("Nhắc nhở uống thuốc", "Đã đến giờ uống thuốc theo đơn của bác sĩ. Vui lòng kiểm tra và uống thuốc đúng giờ nhé!");
         });
+    }
+
+    private void sendMockNotification(String title, String message) {
+        android.app.NotificationManager notificationManager = (android.app.NotificationManager) getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+        String channelId = "unicare_reminder_channel";
+        
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                    channelId,
+                    "Nhắc nhở y tế",
+                    android.app.NotificationManager.IMPORTANCE_HIGH
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        androidx.core.app.NotificationCompat.Builder builder = new androidx.core.app.NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.outline_notifications_24)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
 
     private void displayData() {

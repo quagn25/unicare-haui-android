@@ -1,5 +1,7 @@
 package com.haui.UniCare.feature.patients.profile.ui;
 
+import com.haui.UniCare.core.base.BaseActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     private ImageButton btnBack;
     private TextView tvEditProfile;
