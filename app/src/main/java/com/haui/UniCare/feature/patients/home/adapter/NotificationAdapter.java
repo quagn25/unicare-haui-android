@@ -24,10 +24,28 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private List<Notification> list;
     private Context context;
+    private OnNotificationDeleteListener deleteListener;
+    private OnNotificationClickListener clickListener;
+
+    public interface OnNotificationDeleteListener {
+        void onDeleteClick(Notification notification);
+    }
+
+    public interface OnNotificationClickListener {
+        void onItemClick(Notification notification);
+    }
 
     public NotificationAdapter(List<Notification> list, Context context) {
         this.list = list;
         this.context = context;
+    }
+
+    public void setDeleteListener(OnNotificationDeleteListener deleteListener) {
+        this.deleteListener = deleteListener;
+    }
+
+    public void setClickListener(OnNotificationClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     public void updateData(List<Notification> newList) {
@@ -102,6 +120,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
         holder.imgIcon.setImageResource(iconRes);
         holder.imgIcon.setImageTintList(ColorStateList.valueOf(tintColor));
+        
+        if (holder.btnDeleteNotification != null) {
+            holder.btnDeleteNotification.setOnClickListener(v -> {
+                if (deleteListener != null) {
+                    deleteListener.onDeleteClick(item);
+                }
+            });
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onItemClick(item);
+            }
+        });
     }
 
     @Override
@@ -153,6 +185,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public com.google.android.material.card.MaterialCardView cardNotification;
         public View iconContainer;
         public ImageView imgIcon;
+        public ImageView btnDeleteNotification;
         public TextView tvTitle;
         public View viewUnreadDot;
         public TextView tvContent;
@@ -163,6 +196,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             cardNotification = itemView.findViewById(R.id.cardNotification);
             iconContainer = itemView.findViewById(R.id.iconContainer);
             imgIcon = itemView.findViewById(R.id.imgNotificationIcon);
+            btnDeleteNotification = itemView.findViewById(R.id.btnDeleteNotification);
             tvTitle = itemView.findViewById(R.id.tvNotificationTitle);
             viewUnreadDot = itemView.findViewById(R.id.viewUnreadDot);
             tvContent = itemView.findViewById(R.id.tvNotificationContent);

@@ -51,6 +51,15 @@ public interface ApiService {
     @POST("notifications/read-all")
     Call<GenericResponse> readAllNotifications(@Body java.util.Map<String, Integer> body);
 
+    @POST("notifications/read")
+    Call<GenericResponse> readNotification(@Body java.util.Map<String, Integer> body);
+
+    @POST("notifications/delete")
+    Call<GenericResponse> deleteNotification(@Body java.util.Map<String, Integer> body);
+
+    @POST("users/delete")
+    Call<GenericResponse> deleteAccount(@Body java.util.Map<String, Integer> body);
+
     @POST("appointments/reschedule")
     Call<GenericResponse> rescheduleAppointment(@Body java.util.Map<String, Integer> body);
 

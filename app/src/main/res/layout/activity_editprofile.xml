@@ -67,6 +67,7 @@
                     android:text="Họ và tên"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEditName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -99,6 +100,7 @@
                     android:text="Ngày sinh"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEditDob"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -131,6 +133,7 @@
                     android:text="Giới tính"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEditGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -189,6 +192,7 @@
                     android:text="Số điện thoại"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEditPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -220,6 +224,7 @@
                     android:text="Địa chỉ"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEditAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -250,6 +255,7 @@
                     android:text="Email"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEditEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

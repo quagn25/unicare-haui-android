@@ -41,11 +41,11 @@ public class MockData {
         // Khởi tạo thông báo mẫu
         Notification n1 = new Notification();
         n1.setId(1);
-        n1.setTitle("Chào mừng bạn đến với UniCare");
-        n1.setContent("Cảm ơn bạn đã tin tưởng sử dụng ứng dụng chăm sóc sức khỏe của chúng tôi.");
+        n1.setTitle("Tạo tài khoản thành công");
+        n1.setContent("Chào mừng bạn đến với UniCare. Tài khoản của bạn đã được tạo thành công!");
         n1.setType("ALL");
         n1.setIsRead(0);
-        n1.setCreatedAt("2024-05-20 08:00:00");
+        n1.setCreatedAt(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date()));
         mockNotifications.add(n1);
     }
 
@@ -85,5 +85,18 @@ public class MockData {
         notification.setId(mockNotifications.size() + 1);
         notification.setCreatedAt(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date()));
         mockNotifications.add(0, notification);
+    }
+
+    public static void removeMockNotification(int id) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            mockNotifications.removeIf(n -> n.getId() == id);
+        } else {
+            for (int i = 0; i < mockNotifications.size(); i++) {
+                if (mockNotifications.get(i).getId() == id) {
+                    mockNotifications.remove(i);
+                    break;
+                }
+            }
+        }
     }
 }

@@ -113,6 +113,31 @@ public class AppointmentDetailActivity extends BaseActivity {
         }
         tvAppointmentStatus.setText(statusStr);
         tvAppointmentStatus.setTextColor(statusColor);
+        
+        // Kiểm tra xem đây có phải là lịch tiêm chủng không
+        boolean isVaccine = (appointment.doctorName != null && appointment.doctorName.startsWith("Vắc-xin")) ||
+                            (appointment.note != null && appointment.note.contains("Tiêm chủng"));
+                            
+        View layoutDoctorButtons = findViewById(R.id.layout_doctor_buttons);
+        Button btnVaccineNote = findViewById(R.id.btn_vaccine_note);
+        
+        if (isVaccine) {
+            tvDoctorName.setText("Vắc-xin: " + docName);
+            tvDoctorSpecialty.setVisibility(View.GONE);
+            
+            if (layoutDoctorButtons != null) layoutDoctorButtons.setVisibility(View.GONE);
+            if (btnVaccineNote != null) {
+                btnVaccineNote.setVisibility(View.VISIBLE);
+                btnVaccineNote.setOnClickListener(v -> {
+                    Intent intent = new Intent(AppointmentDetailActivity.this, VaccineNoteActivity.class);
+                    intent.putExtra("vaccine_name", docName);
+                    startActivity(intent);
+                });
+            }
+        } else {
+            if (layoutDoctorButtons != null) layoutDoctorButtons.setVisibility(View.VISIBLE);
+            if (btnVaccineNote != null) btnVaccineNote.setVisibility(View.GONE);
+        }
     }
 
     private void loadDetailedInfo() {

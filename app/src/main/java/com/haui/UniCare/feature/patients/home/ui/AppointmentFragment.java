@@ -85,17 +85,17 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
     }
 
     private void initViews(View view) {
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        layoutEmptyState = view.findViewById(R.id.layout_empty_state);
-        rcvAppointments = view.findViewById(R.id.rcv_appointments);
-        layoutTabUpcoming = view.findViewById(R.id.layout_tab_upcoming);
-        layoutTabCompleted = view.findViewById(R.id.layout_tab_completed);
-        tvTabUpcoming = view.findViewById(R.id.tv_tab_upcoming);
-        tvTabCompleted = view.findViewById(R.id.tv_tab_completed);
-        imgTabUpcoming = view.findViewById(R.id.img_tab_upcoming);
-        imgTabCompleted = view.findViewById(R.id.img_tab_completed);
-        btnRegisterVaccine = view.findViewById(R.id.btn_register_vaccine);
-        tvRegisterButton = view.findViewById(R.id.tv_register_button);
+        swipeRefreshLayout  = view.findViewById(R.id.swipeRefreshLayout);
+        layoutEmptyState    = view.findViewById(R.id.layout_empty_state);
+        rcvAppointments     = view.findViewById(R.id.rcv_appointments);
+        layoutTabUpcoming   = view.findViewById(R.id.layout_tab_upcoming);
+        layoutTabCompleted  = view.findViewById(R.id.layout_tab_completed);
+        tvTabUpcoming       = view.findViewById(R.id.tv_tab_upcoming);
+        tvTabCompleted      = view.findViewById(R.id.tv_tab_completed);
+        imgTabUpcoming      = view.findViewById(R.id.img_tab_upcoming);
+        imgTabCompleted     = view.findViewById(R.id.img_tab_completed);
+        btnRegisterVaccine  = view.findViewById(R.id.btn_register_vaccine);
+        tvRegisterButton    = view.findViewById(R.id.tv_register_button);
 
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -258,14 +258,43 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
 
     @Override
     public void onCancel(Appointment appointment) {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Xác nhận hủy")
-                .setMessage("Bạn có chắc chắn muốn hủy lịch hẹn này không?")
-                .setNegativeButton("Quay lại", null)
-                .setPositiveButton("Hủy lịch", (dialog, which) -> {
-                    performCancelAppointment(appointment);
-                })
-                .show();
+        android.app.Dialog dialog = new android.app.Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_custom_confirm);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+        if (btnCloseIcon != null) {
+            btnCloseIcon.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+        tvTitle.setText("Xác nhận hủy");
+
+        android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+        tvMessage.setText("Bạn có chắc chắn muốn hủy lịch hẹn này không?");
+
+        com.google.android.material.button.MaterialButton btnCancelAppt = dialog.findViewById(R.id.btnPrimary);
+        btnCancelAppt.setText("Hủy lịch");
+        btnCancelAppt.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#EF4444")));
+        btnCancelAppt.setOnClickListener(v -> {
+            dialog.dismiss();
+            performCancelAppointment(appointment);
+        });
+
+        com.google.android.material.button.MaterialButton btnSecondary = dialog.findViewById(R.id.btnSecondary);
+        if (btnSecondary != null) {
+            btnSecondary.setVisibility(android.view.View.GONE);
+        }
+
+        com.google.android.material.button.MaterialButton btnCancelDialog = dialog.findViewById(R.id.btnCancel);
+        btnCancelDialog.setText("Quay lại");
+        btnCancelDialog.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private void performCancelAppointment(Appointment appointment) {

@@ -180,7 +180,43 @@ public class PersonFragment extends Fragment {
                 btnDelete.setText("Xóa");
                 btnDelete.setOnClickListener(btnV -> {
                     dialog.dismiss();
-                    Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đã được ghi nhận", Toast.LENGTH_SHORT).show();
+                    if (com.haui.UniCare.core.utils.AppConstants.USE_MOCK_DATA) {
+                        Toast.makeText(getContext(), "Đã xóa tài khoản (Mock Mode)", Toast.LENGTH_SHORT).show();
+                        SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+                        sharedPref.edit().clear().apply();
+                        Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.auth.ui.WelcomeActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        requireActivity().finish();
+                    } else {
+                        SharedPreferences sharedPref = requireActivity().getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+                        int userId = sharedPref.getInt("userId", -1);
+                        if (userId != -1) {
+                            com.haui.UniCare.core.network.ApiService apiService = com.haui.UniCare.core.network.RetrofitClient.getInstance().create(com.haui.UniCare.core.network.ApiService.class);
+                            java.util.Map<String, Integer> body = new java.util.HashMap<>();
+                            body.put("userId", userId);
+                            apiService.deleteAccount(body).enqueue(new retrofit2.Callback<com.haui.UniCare.data.model.GenericResponse>() {
+                                @Override
+                                public void onResponse(retrofit2.Call<com.haui.UniCare.data.model.GenericResponse> call, retrofit2.Response<com.haui.UniCare.data.model.GenericResponse> response) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(getContext(), "Xóa tài khoản thành công", Toast.LENGTH_SHORT).show();
+                                        sharedPref.edit().clear().apply();
+                                        Intent intent = new Intent(getActivity(), com.haui.UniCare.feature.auth.ui.WelcomeActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        requireActivity().finish();
+                                    } else {
+                                        Toast.makeText(getContext(), "Lỗi khi xóa tài khoản", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(retrofit2.Call<com.haui.UniCare.data.model.GenericResponse> call, Throwable t) {
+                                    Toast.makeText(getContext(), "Lỗi kết nối máy chủ", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
                 });
 
                 com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);

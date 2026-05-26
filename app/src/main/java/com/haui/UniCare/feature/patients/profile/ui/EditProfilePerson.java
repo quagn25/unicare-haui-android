@@ -39,23 +39,23 @@ public class EditProfilePerson extends AppCompatActivity {
 
         // Ánh xạ View
         btnBack = findViewById(R.id.btnBack);
-        radioGroupGender = findViewById(R.id.radioGroupGender);
-        rbMale = findViewById(R.id.rbMale);
-        rbFemale = findViewById(R.id.rbFemale);
-        btnUpdate = findViewById(R.id.buttonUpdate);
+        radioGroupGender = findViewById(R.id.rgEditGender);
+        rbMale = findViewById(R.id.rbEditMale);
+        rbFemale = findViewById(R.id.rbEditFemale);
+        btnUpdate = findViewById(R.id.btnSaveProfile);
         
-        etName = findViewById(R.id.textInputEditText);
-        etDob = findViewById(R.id.textInputEditText1);
-        etPhone = findViewById(R.id.textInputEditText2);
-        etAddress = findViewById(R.id.textInputEditText3);
-        etEmail = findViewById(R.id.textInputEditText4);
+        etName = findViewById(R.id.etEditName);
+        etDob = findViewById(R.id.etEditDob);
+        etPhone = findViewById(R.id.etEditPhone);
+        etAddress = findViewById(R.id.etEditAddress);
+        etEmail = findViewById(R.id.etEditEmail);
 
-        tilName = findViewById(R.id.textInputLayout4);
-        tilDate = findViewById(R.id.textInputLayout5);
-        tilPhone = findViewById(R.id.textInputLayout6);
-        tilAddress = findViewById(R.id.textInputLayout7);
-        tilEmail = findViewById(R.id.textInputLayout8);
-        tilGender = findViewById(R.id.textInputLayout9);
+        tilName = findViewById(R.id.tilEditName);
+        tilDate = findViewById(R.id.tilEditDob);
+        tilPhone = findViewById(R.id.tilEditPhone);
+        tilAddress = findViewById(R.id.tilEditAddress);
+        tilEmail = findViewById(R.id.tilEditEmail);
+        tilGender = findViewById(R.id.tilEditGender);
 
         etDob.setOnClickListener(v -> showDatePickerDialog());
 
@@ -71,10 +71,10 @@ public class EditProfilePerson extends AppCompatActivity {
             String gender = intent.getStringExtra("gender");
             if ("Nam".equals(gender)) {
                 rbMale.setChecked(true);
-                lastCheckedId = R.id.rbMale;
+                lastCheckedId = R.id.rbEditMale;
             } else if ("Nữ".equals(gender)) {
                 rbFemale.setChecked(true);
-                lastCheckedId = R.id.rbFemale;
+                lastCheckedId = R.id.rbEditFemale;
             }
         }
 

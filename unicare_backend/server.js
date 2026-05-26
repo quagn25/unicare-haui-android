@@ -213,14 +213,20 @@ app.post("/register", async (req, res) => {
                         conn.query("INSERT INTO patients (user_id, full_name, dob, gender, phone, address) VALUES (?, ?, ?, ?, ?, ?)",
                         [userId, fullName, formattedDob, gender, phone, "Chưa cập nhật"], (err) => {
                             if (err) return conn.rollback(() => { conn.release(); res.status(500).json({ message: "Lỗi lưu thông tin bệnh nhân" }); });
-                            conn.commit(() => { conn.release(); res.status(200).send(); });
+                            conn.query("INSERT INTO notifications (user_id, title, content, type, is_read) VALUES (?, ?, ?, ?, 0)", 
+                            [userId, "Tạo tài khoản thành công", "Chào mừng bạn đến với UniCare. Tài khoản của bạn đã được tạo thành công!", "ALL"], () => {
+                                conn.commit(() => { conn.release(); res.status(200).send(); });
+                            });
                         });
                     } else {
                         conn.query("INSERT INTO doctors (user_id, name, phone, title, experience_years, consultation_fee, bio) VALUES (?, ?, ?, ?, ?, ?, ?)",
                         [userId, fullName, phone, "Bác sĩ", 1, 200000, "Chưa cập nhật"], (err, dRes) => {
                             if (err) return conn.rollback(() => { conn.release(); res.status(500).json({ message: "Lỗi lưu bác sĩ" }); });
                             conn.query("INSERT INTO doctor_specialties (doctor_id, specialty_id) VALUES (?, ?)", [dRes.insertId, 1], (err) => {
-                                conn.commit(() => { conn.release(); res.status(200).send(); });
+                                conn.query("INSERT INTO notifications (user_id, title, content, type, is_read) VALUES (?, ?, ?, ?, 0)", 
+                                [userId, "Tạo tài khoản thành công", "Chào mừng bạn đến với UniCare. Tài khoản của bạn đã được tạo thành công!", "ALL"], () => {
+                                    conn.commit(() => { conn.release(); res.status(200).send(); });
+                                });
                             });
                         });
                     }
@@ -642,6 +648,40 @@ app.post("/notifications/read-all", (req, res) => {
     );
 });
 
+app.post("/notifications/read", (req, res) => {
+    const { notificationId } = req.body;
+    if (!notificationId) return res.status(400).json({ status: "fail", message: "Thiếu notificationId" });
+
+    db.query(
+        "UPDATE notifications SET is_read = 1 WHERE id = ?",
+        [notificationId],
+        (err, result) => {
+            if (err) {
+                console.error("❌ Lỗi đánh dấu đã đọc notification:", err.message);
+                return res.status(500).json({ status: "error", message: err.message });
+            }
+            res.json({ status: "success", message: "Đã đánh dấu đã đọc thông báo" });
+        }
+    );
+});
+
+app.post("/notifications/delete", (req, res) => {
+    const { notificationId } = req.body;
+    if (!notificationId) return res.status(400).json({ status: "fail", message: "Thiếu notificationId" });
+
+    db.query(
+        "DELETE FROM notifications WHERE id = ?",
+        [notificationId],
+        (err, result) => {
+            if (err) {
+                console.error("❌ Lỗi xóa notification:", err.message);
+                return res.status(500).json({ status: "error", message: err.message });
+            }
+            res.json({ status: "success", message: "Đã xóa thông báo" });
+        }
+    );
+});
+
 // --- ĐỔI MẬT KHẨU (Khi đã đăng nhập) ---
 app.post("/change-password", (req, res) => {
     const { userId, currentPassword, newPassword } = req.body;
@@ -725,6 +765,24 @@ app.get("/patients/profile", (req, res) => {
                 gender: data.gender,
                 address: data.address
             }
+        });
+    });
+});
+
+app.post("/users/delete", (req, res) => {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ status: "fail", message: "Thiếu userId" });
+
+    // Xóa bệnh nhân và tài khoản (nếu thiết kế DB không có cascade delete)
+    db.query("DELETE FROM patients WHERE user_id = ?", [userId], (err1) => {
+        if (err1) console.error("Lỗi xóa patients:", err1.message);
+        
+        db.query("DELETE FROM users WHERE id = ?", [userId], (err2, result) => {
+            if (err2) {
+                console.error("❌ Lỗi xóa tài khoản:", err2.message);
+                return res.status(500).json({ status: "error", message: err2.message });
+            }
+            res.json({ status: "success", message: "Đã xóa tài khoản thành công" });
         });
     });
 });

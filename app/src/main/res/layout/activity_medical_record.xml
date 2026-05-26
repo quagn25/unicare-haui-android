@@ -24,8 +24,8 @@
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back"
-            android:padding="4dp"
-            android:src="@drawable/ic_arrow_back" />
+            android:paddingTop="14dp"
+            android:src="@drawable/outline_arrow_back_24" />
 
         <TextView
             android:layout_width="wrap_content"

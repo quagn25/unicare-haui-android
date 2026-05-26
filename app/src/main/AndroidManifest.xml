@@ -46,6 +46,7 @@
         <activity android:name=".feature.patients.profile.ui.ProfileActivity" />
         <activity android:name=".feature.patients.profile.ui.EditProfileActivity" />
         <activity android:name=".feature.patients.appointment.ui.AppointmentDetailActivity" />
+        <activity android:name=".feature.patients.appointment.ui.VaccineNoteActivity" />
         <activity android:name=".feature.patients.record.activity.MedicalRecordActivity" />
         <activity android:name=".feature.patients.record.activity.TreatmentPlanActivity" />
         <activity android:name=".feature.auth.ui.ChangePasswordActivity" />

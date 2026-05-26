@@ -55,8 +55,9 @@
 
                 <TextView
                     android:id="@+id/tvNotificationTitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Nhắc lịch khám"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
@@ -70,6 +71,17 @@
                     android:layout_marginStart="6dp"
                     android:background="@drawable/bg_unread_dot"
                     android:visibility="visible" />
+                    
+                <ImageView
+                    android:id="@+id/btnDeleteNotification"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_close_dialog"
+                    android:padding="4dp"
+                    app:tint="#94A3B8"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Xóa thông báo" />
             </LinearLayout>
 
             <!-- Description -->

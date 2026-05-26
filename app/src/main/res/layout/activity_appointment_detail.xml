@@ -19,12 +19,12 @@
             android:id="@+id/btn_back"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentStart="false"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow_back"
-            android:contentDescription="Back"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp" />
+            android:contentDescription="Back"
+            android:src="@drawable/outline_arrow_back_24" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -220,6 +220,7 @@
 
             <!-- Bottom Action Buttons -->
             <LinearLayout
+                android:id="@+id/layout_doctor_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -258,6 +259,25 @@
                     app:strokeColor="#284ED9"
                     app:strokeWidth="1dp" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_vaccine_note"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="8dp"
+                android:text="Lưu ý trước &amp; sau tiêm"
+                android:textAllCaps="false"
+                android:textColor="#059669"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:cornerRadius="27dp"
+                app:strokeColor="#10B981"
+                app:strokeWidth="2dp"
+                app:icon="@drawable/outline_notifications_24"
+                app:iconTint="#059669"
+                app:iconGravity="textStart" />
 
         </LinearLayout>
     </ScrollView>

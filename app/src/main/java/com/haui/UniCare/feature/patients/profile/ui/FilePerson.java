@@ -1,4 +1,6 @@
-package com.haui.UniCare.feature.patients.profile.ui;import android.content.Intent;
+package com.haui.UniCare.feature.patients.profile.ui;
+
+import android.content.Intent;
 import android.content.SharedPreferences; // Thêm import này
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -30,13 +32,13 @@ public class FilePerson extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // 1. Ánh xạ View
-        tvEdit = findViewById(R.id.textView2);
-        tvName = findViewById(R.id.textView4);
-        tvDob = findViewById(R.id.textView6);
-        tvGender = findViewById(R.id.textView8);
-        tvPhone = findViewById(R.id.textView10);
-        tvAddress = findViewById(R.id.textView12);
-        tvEmail = findViewById(R.id.textView14);
+        tvEdit = findViewById(R.id.tvEditProfile);
+        tvName = findViewById(R.id.tvProfileName);
+        tvDob = findViewById(R.id.tvProfileDob);
+        tvGender = findViewById(R.id.tvProfileGender);
+        tvPhone = findViewById(R.id.tvProfilePhone);
+        tvAddress = findViewById(R.id.tvProfileAddress);
+        tvEmail = findViewById(R.id.tvProfileEmail);
         btnBack = findViewById(R.id.btnBack);
 
         // 2. TẢI DỮ LIỆU ĐÃ LƯU KHI MỞ MÀN HÌNH

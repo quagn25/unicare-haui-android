@@ -19,12 +19,11 @@ import com.haui.UniCare.feature.auth.ui.LoginActivity;
 public class PersonFragment extends Fragment {
 
     private Button btnLogout;
-    private TextView tvShareApp;
-    private TextView tvChangePassword;
+    private View layoutShareApp;
+    private View layoutChangePassword;
     private TextView tvUserName;
     private TextView tvHealthRecords;
-    private TextView tvDeleteAccount;
-    private TextView tvProfile;
+    private View layoutDeleteAccount;
 
     public PersonFragment() {
         // Required empty public constructor
@@ -52,14 +51,13 @@ public class PersonFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Ánh xạ View dùng ID tường minh để dễ phân biệt
+        // Ánh xạ View chính xác theo ID trong fragment_person.xml
         btnLogout = view.findViewById(R.id.btn_logout);
-        tvShareApp = view.findViewById(R.id.tv_share_app);
-        tvChangePassword = view.findViewById(R.id.tv_change_password);
+        layoutShareApp = view.findViewById(R.id.layout_share_app);
+        layoutChangePassword = view.findViewById(R.id.layout_change_password);
         tvUserName = view.findViewById(R.id.tv_user_name);
         tvHealthRecords = view.findViewById(R.id.tv_health_records);
-        tvDeleteAccount = view.findViewById(R.id.tv_delete_account);
-        tvProfile = view.findViewById(R.id.tv_health_records);
+        layoutDeleteAccount = view.findViewById(R.id.layout_delete_account);
 
         displayUserInfo();
 
@@ -78,7 +76,7 @@ public class PersonFragment extends Fragment {
         });
 
         // 2. Sự kiện Chia sẻ ứng dụng
-        tvShareApp.setOnClickListener(v -> {
+        layoutShareApp.setOnClickListener(v -> {
             String packageName = requireContext().getPackageName();
             String deepLink = "unicare://app";
             String shareMessage = "Truy cập UniCare ngay tại: " + deepLink + packageName;
@@ -90,27 +88,19 @@ public class PersonFragment extends Fragment {
         });
 
         // 3. Sự kiện Đổi mật khẩu
-        tvChangePassword.setOnClickListener(v -> {
+        layoutChangePassword.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Tính năng Đổi mật khẩu đang được phát triển", Toast.LENGTH_SHORT).show();
-            // TODO: Tạo Activity ChangePass và cập nhật Intent dưới đây
-            // Intent intent = new Intent(getActivity(), ChangePass.class);
-            // startActivity(intent);
         });
 
-        // 4. Sự kiện Hồ sơ y tế
+        // 4. Sự kiện Xem thông tin cá nhân (Mở FilePerson)
         tvHealthRecords.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Tính năng Hồ sơ y tế đang được phát triển", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), FilePerson.class);
+            startActivity(intent);
         });
 
         // 5. Sự kiện Yêu cầu xóa tài khoản
-        tvDeleteAccount.setOnClickListener(v -> {
+        layoutDeleteAccount.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Yêu cầu xóa tài khoản đang được tiếp nhận", Toast.LENGTH_SHORT).show();
-        });
-
-        // 6. Sự kiện Cập nhật hồ sơ
-        tvProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), FilePerson.class);
-            startActivity(intent);
         });
     }
 

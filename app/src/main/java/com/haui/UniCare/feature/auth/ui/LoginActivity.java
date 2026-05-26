@@ -165,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.code() == 401) {
                         Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: Lỗi " + response.code(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -174,7 +174,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 loadingDialog.hideLoading();
                 Log.e("LOGIN_DEBUG", "Lỗi kết nối: " + t.getMessage());
-                Toast.makeText(LoginActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

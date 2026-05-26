@@ -66,6 +66,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        fetchUnreadNotificationCount();
+    }
+
+    private void fetchUnreadNotificationCount() {
+        SharedPreferences sharedPref = getSharedPreferences("UniCarePrefs", Context.MODE_PRIVATE);
+        int userId = sharedPref.getInt("userId", 0);
+
+        if (com.haui.UniCare.core.utils.AppConstants.USE_MOCK_DATA) {
+            int unreadCount = 0;
+            for (com.haui.UniCare.data.model.Notification item : com.haui.UniCare.data.MockData.getMockNotifications()) {
+                if (item.getIsRead() == 0) {
+                    unreadCount++;
+                }
+            }
+            updateNotificationBadge(unreadCount);
+            return;
+        }
+
+        com.haui.UniCare.core.network.ApiService apiService = com.haui.UniCare.core.network.RetrofitClient.getInstance().create(com.haui.UniCare.core.network.ApiService.class);
+        apiService.getNotifications(userId).enqueue(new retrofit2.Callback<com.haui.UniCare.data.model.NotificationResponse>() {
+            @Override
+            public void onResponse(@androidx.annotation.NonNull retrofit2.Call<com.haui.UniCare.data.model.NotificationResponse> call, @androidx.annotation.NonNull retrofit2.Response<com.haui.UniCare.data.model.NotificationResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    com.haui.UniCare.data.model.NotificationResponse notifResponse = response.body();
+                    if ("success".equals(notifResponse.getStatus()) && notifResponse.getData() != null) {
+                        int unreadCount = 0;
+                        for (com.haui.UniCare.data.model.Notification item : notifResponse.getData()) {
+                            if (item.getIsRead() == 0) {
+                                unreadCount++;
+                            }
+                        }
+                        updateNotificationBadge(unreadCount);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@androidx.annotation.NonNull retrofit2.Call<com.haui.UniCare.data.model.NotificationResponse> call, @androidx.annotation.NonNull Throwable t) {
+                android.util.Log.e("MainActivity", "Error fetching unread notifications: " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
@@ -119,21 +165,30 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
 
-            // Remove badge when switching to notifications tab
-            if (id == R.id.nav_notifications) {
-                bottomNav.removeBadge(R.id.nav_notifications);
-            }
+            // Do not remove badge just by switching tab
+            // if (id == R.id.nav_notifications) {
+            //     bottomNav.removeBadge(R.id.nav_notifications);
+            // }
 
             return true;
         });
-
-        // Set mock unread notification badge
-        com.google.android.material.badge.BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_notifications);
-        badge.setVisible(true);
-        badge.setNumber(3); // Mock number of unread notifications
-        badge.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
-        badge.setBadgeTextColor(getResources().getColor(android.R.color.white));
     }
+
+    public void updateNotificationBadge(int count) {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        if (bottomNav != null) {
+            if (count > 0) {
+                com.google.android.material.badge.BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_notifications);
+                badge.setVisible(true);
+                badge.setNumber(count);
+                badge.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                badge.setBadgeTextColor(getResources().getColor(android.R.color.white));
+            } else {
+                bottomNav.removeBadge(R.id.nav_notifications);
+            }
+        }
+    }
+
     private void showExitDialog() {
         android.app.Dialog dialog = new android.app.Dialog(this);
         dialog.setContentView(R.layout.dialog_custom_confirm);

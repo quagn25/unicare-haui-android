@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements NotificationAdapter.OnNotificationDeleteListener, NotificationAdapter.OnNotificationClickListener {
 
     private RecyclerView rvNotifications;
     private TextView tvUnreadCount;
@@ -115,6 +115,8 @@ public class NotificationFragment extends Fragment {
     private void setupRecyclerView() {
         if (getContext() == null) return;
         adapter = new NotificationAdapter(filteredNotifications, getContext());
+        adapter.setDeleteListener(this);
+        adapter.setClickListener(this);
         rvNotifications.setLayoutManager(new LinearLayoutManager(getContext()));
         rvNotifications.setAdapter(adapter);
     }
@@ -220,6 +222,10 @@ public class NotificationFragment extends Fragment {
             }
         }
         tvUnreadCount.setText(unreadCount + " thông báo chưa đọc");
+
+        if (getActivity() instanceof com.haui.UniCare.MainActivity) {
+            ((com.haui.UniCare.MainActivity) getActivity()).updateNotificationBadge(unreadCount);
+        }
     }
 
     private void readAllNotifications() {
@@ -246,6 +252,119 @@ public class NotificationFragment extends Fragment {
             }
             @Override
             public void onFailure(@NonNull Call<GenericResponse> call, @NonNull Throwable t) {}
+        });
+    }
+
+    @Override
+    public void onItemClick(Notification notification) {
+        if (notification.getIsRead() == 1) {
+            return; // Already read
+        }
+
+        if (AppConstants.USE_MOCK_DATA) {
+            notification.setIsRead(1);
+            adapter.notifyDataSetChanged();
+            updateUnreadCountHeader();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        Map<String, Integer> body = new HashMap<>();
+        body.put("notificationId", notification.getId());
+        apiService.readNotification(body).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<GenericResponse> call, @NonNull Response<GenericResponse> response) {
+                if (response.isSuccessful()) {
+                    notification.setIsRead(1);
+                    adapter.notifyDataSetChanged();
+                    updateUnreadCountHeader();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GenericResponse> call, @NonNull Throwable t) {
+                // Ignore error
+            }
+        });
+    }
+
+    @Override
+    public void onDeleteClick(Notification notification) {
+        android.app.Dialog dialog = new android.app.Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_custom_confirm);
+        
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        android.view.View btnCloseIcon = dialog.findViewById(R.id.btnCloseIcon);
+        if (btnCloseIcon != null) {
+            btnCloseIcon.setOnClickListener(btnV -> dialog.dismiss());
+        }
+
+        android.widget.TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+        tvTitle.setText("Xác nhận xóa");
+        
+        android.widget.TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+        tvMessage.setText("Bạn có chắc chắn muốn xóa thông báo này không?");
+
+        com.google.android.material.button.MaterialButton btnPrimary = dialog.findViewById(R.id.btnPrimary);
+        btnPrimary.setText("Đồng ý");
+        btnPrimary.setOnClickListener(btnV -> {
+            dialog.dismiss();
+            performDeleteNotification(notification);
+        });
+
+        com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+        btnCancel.setText("Hủy");
+        btnCancel.setOnClickListener(btnV -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void performDeleteNotification(Notification notification) {
+        if (AppConstants.USE_MOCK_DATA) {
+            MockData.removeMockNotification(notification.getId());
+            
+            // Xóa bằng tay trong list do không có method removeIf trên API cũ
+            for (int i = 0; i < allNotifications.size(); i++) {
+                if (allNotifications.get(i).getId() == notification.getId()) {
+                    allNotifications.remove(i);
+                    break;
+                }
+            }
+            
+            updateUnreadCountHeader();
+            applyFilter();
+            Toast.makeText(getContext(), "Đã xóa thông báo (Mock Mode)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getInstance().create(ApiService.class);
+        Map<String, Integer> body = new HashMap<>();
+        body.put("notificationId", notification.getId());
+        apiService.deleteNotification(body).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<GenericResponse> call, @NonNull Response<GenericResponse> response) {
+                if (response.isSuccessful()) {
+                    for (int i = 0; i < allNotifications.size(); i++) {
+                        if (allNotifications.get(i).getId() == notification.getId()) {
+                            allNotifications.remove(i);
+                            break;
+                        }
+                    }
+                    updateUnreadCountHeader();
+                    applyFilter();
+                    Toast.makeText(getContext(), "Đã xóa thông báo", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Lỗi khi xóa thông báo", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<GenericResponse> call, @NonNull Throwable t) {
+                Toast.makeText(getContext(), "Lỗi kết nối máy chủ", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
